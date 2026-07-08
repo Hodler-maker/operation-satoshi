@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>La chasse aux indices</title>
+<title> La chasse aux indices</title>
 <link rel="icon" type="image/png" href="bitcoin.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0d1030">
@@ -5523,6 +5523,7 @@
   } catch(e) {
     console.warn("Firebase non configuré :", e);
   }
+  window.rcFirebaseReady = rcFirebaseReady;
 
   const rcAuth = rcFirebaseReady ? firebase.auth() : null;
   const rcDb = rcFirebaseReady ? firebase.firestore() : null;
@@ -5552,6 +5553,7 @@
 
   let rcCurrentUser = null;
   let rcSyncTimer = null;
+  function rcSetCurrentUser(u){ rcCurrentUser = u; window.rcCurrentUser = u; }
 
   window.rcAuthSwitchTab = function(mode){
     document.getElementById("auth-tab-login").classList.toggle("active", mode === "login");
@@ -5664,7 +5666,7 @@
   };
 
   window.rcAuthContinueGuest = function(){
-    rcCurrentUser = null;
+    rcSetCurrentUser(null);
     document.getElementById("logout-toggle").style.display = "none";
     rcEnterGame();
   };
@@ -5748,16 +5750,17 @@
   if(rcFirebaseReady){
     rcAuth.onAuthStateChanged(function(user){
       if(user){
-        rcCurrentUser = user;
+        rcSetCurrentUser(user);
         document.getElementById("logout-toggle").style.display = "flex";
         rcLoadCloudProgress(user.uid).then(function(){
           rcEnterGame();
           if(rcSyncTimer) clearInterval(rcSyncTimer);
           rcSyncTimer = setInterval(rcSaveCloudProgress, 20000);
           window.addEventListener("beforeunload", rcSaveCloudProgress);
+          refreshWorldLeaderboard();
         });
       } else {
-        rcCurrentUser = null;
+        rcSetCurrentUser(null);
         document.getElementById("logout-toggle").style.display = "none";
       }
     });
