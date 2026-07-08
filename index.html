@@ -79,7 +79,19 @@
     padding:56px 18px 40px;
   }
   h1,h2,h3{font-family:'Space Grotesk',sans-serif;}
+  .hub-columns{ display:flex; flex-direction:column; }
+  .hub-col-left, .hub-col-right{ display:flex; flex-direction:column; min-width:0; }
+
+  @media (min-width:880px){
+    .wrap:has(#screen-accueil.active){ max-width:1140px; padding-left:32px; padding-right:32px; }
+    #screen-accueil .logo-block{ max-width:640px; margin-left:auto; margin-right:auto; }
+    .hub-columns{ flex-direction:row; align-items:flex-start; gap:28px; }
+    .hub-col-left{ flex:0 0 380px; }
+    .hub-col-right{ flex:1 1 auto; }
+  }
+
   .screen{display:none;flex:1;flex-direction:column;animation:fadeIn .35s ease-out;}
+
   .screen.active{display:flex;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
   @keyframes popIn{from{opacity:0;transform:scale(0.92) translateY(6px);}to{opacity:1;transform:scale(1) translateY(0);}}
@@ -131,6 +143,34 @@
     padding:0 4px; box-shadow:0 0 8px rgba(34,197,94,0.7);
     border:1.5px solid var(--bg2);
   }
+
+  /* Barre boutique : plus petite et centrée en haut de l'écran (au lieu du bord gauche pleine largeur) */
+  #shop-toggle{
+    width:auto;
+    left:50%;
+    top:12px;
+    padding:7px 12px;
+    gap:6px;
+    transform:translateX(-50%);
+  }
+  #shop-toggle:hover{transform:translateX(-50%) scale(1.1);}
+  #shop-toggle{
+    width:48px;
+    height:48px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:0;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(240,185,11,0.18) 0%, rgba(240,185,11,0.06) 55%, transparent 75%);
+    border:none;
+    box-shadow:0 0 10px rgba(240,185,11,0.2);
+    animation:none;
+    padding:0;
+    backdrop-filter:none;
+  }
+  #shop-toggle .shop-icon-emoji{font-size:34px;}
+  #shop-toggle .shop-label{display:none;}
 
   .topbar{
     display:flex;align-items:center;justify-content:space-between;
@@ -1135,6 +1175,46 @@
   .lb-meta{font-size:11px;color:var(--texte-dim);margin-top:2px;}
   .lb-sats{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--texte-dim);white-space:nowrap;}
   .lb-empty{text-align:center;padding:16px;color:var(--texte-dim);font-size:13px;font-style:italic;}
+
+  /* ====== CLASSEMENT MONDIAL ====== */
+  .wlb-wrap{margin-top:14px;}
+  .wlb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;}
+  .wlb-title{
+    font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;
+    color:var(--or);display:flex;align-items:center;gap:6px;
+  }
+  .wlb-refresh{
+    font-size:11px;font-weight:600;color:var(--texte-dim);
+    background:rgba(255,255,255,0.05);border:1px solid var(--card-border);
+    border-radius:8px;padding:5px 10px;cursor:pointer;transition:background .15s ease-out;
+    font-family:'Inter',sans-serif;
+  }
+  .wlb-refresh:hover{background:rgba(255,255,255,0.1);}
+  .wlb-row{
+    display:flex;align-items:center;gap:12px;
+    padding:9px 14px;border-radius:12px;margin-bottom:6px;
+    background:rgba(255,255,255,0.03);border:1px solid var(--card-border);
+  }
+  .wlb-row.wlb-me{
+    background:rgba(124,58,237,0.14);border:1px solid rgba(124,58,237,0.45);
+  }
+  .wlb-rank{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;min-width:30px;text-align:center;color:var(--texte-dim);}
+  .wlb-rank.r1{color:var(--or);font-size:19px;}
+  .wlb-rank.r2{color:#9ca3af;font-size:18px;}
+  .wlb-rank.r3{color:#b45309;font-size:17px;}
+  .wlb-pseudo{flex:1;min-width:0;font-size:13.5px;font-weight:600;color:var(--texte);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .wlb-you-tag{
+    font-size:9.5px;font-weight:700;color:var(--violet);background:rgba(124,58,237,0.18);
+    border:1px solid rgba(124,58,237,0.4);padding:1px 6px;border-radius:5px;margin-left:6px;
+    text-transform:uppercase;letter-spacing:0.03em;white-space:nowrap;
+  }
+  .wlb-sats{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--or);white-space:nowrap;}
+  .wlb-empty{text-align:center;padding:16px;color:var(--texte-dim);font-size:13px;font-style:italic;}
+  .wlb-me-rank{
+    margin-top:8px;padding:9px 14px;border-radius:12px;
+    background:rgba(240,185,11,0.06);border:1px dashed rgba(240,185,11,0.3);
+    font-size:11.5px;color:var(--texte-dim);text-align:center;line-height:1.5;
+  }
 
   /* ====== V6 : BOSS #3 ====== */
   .boss3-intro{
@@ -3339,13 +3419,26 @@
   <span>👤</span>
   <span class="profile-lvl-badge" id="profile-lvl-badge">1</span>
 </div>
-<div class="logout-toggle" id="logout-toggle" onclick="rcAuthLogout()" title="Se déconnecter">🚪</div>
+<div class="logout-toggle" id="logout-toggle" onclick="rcAuthLogout()" title="Se déconnecter">
+  <svg width="22" height="13" viewBox="-1 0 46 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+    <path d="M13 4m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+    <path d="M4 17l5 1l.75 -1.5" />
+    <path d="M15 21l0 -4l-4 -3l1 -6" />
+    <path d="M7 12l0 -3l5 -1l3 3l3 1" />
+    <g transform="translate(22,0)">
+      <path d="M13 12v.01" />
+      <path d="M3 21h18" />
+      <path d="M5 21v-16a2 2 0 0 1 2 -2h7.5m2.5 10.5v7.5" />
+      <path d="M14 7h7m-3 -3l3 3l-3 3" />
+    </g>
+  </svg>
+</div>
 <div class="shop-toggle" id="pool-toggle" onclick="openPoolScreen()" title="Cagnotte communautaire" style="left:150px;display:none;">
   <span class="shop-icon-emoji">⚡</span>
   <span class="shop-label">Cagnotte</span>
 </div>
 <div class="shop-toggle" id="shop-toggle" onclick="openBoutiqueMenu()" title="Boutique de cartes" style="display:none;">
-  <span class="shop-icon-emoji">🛍️</span>
+  <span class="shop-icon-emoji">🏪</span>
   <span class="shop-label">Boutique</span>
   <span class="shop-badge" id="shop-badge">0</span>
 </div>
@@ -3442,6 +3535,9 @@
       <p class="subtitle">Une vraie chasse aux indices : quitte cette page, fouille les véritables archives où Satoshi a posté, et empoche des sats à chaque preuve trouvée.</p>
     </div>
 
+    <div class="hub-columns">
+    <div class="hub-col-left">
+
     <!-- Dossier d'enquêteur : identité, niveau, classe -->
     <div class="hub-dossier" onclick="openPlayerProfile()" role="button" tabindex="0" aria-label="Ouvrir mon profil d'enquêteur" onkeydown="if(event.key==='Enter')openPlayerProfile()">
       <div class="hub-avatar-wrap">
@@ -3483,6 +3579,45 @@
       </div>
 
     </div>
+
+    <!-- Indicateur streak quotidien (ancien, conservé pour compatibilité) -->
+    <div id="streak-banner" style="display:none;" class="streak-banner" onclick="openStreakModal()">
+      <div class="streak-fire" id="streak-fire-icon">🔥</div>
+      <div class="streak-info">
+        <div class="streak-label">Streak quotidien</div>
+        <div class="streak-count"><span id="streak-count-display">0</span> jour<span id="streak-plural"></span></div>
+        <div class="streak-sub" id="streak-sub-text">Continue chaque jour pour gagner plus !</div>
+      </div>
+      <div class="streak-dots" id="streak-dots-mini"></div>
+    </div>
+
+    <div id="saved-collection-banner" style="display:none;margin-bottom:14px;background:linear-gradient(135deg,rgba(240,185,11,0.1),rgba(124,58,237,0.08));border:1px solid rgba(240,185,11,0.3);border-radius:14px;padding:14px 16px;">
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--or);margin-bottom:6px;">🃏 Collection sauvegardée</div>
+      <div id="saved-collection-summary" style="font-size:12.5px;color:var(--texte-dim);line-height:1.6;"></div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+        <button id="satoshi-profile-btn" class="btn btn-gold" style="display:none;flex:2;padding:9px 12px;font-size:12.5px;" onclick="openSatoshiProfile('screen-accueil')">🌌 Profil Satoshi →</button>
+        <button class="btn btn-ghost" style="flex:1;padding:9px 12px;font-size:12.5px;" onclick="confirmResetProgress()">🗑️ Réinitialiser</button>
+      </div>
+      <div style="font-size:11px;color:var(--texte-dim);margin-top:8px;line-height:1.4;">Tes cartes et pouvoirs sont actifs pour la prochaine partie !</div>
+    </div>
+
+    <!-- CTA dominant : reprendre ou démarrer l'enquête -->
+    <div class="card hub-cta-card">
+      <div class="brief" id="hub-brief">
+        <strong>BRIEFING :</strong> Entre 2008 et 2011, Satoshi a laissé des traces écrites sur plusieurs forums et listes de diffusion bien réels — et toujours archivés aujourd'hui.<br><br>
+        21 étapes t'attendent, de plus en plus corsées : trouver un mot caché, déchiffrer un message, déjouer un piège... Chaque preuve validée te rapporte des <strong>sats virtuels</strong> dans ton wallet.<br><br>
+        <span class="warn">📡 Ce jeu va ouvrir de vrais liens externes (metzdowd.com, bitcointalk.org, etc.). Connexion internet et un peu de lecture nécessaires à chaque étape.</span>
+      </div>
+      <button class="hub-cta-main" id="hub-cta-main" onclick="handleHubMainCta()">🚀 Commencer l'enquête</button>
+      <div class="hub-cta-sub" id="hub-cta-sub" style="display:none;"></div>
+      <div class="hub-cta-secondary-row" id="hub-cta-secondary-row" style="display:none;">
+        <button class="hub-cta-secondary" onclick="handleHubNewInvestigation()">Démarrer une nouvelle enquête à la place</button>
+      </div>
+    </div>
+
+    </div><!-- /hub-col-left -->
+
+    <div class="hub-col-right">
 
     <!-- Cartes collectées -->
     <div class="hub-cards-section" id="hub-cards-section">
@@ -3607,49 +3742,6 @@
       <div class="hub-missions-claimed-note" id="hub-missions-claimed-note" style="display:none;">✓ Récompense du jour réclamée — reviens demain !</div>
     </div>
 
-    <!-- Indicateur streak quotidien (ancien, conservé pour compatibilité) -->
-    <div id="streak-banner" style="display:none;" class="streak-banner" onclick="openStreakModal()">
-      <div class="streak-fire" id="streak-fire-icon">🔥</div>
-      <div class="streak-info">
-        <div class="streak-label">Streak quotidien</div>
-        <div class="streak-count"><span id="streak-count-display">0</span> jour<span id="streak-plural"></span></div>
-        <div class="streak-sub" id="streak-sub-text">Continue chaque jour pour gagner plus !</div>
-      </div>
-      <div class="streak-dots" id="streak-dots-mini"></div>
-    </div>
-
-
-    <div id="saved-collection-banner" style="display:none;margin-bottom:14px;background:linear-gradient(135deg,rgba(240,185,11,0.1),rgba(124,58,237,0.08));border:1px solid rgba(240,185,11,0.3);border-radius:14px;padding:14px 16px;">
-      <div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--or);margin-bottom:6px;">🃏 Collection sauvegardée</div>
-      <div id="saved-collection-summary" style="font-size:12.5px;color:var(--texte-dim);line-height:1.6;"></div>
-      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
-        <button id="satoshi-profile-btn" class="btn btn-gold" style="display:none;flex:2;padding:9px 12px;font-size:12.5px;" onclick="openSatoshiProfile('screen-accueil')">🌌 Profil Satoshi →</button>
-        <button class="btn btn-ghost" style="flex:1;padding:9px 12px;font-size:12.5px;" onclick="confirmResetProgress()">🗑️ Réinitialiser</button>
-      </div>
-      <div style="font-size:11px;color:var(--texte-dim);margin-top:8px;line-height:1.4;">Tes cartes et pouvoirs sont actifs pour la prochaine partie !</div>
-    </div>
-
-    <!-- CTA dominant : reprendre ou démarrer l'enquête -->
-    <div class="card hub-cta-card">
-      <div class="brief" id="hub-brief">
-        <strong>BRIEFING :</strong> Entre 2008 et 2011, Satoshi a laissé des traces écrites sur plusieurs forums et listes de diffusion bien réels — et toujours archivés aujourd'hui.<br><br>
-        21 étapes t'attendent, de plus en plus corsées : trouver un mot caché, déchiffrer un message, déjouer un piège... Chaque preuve validée te rapporte des <strong>sats virtuels</strong> dans ton wallet.<br><br>
-        <span class="warn">📡 Ce jeu va ouvrir de vrais liens externes (metzdowd.com, bitcointalk.org, etc.). Connexion internet et un peu de lecture nécessaires à chaque étape.</span>
-      </div>
-      <button class="hub-cta-main" id="hub-cta-main" onclick="handleHubMainCta()">🚀 Commencer l'enquête</button>
-      <div class="hub-cta-sub" id="hub-cta-sub" style="display:none;"></div>
-      <div class="hub-cta-secondary-row" id="hub-cta-secondary-row" style="display:none;">
-        <button class="hub-cta-secondary" onclick="handleHubNewInvestigation()">Démarrer une nouvelle enquête à la place</button>
-      </div>
-    </div>
-
-    <!-- Mode Sprint -->
-    <div class="sprint-card" id="sprint-unlock-card">
-      <div class="sprint-title">⚡ Mode Sprint</div>
-      <div class="sprint-desc">5 questions chrono en 15 secondes chacune. Pas d'indice, pas de passe. Uniquement ta mémoire et tes réflexes.<br><br><span id="sprint-best-display"></span></div>
-      <button class="btn btn-primary" onclick="startSprint()" style="background:linear-gradient(135deg,#dc2626,#f59e0b);box-shadow:0 4px 20px rgba(239,68,68,0.4);">⚡ Lancer le Sprint</button>
-    </div>
-
     <!-- Énigmes communautaires -->
     <div class="comm-card" onclick="openCommunityScreen()">
       <div class="comm-card-title">🧩 Le Cercle de Satoshi <span style="font-size:11px;font-weight:600;color:var(--or);background:rgba(240,185,11,0.12);border:1px solid rgba(240,185,11,0.3);padding:2px 7px;border-radius:6px;margin-left:auto;">COMMUNAUTAIRE</span></div>
@@ -3663,6 +3755,19 @@
       <div class="leaderboard-title">🏅 Tes meilleurs scores (partie principale)</div>
       <div id="home-lb-rows"></div>
     </div>
+
+    <!-- Classement mondial -->
+    <div class="wlb-wrap" id="world-leaderboard">
+      <div class="wlb-header">
+        <div class="wlb-title">🌍 Classement mondial</div>
+        <button class="wlb-refresh" onclick="refreshWorldLeaderboard()">↻ Actualiser</button>
+      </div>
+      <div id="world-lb-rows"><div class="wlb-empty">Chargement du classement...</div></div>
+      <div id="world-lb-me-rank"></div>
+    </div>
+
+    </div><!-- /hub-col-right -->
+    </div><!-- /hub-columns -->
   </div>
 
   <!-- ============ ÉCRAN ÉNIGMES COMMUNAUTAIRES ============ -->
@@ -5334,6 +5439,17 @@
     </div>
   </div>
 
+  <!-- ============ MODAL MODE SPRINT (pop-up après connexion / streak) ============ -->
+  <div class="streak-overlay" id="sprint-overlay">
+    <div class="streak-modal" id="sprint-modal" style="border-color:rgba(239,68,68,0.35);">
+      <span class="streak-modal-icon">⚡</span>
+      <div class="sprint-title">Mode Sprint</div>
+      <div class="sprint-desc">5 questions chrono en 15 secondes chacune. Pas d'indice, pas de passe. Uniquement ta mémoire et tes réflexes.<br><br><span id="sprint-best-display"></span></div>
+      <button class="btn btn-primary" style="width:100%;margin-bottom:10px;background:linear-gradient(135deg,#dc2626,#f59e0b);box-shadow:0 4px 20px rgba(239,68,68,0.4);" onclick="closeSprintModal();startSprint();">⚡ Lancer le Sprint</button>
+      <button class="btn btn-ghost" style="width:100%;" onclick="closeSprintModal()">Plus tard</button>
+    </div>
+  </div>
+
   <!-- ============ MODAL RELIQUES ============ -->
   <div class="relics-overlay" id="relics-overlay">
     <div class="relics-modal">
@@ -5582,7 +5698,7 @@
     return rcDb.collection("leaderboard").orderBy("sats", "desc").limit(limit || 10).get()
       .then(function(snap){
         const rows = [];
-        snap.forEach(function(doc){ rows.push(doc.data()); });
+        snap.forEach(function(doc){ rows.push(Object.assign({ __uid: doc.id }, doc.data())); });
         return rows;
       }).catch(function(e){ console.warn("Classement public illisible :", e); return []; });
   }
@@ -5987,9 +6103,11 @@
     renderStreakBanner();
     loadDailyMissions();
     ensureDailyMissionsFresh();
-    // Ouvrir le modal streak si non réclamé aujourd'hui
+    // Ouvrir le modal streak si non réclamé aujourd'hui, puis le pop-up Mode Sprint juste après
     if(!streakData.claimedToday && streakData.lastDate === todayStr()){
       setTimeout(() => openStreakModal(), 600);
+    } else {
+      setTimeout(() => openSprintModal(), 600);
     }
     // Afficher la collection sauvegardée si elle existe
     const hasSaved = loadProgress();
@@ -8119,6 +8237,24 @@
 
       renderStreakBanner();
     }
+
+    // Enchaîne avec le pop-up Mode Sprint juste après le streak quotidien
+    setTimeout(() => openSprintModal(), 400);
+  }
+
+  function openSprintModal(){
+    const sprintLb = (typeof SPRINT_LB_KEY !== "undefined") ? loadLeaderboard(SPRINT_LB_KEY) : [];
+    const bestEl = document.getElementById('sprint-best-display');
+    if(bestEl){
+      bestEl.innerHTML = sprintLb.length > 0
+        ? `<span class="sprint-score-chip">🏆 Meilleur sprint : ${sprintLb[0].score}/5 en ${sprintLb[0].avgTime||"?"}s moy.</span>`
+        : '';
+    }
+    document.getElementById('sprint-overlay').classList.add('show');
+  }
+
+  function closeSprintModal(){
+    document.getElementById('sprint-overlay').classList.remove('show');
   }
 
   function applyPendingStreakSats(){
@@ -9102,7 +9238,63 @@
       document.getElementById("sprint-best-display").innerHTML =
         `<span class="sprint-score-chip">🏆 Meilleur sprint : ${best.score}/5 en ${best.avgTime||"?"}s moy.</span>`;
     }
+    refreshWorldLeaderboard();
   }
+
+  // ===================== CLASSEMENT MONDIAL (dashboard) =====================
+  function refreshWorldLeaderboard(){
+    const rowsEl = document.getElementById("world-lb-rows");
+    const meRankEl = document.getElementById("world-lb-me-rank");
+    if(!rowsEl) return;
+
+    if(typeof window.rcFetchTopLeaderboard !== "function" || !window.rcFirebaseReady){
+      rowsEl.innerHTML = '<div class="wlb-empty">Classement mondial indisponible pour le moment.</div>';
+      if(meRankEl) meRankEl.innerHTML = "";
+      return;
+    }
+
+    // Met à jour mon propre score public avant de rafraîchir, pour voir mon rang à jour
+    if(typeof window.rcSyncPublicLeaderboard === "function"){
+      window.rcSyncPublicLeaderboard();
+    }
+
+    rowsEl.innerHTML = '<div class="wlb-empty">Chargement du classement...</div>';
+
+    window.rcFetchTopLeaderboard(20).then(function(rows){
+      if(!rows || !rows.length){
+        rowsEl.innerHTML = '<div class="wlb-empty">Pas encore assez de joueurs classés. Sois le premier ! 🚀</div>';
+        if(meRankEl) meRankEl.innerHTML = "";
+        return;
+      }
+      const myUid = (window.rcCurrentUser && window.rcCurrentUser.uid) || null;
+      const rankEmojis = ["🥇","🥈","🥉"];
+      const rankCls = ["r1","r2","r3"];
+      let myIndex = -1;
+
+      rowsEl.innerHTML = rows.map(function(r, i){
+        const pseudo = (r.pseudo || "Joueur anonyme").replace(/</g,"&lt;");
+        const satsCount = (r.sats || 0).toLocaleString("fr-FR");
+        const isMe = !!(myUid && r.__uid === myUid);
+        if(isMe) myIndex = i;
+        return '<div class="wlb-row' + (isMe ? " wlb-me" : "") + '">'
+          + '<div class="wlb-rank ' + (rankCls[i] || "") + '">' + (rankEmojis[i] || ("#" + (i + 1))) + '</div>'
+          + '<div class="wlb-pseudo">' + pseudo + (isMe ? '<span class="wlb-you-tag">Toi</span>' : "") + '</div>'
+          + '<div class="wlb-sats">' + satsCount + ' sats</div>'
+          + '</div>';
+      }).join("");
+
+      if(meRankEl){
+        if(myUid && myIndex === -1){
+          meRankEl.innerHTML = "Tu n'apparais pas encore dans le top 20 — continue à trouver des preuves pour grimper ! 📈";
+        } else if(!myUid){
+          meRankEl.innerHTML = "🔐 Connecte-toi pour apparaître dans le classement mondial et suivre ton rang.";
+        } else {
+          meRankEl.innerHTML = "Ta position actuelle : <strong style=\"color:var(--or);\">#" + (myIndex + 1) + "</strong> sur le classement mondial.";
+        }
+      }
+    });
+  }
+  window.refreshWorldLeaderboard = refreshWorldLeaderboard;
 
   // ===================== MODE SPRINT =====================
   const SPRINT_QUESTIONS = [
