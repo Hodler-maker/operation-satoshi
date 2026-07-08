@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>🔍 La chasse aux indices</title>
+<title>La chasse aux indices</title>
 <link rel="icon" type="image/png" href="bitcoin.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0d1030">
@@ -3318,12 +3318,13 @@
   .logout-toggle{
     position:fixed; top:64px; right:14px; z-index:50;
     width:42px;height:42px;border-radius:50%;
-    background:rgba(255,255,255,0.06);border:1px solid var(--card-border);
+    background:rgba(239,68,68,0.22);border:1.5px solid rgba(239,68,68,0.65);
     display:none;align-items:center;justify-content:center;
-    font-size:16px;cursor:pointer;backdrop-filter:blur(8px);
-    transition:background .15s ease-out;
+    font-size:19px;cursor:pointer;backdrop-filter:blur(8px);
+    box-shadow:0 0 14px rgba(239,68,68,0.3), 0 4px 12px rgba(0,0,0,0.35);
+    transition:background .15s ease-out, transform .15s ease-out, box-shadow .15s ease-out;
   }
-  .logout-toggle:hover{background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.4);}
+  .logout-toggle:hover{background:rgba(239,68,68,0.38);border-color:rgba(239,68,68,0.9);transform:scale(1.08);box-shadow:0 0 20px rgba(239,68,68,0.5), 0 4px 12px rgba(0,0,0,0.35);}
 
 </style>
 </head>
@@ -5245,9 +5246,10 @@
         </div>
       </div>
 
-      <div class="btn-row">
-        <button class="btn btn-ghost" onclick="restartGame()">🔄 Rejouer</button>
-        <button class="btn btn-gold" onclick="shareScore()">📤 Partager mon score</button>
+      <div class="btn-row" style="flex-wrap:wrap;">
+        <button class="btn btn-ghost" style="min-width:140px;" onclick="showScreen('screen-accueil')">← Retour à l'accueil</button>
+        <button class="btn btn-ghost" style="min-width:140px;" onclick="restartGame()">🔄 Rejouer</button>
+        <button class="btn btn-gold" style="min-width:140px;" onclick="shareScore()">📤 Partager mon score</button>
       </div>
 
       <!-- Tableau meilleurs scores -->
@@ -5269,6 +5271,27 @@
       <button class="btn btn-primary" id="timer-warning-btn" onclick="dismissTimerWarning()">⚡ Compris, j'suis prêt !</button>
     </div>
   </div>
+
+  <!-- ============ MODAL PARTAGE DU SCORE (IMAGE BRANDÉE) ============ -->
+  <div class="shop-overlay" id="share-overlay" style="align-items:center;justify-content:center;">
+    <div class="shop-panel" style="max-width:420px;border-radius:20px;text-align:center;">
+      <div class="shop-header">
+        <span class="shop-title">📤 Partager ton score</span>
+        <span class="shop-close" onclick="closeShareModal()">✕</span>
+      </div>
+      <p class="shop-sub">Télécharge cette image ou partage-la directement sur tes réseaux.</p>
+      <div id="share-preview-wrap" style="border-radius:16px;overflow:hidden;border:1px solid var(--card-border);margin-bottom:16px;background:rgba(255,255,255,0.02);min-height:120px;display:flex;align-items:center;justify-content:center;">
+        <div id="share-preview-loading" style="padding:40px 0;color:var(--texte-dim);font-size:13px;">🎨 Génération de l'image...</div>
+        <img id="share-preview-img" src="" style="width:100%;display:none;" alt="Aperçu de ton score Opération Satoshi" />
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" style="min-width:140px;" onclick="downloadShareImage()">⬇️ Télécharger</button>
+        <button class="btn btn-gold" id="share-native-btn" style="min-width:140px;display:none;" onclick="nativeShareImage()">📤 Partager</button>
+      </div>
+      <p class="shop-footer-note">💡 Astuce : poste l'image avec #Bitcoin #Web3 pour défier tes amis !</p>
+    </div>
+  </div>
+
 
   <!-- ============ MODAL BOUTIQUE DE CARTES ============ -->
   <div class="shop-overlay" id="shop-overlay">
@@ -11022,10 +11045,10 @@ const ADVANCED_MISSIONS = [
     document.getElementById('final-sats').textContent = sats.toLocaleString('fr-FR');
     document.getElementById('final-score-text').textContent = `${score} preuve(s) sur ${total} retrouvées dans les archives réelles`;
 
-    // Partie 2 : Dossiers On-Chain Avancés — débloqués à partir de 20 preuves sur 21
+    // Partie 2 : Dossiers On-Chain Avancés — débloqués à partir de 18 preuves sur 21
     const advUnlockBlock = document.getElementById('adv-dossiers-unlock-block');
     if(advUnlockBlock){
-      advUnlockBlock.style.display = (score >= 20) ? 'block' : 'none';
+      advUnlockBlock.style.display = (score >= 18) ? 'block' : 'none';
     }
 
     // Save to leaderboard
@@ -11051,6 +11074,7 @@ const ADVANCED_MISSIONS = [
     if(completedCollections.includes("origines")) badges.push({icon:"₿", label:"Gardien du Genesis Block", gold:true});
     if(completedCollections.includes("adversaires")) badges.push({icon:"🦹", label:"Connaisseur des adversaires", gold:false});
     if(ownedCards.length >= 21) badges.push({icon:"🌌", label:"Légende Bitcoin", gold:true});
+    window.lastResultBadges = badges;
 
     const badgesSection = document.getElementById('nft-badges-section');
     if(badges.length > 0){
@@ -11083,19 +11107,230 @@ const ADVANCED_MISSIONS = [
     startGame();
   }
 
-  function shareScore(){
-    const badgeCount = ownedCards.length;
-    const bossText = (boss1Done && boss2Done && boss3Done) ? " | 3 Bosses ✅" : (boss1Done && boss2Done) ? " | Boss battus ✅" : "";
-    const text = `🕵️ Opération Satoshi v6 terminée ! ${score}/21 preuves • ${sats.toLocaleString('fr-FR')} sats • ${badgeCount} cartes${bossText} 🔍🟠 #Bitcoin #Web3`;
-    if(navigator.share){
-      navigator.share({ text: text }).catch(()=>{});
-    } else {
-      navigator.clipboard.writeText(text).then(() => {
-        alert('Score copié dans le presse-papiers ! Colle-le où tu veux le partager 🚀');
-      }).catch(() => {
-        alert(text);
+  // ===================== CARTE DE PARTAGE (IMAGE BRANDÉE) =====================
+  let shareCardBlob = null;
+  let shareCardBlobUrl = null;
+
+  function rrPath(ctx, x, y, w, h, r){
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.arcTo(x + w, y, x + w, y + r, r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+    ctx.lineTo(x + r, y + h);
+    ctx.arcTo(x, y + h, x, y + h - r, r);
+    ctx.lineTo(x, y + r);
+    ctx.arcTo(x, y, x + r, y, r);
+    ctx.closePath();
+  }
+
+  async function buildShareCardCanvas(){
+    try{ if(document.fonts && document.fonts.ready) await document.fonts.ready; }catch(e){}
+
+    const W = 1080, H = 1350;
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+
+    const total = (typeof missions !== 'undefined' && missions.length) ? missions.length : 21;
+    const badges = window.lastResultBadges || [];
+
+    // ---- fond ----
+    const bgGrad = ctx.createRadialGradient(W/2, 220, 80, W/2, 260, 900);
+    bgGrad.addColorStop(0, '#171c40');
+    bgGrad.addColorStop(1, '#0a0e1a');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.strokeStyle = 'rgba(124,58,237,0.08)';
+    ctx.lineWidth = 1;
+    for(let gx = 0; gx <= W; gx += 54){ ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,H); ctx.stroke(); }
+    for(let gy = 0; gy <= H; gy += 54){ ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(W,gy); ctx.stroke(); }
+
+    // ---- en-tête ----
+    ctx.fillStyle = '#f0b90b';
+    ctx.font = "700 32px 'Space Grotesk', sans-serif";
+    ctx.fillText('🕵️ OPÉRATION SATOSHI', W/2, 100);
+
+    ctx.fillStyle = '#9aa3b5';
+    ctx.font = "500 22px 'Inter', sans-serif";
+    ctx.fillText('Chasse aux indices Bitcoin — mission Web3', W/2, 138);
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.beginPath(); ctx.moveTo(90,178); ctx.lineTo(W-90,178); ctx.stroke();
+
+    // ---- résultat ----
+    let bigIcon = '🧩', bigTitle = "L'enquête continue...";
+    if(score === total){ bigIcon = '🏆'; bigTitle = 'Enquêteur légendaire !'; }
+    else if(score >= Math.ceil(total*0.6)){ bigIcon = '🕵️'; bigTitle = 'Bon détective Web3 !'; }
+
+    ctx.font = "150px sans-serif";
+    ctx.fillText(bigIcon, W/2, 400);
+
+    const titleGrad = ctx.createLinearGradient(W/2-280, 0, W/2+280, 0);
+    titleGrad.addColorStop(0, '#ffffff');
+    titleGrad.addColorStop(1, '#f0b90b');
+    ctx.fillStyle = titleGrad;
+    ctx.font = "700 50px 'Space Grotesk', sans-serif";
+    ctx.fillText(bigTitle, W/2, 478);
+
+    // ---- score + barre de progression ----
+    ctx.fillStyle = '#f0b90b';
+    ctx.font = "700 92px 'JetBrains Mono', monospace";
+    ctx.fillText(`${score} / ${total}`, W/2, 605);
+
+    ctx.fillStyle = '#9aa3b5';
+    ctx.font = "500 26px 'Inter', sans-serif";
+    ctx.fillText('preuves retrouvées dans les vraies archives', W/2, 645);
+
+    const barW = 820, barH = 22, barX = W/2 - barW/2, barY = 685;
+    ctx.fillStyle = 'rgba(255,255,255,0.08)';
+    rrPath(ctx, barX, barY, barW, barH, 11); ctx.fill();
+    const fillW = Math.max(barH, barW * Math.min(score/total, 1));
+    const fillGrad = ctx.createLinearGradient(barX, 0, barX+barW, 0);
+    fillGrad.addColorStop(0, '#7c3aed');
+    fillGrad.addColorStop(1, '#f0b90b');
+    ctx.fillStyle = fillGrad;
+    rrPath(ctx, barX, barY, fillW, barH, 11); ctx.fill();
+
+    // ---- chips stats ----
+    const chipY = 755, chipH = 130, chipW = 300, chipGap = 24;
+    const chipsData = [
+      { icon: '🪙', value: sats.toLocaleString('fr-FR'), label: 'sats récoltés' },
+      { icon: '🃏', value: `${ownedCards.length}/21`, label: 'cartes collectées' },
+      { icon: '🏅', value: `${badges.length}`, label: 'badges débloqués' }
+    ];
+    const totalChipsW = chipW*3 + chipGap*2;
+    let cx = W/2 - totalChipsW/2;
+    chipsData.forEach(c => {
+      ctx.fillStyle = 'rgba(255,255,255,0.04)';
+      rrPath(ctx, cx, chipY, chipW, chipH, 18); ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 1;
+      rrPath(ctx, cx, chipY, chipW, chipH, 18); ctx.stroke();
+
+      ctx.font = "42px sans-serif";
+      ctx.fillStyle = '#fff';
+      ctx.fillText(c.icon, cx + chipW/2, chipY + 52);
+
+      ctx.font = "700 32px 'JetBrains Mono', monospace";
+      ctx.fillStyle = '#f0b90b';
+      ctx.fillText(c.value, cx + chipW/2, chipY + 92);
+
+      ctx.font = "400 17px 'Inter', sans-serif";
+      ctx.fillStyle = '#9aa3b5';
+      ctx.fillText(c.label, cx + chipW/2, chipY + 116);
+
+      cx += chipW + chipGap;
+    });
+
+    // ---- badges (jusqu'à 4) ----
+    if(badges.length > 0){
+      const shown = badges.slice(0, 4);
+      const bW = 236, bH = 56, bGap = 14;
+      const totalBW = shown.length*bW + (shown.length-1)*bGap;
+      let bx = W/2 - totalBW/2;
+      const by = 928;
+      shown.forEach(b => {
+        ctx.fillStyle = b.gold ? 'rgba(240,185,11,0.14)' : 'rgba(255,255,255,0.05)';
+        rrPath(ctx, bx, by, bW, bH, 28); ctx.fill();
+        ctx.strokeStyle = b.gold ? 'rgba(240,185,11,0.5)' : 'rgba(255,255,255,0.12)';
+        ctx.lineWidth = 1.5;
+        rrPath(ctx, bx, by, bW, bH, 28); ctx.stroke();
+
+        ctx.textAlign = 'left';
+        ctx.font = "26px sans-serif";
+        ctx.fillStyle = '#fff';
+        ctx.fillText(b.icon, bx + 18, by + 37);
+
+        ctx.font = "600 16px 'Inter', sans-serif";
+        ctx.fillStyle = b.gold ? '#f0b90b' : '#e6e9f0';
+        ctx.fillText(b.label, bx + 58, by + 35);
+        ctx.textAlign = 'center';
+
+        bx += bW + bGap;
       });
     }
+
+    // ---- footer ----
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.beginPath(); ctx.moveTo(90,1050); ctx.lineTo(W-90,1050); ctx.stroke();
+
+    ctx.fillStyle = '#e6e9f0';
+    ctx.font = "600 24px 'Space Grotesk', sans-serif";
+    ctx.fillText('👤 0x_GHOST', W/2, 1095);
+
+    ctx.fillStyle = '#9aa3b5';
+    ctx.font = "400 20px 'Inter', sans-serif";
+    ctx.fillText('#Bitcoin #Web3 #OpérationSatoshi', W/2, 1128);
+
+    const stripGrad = ctx.createLinearGradient(0, 0, W, 0);
+    stripGrad.addColorStop(0, '#7c3aed');
+    stripGrad.addColorStop(1, '#f0b90b');
+    ctx.fillStyle = stripGrad;
+    ctx.fillRect(0, H-70, W, 70);
+    ctx.fillStyle = '#0a0e1a';
+    ctx.font = "700 27px 'Space Grotesk', sans-serif";
+    ctx.fillText("🔍 Rejoue l'enquête — Opération Satoshi", W/2, H-27);
+
+    return canvas;
+  }
+
+  function closeShareModal(){
+    document.getElementById('share-overlay').classList.remove('show');
+  }
+
+  async function shareScore(){
+    const overlay = document.getElementById('share-overlay');
+    const loadingEl = document.getElementById('share-preview-loading');
+    const imgEl = document.getElementById('share-preview-img');
+    const nativeBtn = document.getElementById('share-native-btn');
+    imgEl.style.display = 'none';
+    loadingEl.style.display = 'block';
+    nativeBtn.style.display = 'none';
+    overlay.classList.add('show');
+    sfxWhoosh();
+
+    try{
+      const canvas = await buildShareCardCanvas();
+      canvas.toBlob(function(blob){
+        if(!blob){ loadingEl.textContent = "Impossible de générer l'image."; return; }
+        shareCardBlob = blob;
+        if(shareCardBlobUrl) URL.revokeObjectURL(shareCardBlobUrl);
+        shareCardBlobUrl = URL.createObjectURL(blob);
+        imgEl.src = shareCardBlobUrl;
+        imgEl.style.display = 'block';
+        loadingEl.style.display = 'none';
+        if(navigator.share) nativeBtn.style.display = 'flex';
+      }, 'image/png');
+    }catch(e){
+      loadingEl.textContent = "Impossible de générer l'image pour le moment.";
+    }
+  }
+
+  function downloadShareImage(){
+    if(!shareCardBlobUrl) return;
+    const a = document.createElement('a');
+    a.href = shareCardBlobUrl;
+    a.download = 'operation-satoshi-score.png';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  async function nativeShareImage(){
+    if(!shareCardBlob) return;
+    const shareText = `🕵️ Opération Satoshi terminée ! ${score}/21 preuves • ${sats.toLocaleString('fr-FR')} sats 🔍🟠 #Bitcoin #Web3`;
+    try{
+      const file = new File([shareCardBlob], 'operation-satoshi-score.png', { type: 'image/png' });
+      if(navigator.canShare && navigator.canShare({ files: [file] })){
+        await navigator.share({ files: [file], title: 'Opération Satoshi', text: shareText });
+      } else if(navigator.share){
+        await navigator.share({ title: 'Opération Satoshi', text: shareText });
+      }
+    }catch(e){ /* partage annulé par l'utilisateur, on ignore */ }
   }
 
   // ===================== INITIALISATION =====================
