@@ -3,8 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title> 🔍La vraie chasse aux indices </title>
+<title>🔍 La vraie chasse aux indices</title>
 <link rel="icon" type="image/png" href="bitcoin.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0d1030">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Satoshi">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" href="/icon-192.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -3326,12 +3334,16 @@
 <div class="scanline"></div>
 
 <div class="sound-toggle" id="sound-toggle" onclick="toggleSound()">🔊</div>
-<div class="profile-toggle" id="profile-toggle" onclick="openPlayerProfile()" title="Mon profil">
+<div class="profile-toggle" id="profile-toggle" onclick="openPlayerProfile()" title="Mon profil" style="display:none;">
   <span>👤</span>
   <span class="profile-lvl-badge" id="profile-lvl-badge">1</span>
 </div>
 <div class="logout-toggle" id="logout-toggle" onclick="rcAuthLogout()" title="Se déconnecter">🚪</div>
-<div class="shop-toggle" id="shop-toggle" onclick="openBoutiqueMenu()" title="Boutique de cartes">
+<div class="shop-toggle" id="pool-toggle" onclick="openPoolScreen()" title="Cagnotte communautaire" style="left:150px;display:none;">
+  <span class="shop-icon-emoji">⚡</span>
+  <span class="shop-label">Cagnotte</span>
+</div>
+<div class="shop-toggle" id="shop-toggle" onclick="openBoutiqueMenu()" title="Boutique de cartes" style="display:none;">
   <span class="shop-icon-emoji">🛍️</span>
   <span class="shop-label">Boutique</span>
   <span class="shop-badge" id="shop-badge">0</span>
@@ -3699,6 +3711,44 @@
     <span class="comm-link-back" onclick="showScreen('screen-accueil')">← Retour à l'accueil</span>
   </div>
 
+  <!-- ============ ÉCRAN CAGNOTTE COMMUNAUTAIRE ⚡ ============ -->
+  <div class="screen" id="screen-pool">
+    <div class="topbar">
+      <div class="badge">⚡ CAGNOTTE COMMUNAUTAIRE</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;">
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;margin-bottom:10px;">Alimentée par la communauté Bitcoin</div>
+      <p style="color:var(--texte-dim);font-size:14px;line-height:1.6;margin-bottom:12px;">
+        Cette cagnotte est financée par de vrais sats donnés volontairement par la communauté, via le Lightning Network.
+        Elle est redistribuée périodiquement <strong style="color:var(--texte);">aux joueurs les mieux classés</strong> (wallet en jeu + streak), de façon manuelle et transparente — pas de tirage au sort, pas de paiement automatique.
+      </p>
+      <div style="background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.25);border-radius:12px;padding:10px 12px;font-size:12.5px;color:var(--or);line-height:1.5;">
+        ℹ️ Le solde ci-dessous reflète les vrais dons reçus. Les versements aux gagnants sont effectués à la main par l'organisateur — aucune clé privée ne transite par cette page.
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;text-align:center;">
+      <div style="font-size:13px;color:var(--texte-dim);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Solde actuel de la cagnotte</div>
+      <div id="pool-balance-display" style="font-family:'Space Grotesk',sans-serif;font-size:38px;font-weight:700;color:var(--or);">— sats</div>
+      <div id="pool-balance-status" style="font-size:12px;color:var(--texte-dim);margin-top:4px;"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px;text-align:center;">
+      <div style="font-size:14px;font-weight:700;margin-bottom:10px;">Contribuer à la cagnotte ⚡</div>
+      <img id="pool-donate-qr" src="" alt="QR code Lightning" style="width:180px;height:180px;border-radius:12px;background:#fff;padding:8px;display:none;margin:0 auto 10px;">
+      <div id="pool-donate-address" style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--texte-dim);word-break:break-all;background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px;margin-bottom:10px;">Adresse non configurée</div>
+      <button class="btn btn-ghost" onclick="rcCopyPoolAddress()" style="font-size:12.5px;padding:8px 14px;">📋 Copier l'adresse</button>
+    </div>
+
+    <div class="card">
+      <div style="font-size:14px;font-weight:700;margin-bottom:10px;">🏆 Classement actuel</div>
+      <div id="pool-leaderboard-list" style="font-size:13.5px;color:var(--texte-dim);">Chargement du classement...</div>
+    </div>
+
+    <span class="comm-link-back" onclick="showScreen('screen-accueil')">← Retour à l'accueil</span>
+  </div>
+
   <!-- ============ ÉCRAN PROFIL JOUEUR ============ -->
   <div class="screen" id="screen-profile">
     <div class="topbar">
@@ -3897,7 +3947,7 @@
       <!-- Zone QCM (question piège) -->
       <div class="options" id="options-zone" style="display:none;"></div>
 
-      <span class="hint-toggle" id="hint-toggle" onclick="toggleHint()">💡 Demander un indice à 0x_Ghost (-500 sats)</span>
+      <span class="hint-toggle" id="hint-toggle" onclick="toggleHint()" style="display:none;"></span>
       <div class="hint-reveal" id="hint-reveal"></div>
 
       <div class="feedback" id="mission-feedback">
@@ -5237,7 +5287,7 @@
       <p class="shop-sub">Dépense tes sats pour obtenir des cartes de figures historiques Bitcoin. Chaque carte active un <strong>pouvoir spécial</strong> pour tes prochaines parties, et les collections complètes débloquent des bonus uniques !</p>
       <div class="shop-wallet">🪙 <span id="shop-wallet-amount">0</span> sats <span class="shop-bonus" id="shop-bonus-display">+0% bonus</span></div>
       <div class="card-grid" id="card-grid"></div>
-      <p class="shop-footer-note">Astuce : les cartes Légendaires sont les figures les plus centrales de l'histoire de Bitcoin — elles coûtent plus cher mais valent l'investissement sur la durée.</p>
+      <p class="shop-footer-note"></p>
     </div>
   </div>
 
@@ -5487,6 +5537,41 @@
     rcEnterGame();
   };
 
+  function rcCurrentSatsAndStreak(){
+    // Lit les valeurs actuelles depuis les variables du jeu si dispo, sinon depuis localStorage en repli
+    let satsVal = 0, streakVal = 0, pseudo = "";
+    try { satsVal = (typeof sats !== "undefined") ? sats : 0; } catch(e){}
+    try {
+      const rawStreak = localStorage.getItem("operation_satoshi_streak");
+      if(rawStreak) streakVal = (JSON.parse(rawStreak).count || 0);
+    } catch(e){}
+    try { pseudo = localStorage.getItem("comm_satoshi_pseudo") || (rcCurrentUser && rcCurrentUser.displayName) || "Joueur anonyme"; } catch(e){}
+    return { satsVal: satsVal, streakVal: streakVal, pseudo: pseudo };
+  }
+
+  function rcSyncPublicLeaderboard(){
+    if(!rcFirebaseReady || !rcCurrentUser) return Promise.resolve();
+    const info = rcCurrentSatsAndStreak();
+    return rcDb.collection("leaderboard").doc(rcCurrentUser.uid).set({
+      pseudo: info.pseudo,
+      sats: info.satsVal,
+      streak: info.streakVal,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true }).catch(function(e){ console.warn("Classement public non mis à jour :", e); });
+  }
+  window.rcSyncPublicLeaderboard = rcSyncPublicLeaderboard;
+
+  function rcFetchTopLeaderboard(limit){
+    if(!rcFirebaseReady) return Promise.resolve([]);
+    return rcDb.collection("leaderboard").orderBy("sats", "desc").limit(limit || 10).get()
+      .then(function(snap){
+        const rows = [];
+        snap.forEach(function(doc){ rows.push(doc.data()); });
+        return rows;
+      }).catch(function(e){ console.warn("Classement public illisible :", e); return []; });
+  }
+  window.rcFetchTopLeaderboard = rcFetchTopLeaderboard;
+
   function rcSaveCloudProgress(){
     if(!rcFirebaseReady || !rcCurrentUser) return Promise.resolve();
     const payload = {};
@@ -5497,7 +5582,9 @@
     return rcDb.collection("users").doc(rcCurrentUser.uid).set({
       save: payload,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true }).catch(function(e){ console.warn("Sauvegarde cloud impossible :", e); });
+    }, { merge: true })
+      .then(rcSyncPublicLeaderboard)
+      .catch(function(e){ console.warn("Sauvegarde cloud impossible :", e); });
   }
   window.rcSaveCloudProgress = rcSaveCloudProgress;
 
@@ -5517,6 +5604,12 @@
   function rcEnterGame(){
     document.getElementById("screen-auth").classList.remove("active");
     document.getElementById("screen-cine").classList.add("active");
+    const profileToggle = document.getElementById("profile-toggle");
+    const shopToggle = document.getElementById("shop-toggle");
+    const poolToggle = document.getElementById("pool-toggle");
+    if(profileToggle) profileToggle.style.display = "flex";
+    if(shopToggle) shopToggle.style.display = "flex";
+    if(poolToggle) poolToggle.style.display = "flex";
     if(typeof window.rcLaunchGame === "function") window.rcLaunchGame();
   }
 
@@ -5535,6 +5628,92 @@
         rcCurrentUser = null;
         document.getElementById("logout-toggle").style.display = "none";
       }
+    });
+  }
+})();
+</script>
+
+<!-- ===== CAGNOTTE COMMUNAUTAIRE ⚡ (dons Lightning + classement public) ===== -->
+<script>
+(function(){
+  // ⚠️ À REMPLACER : ta Lightning Address (ex: "toi@getalby.com"), obtenue via Alby, OpenNode, LNbits, etc.
+  // ⚠️ Le solde est lu via un endpoint serverless (/api/pool-balance) qui garde ta clé API côté serveur —
+  //    ne mets jamais de clé API ou de clé privée directement dans ce fichier.
+  const POOL_CONFIG = {
+    lightningAddress: "REMPLACE_MOI@getalby.com",
+    balanceApiUrl: "/api/pool-balance"
+  };
+
+  window.openPoolScreen = function(){
+    showScreen('screen-pool');
+    rcLoadPoolAddress();
+    rcLoadPoolBalance();
+    rcLoadPoolLeaderboardUI();
+  };
+
+  function rcLoadPoolAddress(){
+    const el = document.getElementById('pool-donate-address');
+    const qr = document.getElementById('pool-donate-qr');
+    if(!el) return;
+    if(POOL_CONFIG.lightningAddress && POOL_CONFIG.lightningAddress.indexOf('REMPLACE_MOI') === -1){
+      el.textContent = POOL_CONFIG.lightningAddress;
+      if(qr){
+        qr.src = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(POOL_CONFIG.lightningAddress);
+        qr.style.display = 'inline-block';
+      }
+    } else {
+      el.textContent = "Adresse Lightning pas encore configurée";
+      if(qr) qr.style.display = 'none';
+    }
+  }
+
+  window.rcCopyPoolAddress = function(){
+    const el = document.getElementById('pool-donate-address');
+    if(!el) return;
+    const text = el.textContent;
+    if(!text || text.indexOf('non configur') !== -1 || text.indexOf('pas encore') !== -1) return;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).catch(function(){});
+    }
+  };
+
+  function rcLoadPoolBalance(){
+    const bal = document.getElementById('pool-balance-display');
+    const status = document.getElementById('pool-balance-status');
+    if(!bal) return;
+    status.textContent = "Chargement...";
+    fetch(POOL_CONFIG.balanceApiUrl)
+      .then(function(r){ if(!r.ok) throw new Error('bad status'); return r.json(); })
+      .then(function(data){
+        bal.textContent = (data.balance_sats || 0).toLocaleString('fr-FR') + ' sats';
+        status.textContent = "Mis à jour à l'instant";
+      })
+      .catch(function(){
+        bal.textContent = "— sats";
+        status.textContent = "Solde indisponible (API non configurée pour le moment)";
+      });
+  }
+
+  function rcLoadPoolLeaderboardUI(){
+    const list = document.getElementById('pool-leaderboard-list');
+    if(!list) return;
+    if(typeof window.rcFetchTopLeaderboard !== 'function'){
+      list.textContent = "Classement indisponible (connexion requise).";
+      return;
+    }
+    window.rcFetchTopLeaderboard(10).then(function(rows){
+      if(!rows || !rows.length){
+        list.innerHTML = "Pas encore assez de joueurs classés.";
+        return;
+      }
+      list.innerHTML = rows.map(function(r, i){
+        const pseudo = (r.pseudo || 'Joueur anonyme').replace(/</g,'&lt;');
+        const satsCount = (r.sats || 0).toLocaleString('fr-FR');
+        return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--card-border);">'
+          + '<span>#' + (i+1) + ' ' + pseudo + '</span>'
+          + '<span style="color:var(--or);font-weight:600;">' + satsCount + ' sats</span>'
+          + '</div>';
+      }).join('');
     });
   }
 })();
@@ -8818,10 +8997,9 @@
       fb.innerHTML = `<span class="ftag">✅ Bonne analyse !</span><span>${q.explanation}</span>`;
     } else {
       el.classList.add("wrong");
-      allOpts[q.correct].classList.add("correct");
       sfxWrong();
       fb.className = "feedback show bad";
-      fb.innerHTML = `<span class="ftag">❌ Piège !</span><span>${q.explanation}</span>`;
+      fb.innerHTML = `<span class="ftag">❌ Piège !</span><span>La solution reste masquée.</span>`;
     }
     document.getElementById("boss3-next-btn").style.display = "flex";
   }
@@ -9981,8 +10159,8 @@ const ADVANCED_MISSIONS = [
     } else {
       linkEl.style.display = 'none';
     }
-    document.getElementById('adv-mission-howto').textContent = m.howto || '';
-    document.getElementById('adv-mission-howto').style.display = m.howto ? 'block' : 'none';
+    document.getElementById('adv-mission-howto').textContent = '';
+    document.getElementById('adv-mission-howto').style.display = 'none';
 
     const input = document.getElementById('adv-code-input');
     input.value = '';
@@ -9990,21 +10168,8 @@ const ADVANCED_MISSIONS = [
     input.classList.remove('correct','wrong');
     document.getElementById('adv-code-label').textContent = m.secret ? 'Code final du DOSSIER 22 :' : 'Code trouvé lors de ton enquête :';
 
-    // Indices
     const hintsWrap = document.getElementById('adv-hints-wrap');
     hintsWrap.innerHTML = '';
-    m.hints.forEach((h, i) => {
-      const row = document.createElement('div');
-      row.className = 'adv-hint-row';
-      if(i < advHintsRevealed){
-        row.innerHTML = `<span class="adv-hint-num">💡 Indice ${i+1}</span><span class="adv-hint-text">${h}</span>`;
-      } else if(i === advHintsRevealed){
-        row.innerHTML = `<span class="adv-hint-num">💡 Indice ${i+1}</span><button class="adv-hint-btn" onclick="revealAdvHint()">Révéler (-${150 * (i+1)} sats)</button>`;
-      } else {
-        row.innerHTML = `<span class="adv-hint-num adv-hint-locked">🔒 Indice ${i+1}</span>`;
-      }
-      hintsWrap.appendChild(row);
-    });
 
     document.getElementById('adv-feedback').classList.remove('show','good','bad');
     document.getElementById('adv-next-btn').style.display = 'none';
@@ -10013,21 +10178,7 @@ const ADVANCED_MISSIONS = [
   }
 
   function revealAdvHint(){
-    const m = ADVANCED_MISSIONS.find(x => x.id === advCurrentMissionId);
-    if(advHintsRevealed >= m.hints.length) return;
-    const cost = 150 * (advHintsRevealed + 1);
-    if(advState.advSats < cost){
-      const feedback = document.getElementById('adv-feedback');
-      feedback.classList.add('show','bad');
-      document.getElementById('adv-feedback-tag').textContent = '🪙 Pas assez de sats';
-      document.getElementById('adv-feedback-text').textContent = `Il te faut ${cost.toLocaleString('fr-FR')} sats pour révéler cet indice.`;
-      return;
-    }
-    advState.advSats -= cost;
-    advHintsRevealed++;
-    advSaveState();
-    renderAdvancedMission(m);
-    sfxClick();
+    return;
   }
 
   function advValidateRange(userVal, m){
@@ -10101,7 +10252,7 @@ const ADVANCED_MISSIONS = [
       feedback.classList.remove('good');
       feedback.classList.add('show','bad');
       document.getElementById('adv-feedback-tag').textContent = '❌ Pas encore le bon code';
-      document.getElementById('adv-feedback-text').textContent = m.explanationBad;
+      document.getElementById('adv-feedback-text').textContent = "Ce n'est pas le bon code. La solution reste masquée.";
     }
   }
 
@@ -10203,9 +10354,8 @@ const ADVANCED_MISSIONS = [
     const q = sprintMissions[sprintCurrent];
     const allOpts = document.querySelectorAll("#sprint-options .option");
     allOpts.forEach(o => o.classList.add("disabled"));
-    allOpts[q.correct]?.classList.add("correct");
     const fb = document.getElementById("sprint-feedback");
-    if(fb){ fb.style.display = "block"; fb.className = "feedback show bad"; fb.innerHTML = `<span class="ftag">⏰ Temps écoulé !</span><span>La réponse était : ${q.opts[q.correct]}</span>`; }
+    if(fb){ fb.style.display = "block"; fb.className = "feedback show bad"; fb.innerHTML = `<span class="ftag">⏰ Temps écoulé !</span><span>La réponse n'est pas révélée.</span>`; }
     sfxWrong();
     sprintTimes.push(SPRINT_TIME);
     setTimeout(() => nextSprintQuestion(), 1600);
@@ -10234,9 +10384,8 @@ const ADVANCED_MISSIONS = [
       document.getElementById("sprint-wallet").textContent = sprintSats.toLocaleString("fr-FR");
     } else {
       el.classList.add("wrong");
-      allOpts[q.correct]?.classList.add("correct");
       sfxWrong();
-      if(fb){ fb.className = "feedback show bad"; fb.innerHTML = `<span class="ftag">❌</span><span>Réponse : ${q.opts[q.correct]}</span>`; }
+      if(fb){ fb.className = "feedback show bad"; fb.innerHTML = `<span class="ftag">❌</span><span>La solution reste masquée.</span>`; }
     }
     setTimeout(() => nextSprintQuestion(), 1500);
   }
@@ -10359,10 +10508,9 @@ const ADVANCED_MISSIONS = [
       fb.innerHTML = `<span class="ftag">✅ Bonne réponse !</span><span>${q.explanation}</span>`;
     } else {
       el.classList.add('wrong');
-      allOpts[q.correct].classList.add('correct');
       sfxWrong();
       fb.className = 'feedback show bad';
-      fb.innerHTML = `<span class="ftag">❌ Mauvaise réponse</span><span>${q.explanation}</span>`;
+      fb.innerHTML = `<span class="ftag">❌ Mauvaise réponse</span><span>La solution reste masquée.</span>`;
     }
     document.getElementById('boss-next-btn').style.display = 'flex';
   }
@@ -10428,8 +10576,12 @@ const ADVANCED_MISSIONS = [
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     target.classList.add('active');
     const shopToggle = document.getElementById('shop-toggle');
-    const hideShopOn = ['screen-boutique-finale', 'screen-adv-hub', 'screen-adv-mission', 'screen-rarete'];
+    const hideShopOn = ['screen-auth', 'screen-boutique-finale', 'screen-adv-hub', 'screen-adv-mission', 'screen-rarete'];
     if(shopToggle) shopToggle.style.display = hideShopOn.includes(id) ? 'none' : 'flex';
+    const profileToggle = document.getElementById('profile-toggle');
+    if(profileToggle) profileToggle.style.display = id === 'screen-auth' ? 'none' : 'flex';
+    const poolToggle = document.getElementById('pool-toggle');
+    if(poolToggle) poolToggle.style.display = id === 'screen-auth' ? 'none' : 'flex';
     if(id === 'screen-accueil' && typeof refreshHub === "function") refreshHub();
   }
 
@@ -10530,8 +10682,8 @@ const ADVANCED_MISSIONS = [
       linkEl.href = m.link;
       document.getElementById('link-label').textContent = m.linkLabel;
       document.getElementById('link-domain').textContent = m.linkDomain;
-      document.getElementById('mission-howto').textContent = m.howto || '';
-      document.getElementById('mission-howto').style.display = m.howto ? 'block' : 'none';
+      document.getElementById('mission-howto').textContent = '';
+      document.getElementById('mission-howto').style.display = 'none';
     } else {
       linkEl.style.display = 'none';
       document.getElementById('mission-howto').style.display = 'none';
@@ -10578,15 +10730,10 @@ const ADVANCED_MISSIONS = [
     }
 
     document.getElementById('hint-reveal').classList.remove('show');
-    document.getElementById('hint-reveal').textContent =
-      m.type === 'cipher' ? (m.cipherHint + ' ' + m.hint) : m.hint;
-    const hintCost = getEffectiveHintCost();
-    const freeLabel = freeHintsLeft > 0 ? `💡 Indice gratuit disponible (${freeHintsLeft} restant${freeHintsLeft>1?"s":""})` :
-      hasCollectionFreeHint() ? `💡 Indice gratuit (Pack Cypherpunks)` :
-      `💡 Demander un indice à 0x_Ghost (-${hintCost} sats${hasPower("indice_discount")?" ✂️-50%":""})`;
-    document.getElementById('hint-toggle').style.display = 'inline-block';
-    document.getElementById('hint-toggle').classList.remove('disabled');
-    document.getElementById('hint-toggle').textContent = freeLabel;
+    document.getElementById('hint-reveal').textContent = '';
+    document.getElementById('hint-toggle').style.display = 'none';
+    document.getElementById('hint-toggle').classList.add('disabled');
+    document.getElementById('hint-toggle').textContent = '';
 
     document.getElementById('mission-feedback').classList.remove('show','good','bad');
     const relicToastReset = document.getElementById('relic-toast');
@@ -10660,8 +10807,7 @@ const ADVANCED_MISSIONS = [
     feedback.classList.remove('good');
     feedback.classList.add('show','bad');
     document.getElementById('feedback-tag').textContent = '⏱️ Temps écoulé !';
-    const correctAnswer = m.type === 'qcm' ? m.options[m.correctIndex] : m.code;
-    document.getElementById('feedback-text').textContent = `La réponse était : ${correctAnswer}. ${m.explanationGood}`;
+    document.getElementById('feedback-text').textContent = "Le temps est écoulé. La réponse n'est pas révélée : continue l'enquête et retente ta chance sur une prochaine partie.";
     document.getElementById('ghost-intro').textContent = "Trop lent ! Même Satoshi n'avait pas tout le temps du monde. On continue.";
     document.getElementById('validate-btn').style.display = 'none';
     document.getElementById('next-btn').style.display = 'flex';
@@ -10676,28 +10822,7 @@ const ADVANCED_MISSIONS = [
   }
 
   function toggleHint(){
-    if(answered) return;
-    const el = document.getElementById('hint-reveal');
-    const willShow = !el.classList.contains('show');
-    el.classList.toggle('show');
-    if(willShow && !hintUsedThisStep){
-      hintUsedThisStep = true;
-      // Indice gratuit via Satoshi ou collection Cypherpunks
-      if(freeHintsLeft > 0){
-        freeHintsLeft--;
-        document.getElementById('hint-toggle').textContent = '💡 Indice débloqué (gratuit !)';
-      } else if(hasCollectionFreeHint()){
-        document.getElementById('hint-toggle').textContent = '💡 Indice gratuit (Pack Cypherpunks)';
-      } else {
-        const cost = getEffectiveHintCost();
-        sats = Math.max(0, sats - cost);
-        updateWalletDisplay();
-        popSats(-cost);
-        document.getElementById('hint-toggle').textContent = `💡 Indice débloqué (-${cost} sats)`;
-      }
-      document.getElementById('hint-toggle').classList.add('disabled');
-    }
-    sfxClick();
+    return;
   }
 
   function finishStepSuccess(m){
@@ -10795,7 +10920,7 @@ const ADVANCED_MISSIONS = [
       feedback.classList.remove('good');
       feedback.classList.add('show','bad');
       document.getElementById('feedback-tag').textContent = '❌ Pas le bon code';
-      document.getElementById('feedback-text').textContent = m.explanationBad;
+      document.getElementById('feedback-text').textContent = "Ce n'est pas le bon code. Vérifie tes preuves et essaie encore.";
       document.getElementById('ghost-intro').textContent = m.ghostWrong;
       sfxWrong();
       setTimeout(() => { input.classList.remove('wrong'); }, 400);
@@ -10815,11 +10940,11 @@ const ADVANCED_MISSIONS = [
       finishStepSuccess(m);
     } else {
       el.classList.add('wrong');
-      allOptions[m.correctIndex].classList.add('correct');
+      // Ne révèle pas la bonne option après une mauvaise réponse.
       feedback.classList.remove('good');
       feedback.classList.add('show','bad');
       document.getElementById('feedback-tag').textContent = '❌ Mauvaise réponse';
-      document.getElementById('feedback-text').textContent = m.explanationBad;
+      document.getElementById('feedback-text').textContent = "Ce n'est pas la bonne réponse. La solution reste masquée.";
       document.getElementById('ghost-intro').textContent = m.ghostWrong;
       sfxWrong();
       answered = true;
@@ -10840,8 +10965,7 @@ const ADVANCED_MISSIONS = [
     const feedback = document.getElementById('mission-feedback');
     feedback.classList.add('show','bad');
     document.getElementById('feedback-tag').textContent = "⏭️ Étape passée";
-    const correctAnswer = m.type === 'qcm' ? m.options[m.correctIndex] : m.code;
-    document.getElementById('feedback-text').textContent = `La réponse était : ${correctAnswer}. ${m.explanationGood}`;
+    document.getElementById('feedback-text').textContent = "Étape passée. La réponse n'est pas révélée.";
     document.getElementById('ghost-intro').textContent = "Pas grave, on n'a pas tous les jours le temps de fouiller. On continue.";
     document.getElementById('validate-btn').style.display = 'none';
     document.getElementById('next-btn').style.display = 'flex';
@@ -11088,7 +11212,7 @@ const ADVANCED_MISSIONS = [
       },
       {
         id: "f2",
-        riddle: "Quel est le nombre maximal de bitcoins qui pourront un jour exister, en millions (arrondi) ? Exemple de réponse : 21",
+        riddle: "Quel est le nombre maximal de bitcoins qui pourront un jour exister, en millions (arrondi) ? Réponds avec un nombre entier.",
         answer: "21",
         piece: "OF",
         contributorHint: "Fragment lié à l'offre limitée"
@@ -11277,7 +11401,7 @@ const ADVANCED_MISSIONS = [
         if(entry){
           return `<span class="pool-chip">🧩 ${f.piece}</span>`;
         }
-        return `<span class="pool-chip missing">??? (${f.contributorHint})</span>`;
+        return `<span class="pool-chip missing">???</span>`;
       }).join('');
 
       const contributors = FRAGMENTS.filter(f => registry[f.id]).map(f => registry[f.id].by);
@@ -12280,12 +12404,21 @@ const ADVANCED_MISSIONS = [
   window.rcOpenPack = function() {
     const cfg = RC_PACK_CONFIGS[rcCurrentPack];
     // Vérif sats (si disponibles)
-    let mainSats = window._rcMainSats || 99999;
+    let mainSats = Number.isFinite(window._rcMainSats) ? window._rcMainSats : 0;
+    if (typeof sats === "number") mainSats = Math.max(mainSats, sats);
     if (cfg.price > 0 && mainSats < cfg.price) {
       rcShowToast("Pas assez de sats !", "error");
       return;
     }
-    if (cfg.price > 0) { window._rcMainSats = (window._rcMainSats || 99999) - cfg.price; }
+    if (cfg.price > 0) {
+      window._rcMainSats = mainSats - cfg.price;
+      if (typeof sats === "number") {
+        sats = window._rcMainSats;
+        if (typeof updateWalletDisplay === "function") updateWalletDisplay();
+      }
+      const walletEl = document.getElementById("boutique-finale-sats");
+      if (walletEl) walletEl.textContent = window._rcMainSats.toLocaleString("fr-FR");
+    }
 
     const roll = Math.random();
     let rarityIdx = 0;
@@ -12389,6 +12522,16 @@ const ADVANCED_MISSIONS = [
   }
 
 })();
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('/sw.js').catch(function(e){
+        console.warn('Service worker non enregistré :', e);
+      });
+    });
+  }
 </script>
 
 </body>
