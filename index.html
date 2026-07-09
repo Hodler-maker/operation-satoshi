@@ -473,7 +473,7 @@
 
   /* ====== ICÔNE PROFIL JOUEUR ====== */
   .profile-toggle{
-    position:fixed; top:64px; right:14px; z-index:50;
+    position:fixed; top:64px; right:64px; z-index:50;
     width:42px;height:42px;border-radius:50%;
     background:linear-gradient(135deg, rgba(124,58,237,0.35), rgba(59,130,246,0.3));
     border:1.5px solid rgba(124,58,237,0.5);
@@ -3147,6 +3147,18 @@
   }
   .fusion-achievement-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
+  /* Pop d'encouragement tous les 1000 sats */
+  .milestone-toast{
+    position:fixed;top:110px;left:50%;transform:translateX(-50%) translateY(-14px) scale(0.95);
+    z-index:300;background:linear-gradient(135deg,rgba(124,58,237,0.95),rgba(240,185,11,0.9));
+    color:#fff;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;
+    padding:14px 22px;border-radius:16px;text-align:center;line-height:1.4;
+    opacity:0;transition:opacity .3s,transform .3s;
+    max-width:320px;pointer-events:none;
+    box-shadow:0 6px 24px rgba(0,0,0,0.4);
+  }
+  .milestone-toast.show{opacity:1;transform:translateX(-50%) translateY(0) scale(1);}
+
   /* Stats fusion dans profil */
   .fusion-stats-row{
     display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;
@@ -3540,16 +3552,6 @@
     </g>
   </svg>
 </div>
-<div class="shop-toggle" id="pool-toggle" onclick="openPoolScreen()" title="Cagnotte communautaire" style="left:150px;display:none;">
-  <span class="shop-icon-emoji">⚡</span>
-  <span class="shop-label">Cagnotte</span>
-</div>
-<div class="shop-toggle" id="shop-toggle" onclick="openBoutiqueMenu()" title="Boutique de cartes" style="display:none;">
-  <span class="shop-icon-emoji">🏪</span>
-  <span class="shop-label">Boutique</span>
-  <span class="shop-badge" id="shop-badge">0</span>
-</div>
-
 <div class="wrap">
 
   <!-- ============ ÉCRAN AUTH : CONNEXION / INSCRIPTION ============ -->
@@ -3636,6 +3638,18 @@
 
   <!-- ============ ÉCRAN 0b : ACCUEIL / BRIEFING ============ -->
   <div class="screen" id="screen-accueil">
+    <div class="hub-quicklinks-row" style="display:flex;gap:10px;margin-bottom:14px;">
+      <div onclick="openBoutiqueMenu()" role="button" tabindex="0" aria-label="Ouvrir la boutique de cartes" onkeydown="if(event.key==='Enter')openBoutiqueMenu()" style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:11px 10px;border-radius:12px;background:rgba(240,185,11,0.08);border:1px solid rgba(240,185,11,0.3);cursor:pointer;transition:background .15s ease-out;">
+        <span style="font-size:18px;">🏪</span>
+        <span style="font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:700;color:var(--or);">Boutique</span>
+        <span class="shop-badge" id="shop-badge" style="position:static;box-shadow:none;">0</span>
+      </div>
+      <div onclick="openPoolScreen()" role="button" tabindex="0" aria-label="Ouvrir la cagnotte communautaire" onkeydown="if(event.key==='Enter')openPoolScreen()" style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:11px 10px;border-radius:12px;background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.3);cursor:pointer;transition:background .15s ease-out;">
+        <span style="font-size:18px;">⚡</span>
+        <span style="font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:700;color:var(--violet);">Cagnotte</span>
+      </div>
+    </div>
+
     <div class="logo-block">
       <div class="logo-icon">🕵️</div>
       <h1 class="title">Opération Satoshi</h1>
@@ -12110,6 +12124,7 @@ const ADVANCED_MISSIONS = [
 
     let playerStats = {
       lifetimeSats: 0,
+      lastSatsMilestone: 0,
       gamesPlayed: 0,
       bestScore: 0,
       totalCluesFound: 0,
@@ -12520,6 +12535,11 @@ const ADVANCED_MISSIONS = [
       // même si une sauvegarde corrompue ou un futur format contenait null/undefined.
       if(!Array.isArray(playerStats.completedCollections)) playerStats.completedCollections = [];
       if(!Array.isArray(playerStats.unlockedAchievements)) playerStats.unlockedAchievements = [];
+      // Si une sauvegarde existante n'a pas encore ce champ, on l'aligne sur le
+      // total déjà atteint pour ne pas redéclencher les paliers déjà franchis.
+      if(typeof playerStats.lastSatsMilestone !== "number"){
+        playerStats.lastSatsMilestone = Math.floor((playerStats.lifetimeSats || 0) / 1000);
+      }
       // Si la page se charge avec des sats déjà non nuls (rechargement en pleine
       // partie), on part de 0 plutôt que de la valeur courante, pour que ce gain
       // en cours soit bien capturé par trackXPFromSats() au lieu d'être ignoré.
@@ -12540,8 +12560,36 @@ const ADVANCED_MISSIONS = [
         savePlayerStats();
         const badge = document.getElementById('profile-lvl-badge');
         if(badge) badge.textContent = computeLevel(playerStats.lifetimeSats).lvl;
+        checkSatsMilestone();
       }
       lastSeenSats = sats;
+    }
+
+    // Messages d'encouragement affichés à chaque palier de 1000 sats cumulés
+    const SATS_MILESTONE_MESSAGES = [
+      "Tu progresses vraiment bien, continue comme ça !",
+      "Belle avancée dans l'enquête, ne lâche rien !",
+      "Tu es sur une bonne lancée, Satoshi serait impressionné !",
+      "Chaque preuve compte, et ça se voit dans ton wallet !",
+      "Ton enquête avance à grands pas, bravo !"
+    ];
+
+    function checkSatsMilestone(){
+      const currentMilestone = Math.floor((playerStats.lifetimeSats || 0) / 1000);
+      if(currentMilestone > (playerStats.lastSatsMilestone || 0)){
+        playerStats.lastSatsMilestone = currentMilestone;
+        savePlayerStats();
+        showMilestoneToast(currentMilestone * 1000);
+      }
+    }
+
+    function showMilestoneToast(totalSats){
+      const toast = document.getElementById('milestone-toast');
+      if(!toast) return;
+      const msg = SATS_MILESTONE_MESSAGES[Math.floor(Math.random() * SATS_MILESTONE_MESSAGES.length)];
+      toast.innerHTML = `🎉 <strong>${totalSats.toLocaleString('fr-FR')} sats atteints !</strong><br>${msg}`;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3200);
     }
 
     // Patch des deux fonctions qui reflètent systématiquement `sats` à l'écran
@@ -12783,6 +12831,7 @@ const ADVANCED_MISSIONS = [
 </div>
 <div id="fusion-flash" class="fusion-flash"></div>
 <div id="fusion-achievement-toast" class="fusion-achievement-toast"></div>
+<div id="milestone-toast" class="milestone-toast"></div>
 
 
 <!-- ====== MODAL OUVERTURE DE PACK — RARETÉ ====== -->
