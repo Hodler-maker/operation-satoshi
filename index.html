@@ -5817,6 +5817,19 @@
     // Lit les valeurs actuelles depuis les variables du jeu si dispo, sinon depuis localStorage en repli
     let satsVal = 0, streakVal = 0, pseudo = "";
     try { satsVal = (typeof sats !== "undefined") ? sats : 0; } catch(e){}
+    // Filet de sécurité anti-écrasement : la variable "sats" en mémoire repart à 0
+    // à chaque chargement de page tant que l'enquête en cours n'a pas été reprise.
+    // Si elle vaut 0 mais qu'une progression sauvegardée existe avec un solde plus élevé,
+    // on utilise cette dernière pour ne jamais envoyer un score obsolète (0) au classement public.
+    try {
+      if(!satsVal){
+        const rawState = localStorage.getItem("operation_satoshi_mission_state_v1");
+        if(rawState){
+          const st = JSON.parse(rawState);
+          if(typeof st.sats === "number" && st.sats > satsVal) satsVal = st.sats;
+        }
+      }
+    } catch(e){}
     try {
       const rawStreak = localStorage.getItem("operation_satoshi_streak");
       if(rawStreak) streakVal = (JSON.parse(rawStreak).count || 0);
