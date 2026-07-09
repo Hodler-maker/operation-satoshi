@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title> La vraie chasse aux indices</title>
-<link rel="icon" type="image/png" href="bitcoin.png">  
+<title>La vraie chasse aux indices</title>
+<link rel="icon" type="image/png" href="bitcoin.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0d1030">
 <meta name="mobile-web-app-capable" content="yes">
@@ -904,39 +904,6 @@
     from{ opacity:0; transform:translateY(14px) scale(0.88); }
     to{   opacity:1; transform:none; }
   }
-
-  /* ====== UPGRADE GLOW ====== */
-  @keyframes upgradeGlow{
-    0%  { box-shadow:0 0 0 rgba(240,185,11,0); }
-    40% { box-shadow:0 0 30px 10px rgba(240,185,11,0.8); }
-    100%{ box-shadow:0 0 0 rgba(240,185,11,0); }
-  }
-  .upgrade-glow{ animation:upgradeGlow .65s ease-out; }
-
-  /* ====== PARTICLES ====== */
-  .upgrade-particle{
-    position:fixed; pointer-events:none; z-index:9999; font-size:13px;
-    animation:particleFly .65s ease-out forwards;
-  }
-  @keyframes particleFly{
-    0%  { opacity:1; transform:translate(0,0) scale(1); }
-    100%{ opacity:0; transform:translate(var(--px),var(--py)) scale(0.3); }
-  }
-
-  /* ====== UPGRADE BUTTON ====== */
-  .c3d-upgrade-btn{
-    margin-top:3px; width:100%;
-    border:none; border-radius:5px; padding:4px 3px;
-    font-family:'Space Grotesk',sans-serif; font-size:7px; font-weight:700;
-    cursor:pointer; line-height:1.2;
-    transition:opacity .15s, transform .1s;
-  }
-  .c3d-upgrade-btn:active{ transform:scale(0.96); }
-  .c3d-upgrade-btn.lvl-bronze{ background:linear-gradient(135deg,#92400e,#f0b90b); color:#0a0e1a; }
-  .c3d-upgrade-btn.lvl-argent{ background:linear-gradient(135deg,#6b7280,#e5e7eb); color:#0a0e1a; }
-  .c3d-upgrade-btn.lvl-or    { background:linear-gradient(135deg,#b45309,#fde68a); color:#0a0e1a; }
-  .c3d-upgrade-btn.lvl-max   { background:linear-gradient(135deg,#4c1d95,#7c3aed); color:#fff; cursor:default; }
-  .c3d-upgrade-btn:disabled  { opacity:0.38; cursor:default; }
 
   /* ====== LEVEL BADGE ====== */
   .c3d-lvl-badge{
@@ -9700,19 +9667,12 @@
   function renderCardGridFinale(){
     const grid = document.getElementById('card-grid-finale');
     grid.innerHTML = '';
-    const LVL_EMOJI = { bronze:"⚙️", argent:"🥈", or:"🏆", "legendaire-lvl":"🌟" };
-    const LVL_NEXT  = { bronze:"Argent", argent:"Or", or:"Légendaire" };
 
     cards.forEach((c, idx) => {
       const owned    = ownedCards.includes(c.id);
       const price    = RARITY_PRICE[c.rarity];
-      const lvl      = cardLevels[c.id] || "bronze";
       const canAfford = sats >= price;
       const rcss     = RARITY_CSS[c.rarity];
-      const lvlIdx   = CARD_LEVELS.indexOf(lvl);
-      const isMax    = lvlIdx >= CARD_LEVELS.length - 1;
-      const upgCost  = !isMax ? CARD_LEVEL_UPGRADE_COST[lvl] : null;
-      const canUpg   = upgCost != null && sats >= upgCost;
 
       // Bouton face arrière
       let backBtn = '';
@@ -9721,15 +9681,6 @@
       const isHal = c.id === 2;
       const isSzabo = c.id === 3;
       if(owned){
-        backBtn += `<div style="font-size:7px;color:var(--vert);text-align:center;padding:2px 0;">${LVL_EMOJI[lvl]} ${CARD_LEVEL_LABELS[lvl]}</div>`;
-        if(isMax){
-          backBtn += `<button class="c3d-upgrade-btn lvl-max" disabled>🌟 Niveau max</button>`;
-        } else {
-          const uCls = `c3d-upgrade-btn lvl-${lvl}`;
-          backBtn += canUpg
-            ? `<button class="${uCls}" onclick="doUpgrade(${c.id})">⬆️ → ${LVL_NEXT[lvl]} — ${upgCost.toLocaleString('fr-FR')} sats</button>`
-            : `<button class="${uCls}" disabled>⬆️ → ${LVL_NEXT[lvl]} — ${upgCost.toLocaleString('fr-FR')} sats</button>`;
-        }
         if(isSatoshi){
           backBtn += `<button class="c3d-back-action" style="margin-top:6px;background:linear-gradient(135deg,rgba(240,185,11,0.25),rgba(124,58,237,0.2));border:1px solid rgba(240,185,11,0.5);color:var(--or);font-weight:700;" onclick="openSatoshiProfile('screen-boutique-finale')">🌌 Explorer le profil →</button>`;
         }
@@ -9813,44 +9764,6 @@
 
       grid.appendChild(wrap);
     });
-  }
-
-  function doUpgrade(cardId){
-    cardId = Number(cardId);
-    const lvl  = cardLevels[cardId] || "bronze";
-    const cost = CARD_LEVEL_UPGRADE_COST[lvl];
-    if(!cost || sats < cost){ sfxWrong(); return; }
-
-    // Particules depuis la carte
-    const wrap = document.querySelector(`[data-card-id="${cardId}"]`);
-    if(wrap){
-      const r = wrap.getBoundingClientRect();
-      const cx = r.left + r.width/2, cy = r.top + r.height/2;
-      ["⭐","✨","🪙","💫","⬆️"].forEach((p,i)=>{
-        const el = document.createElement('div');
-        el.className = 'upgrade-particle';
-        el.textContent = p;
-        const ang = (i/5)*Math.PI*2, d = 50+Math.random()*30;
-        el.style.cssText = `left:${cx}px;top:${cy}px;--px:${Math.cos(ang)*d}px;--py:${Math.sin(ang)*d-20}px;animation-delay:${i*0.05}s`;
-        document.body.appendChild(el);
-        setTimeout(()=>el.remove(), 800);
-      });
-    }
-
-    sats -= cost;
-    cardLevels[cardId] = CARD_LEVELS[CARD_LEVELS.indexOf(lvl)+1];
-    saveProgress();
-    updateBoutiqueWallet();
-    renderCardGridFinale();
-    sfxSats();
-    setTimeout(()=>sfxCorrect(), 200);
-
-    // Glow sur la nouvelle carte rendue
-    setTimeout(()=>{
-      const nw = document.querySelector(`[data-card-id="${cardId}"]`);
-      if(nw) nw.classList.add('upgrade-glow');
-      setTimeout(()=>{ const nw2 = document.querySelector(`[data-card-id="${cardId}"]`); if(nw2) nw2.classList.remove('upgrade-glow'); }, 700);
-    }, 50);
   }
 
   function buyCardFinale(cardId){
