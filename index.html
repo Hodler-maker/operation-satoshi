@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title> La chasse aux indices</title>
-<link rel="icon" type="image/png" href="bitcoin.png">
+<title> La vraie chasse aux indices</title>
+<link rel="icon" type="image/png" href="bitcoin.png">  
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0d1030">
 <meta name="mobile-web-app-capable" content="yes">
@@ -3187,6 +3187,79 @@
     0%,100%{border-color:rgba(240,185,11,0.7);}
     33%{border-color:rgba(124,58,237,0.7);}
     66%{border-color:rgba(34,197,94,0.6);}
+  }
+
+  /* ====== MOTEUR DE FUSION PREMIUM (BitcoinCardFusion) ====== */
+  .bcf-overlay{
+    position:fixed; inset:-30px; pointer-events:none;
+    display:block; overflow:hidden; z-index:99999;
+  }
+  .bcf-dim{
+    position:absolute; inset:0; background:rgba(3,4,8,0); transition:background .35s ease;
+  }
+  .bcf-dim-active{ background:rgba(3,4,8,.62); }
+  .bcf-canvas{ position:absolute; inset:0; }
+  .bcf-flash{ position:absolute; inset:0; background:#fff; opacity:0; }
+
+  .bcf-card-clone{
+    border-radius:16px; overflow:hidden;
+    transition:filter .2s ease;
+  }
+  .bcf-card-clone.bcf-charging{
+    box-shadow:
+      0 0 14px 2px rgba(247,147,26,.6),
+      0 0 32px 10px rgba(247,147,26,.35),
+      0 0 54px 18px rgba(255,201,77,.22);
+    outline:1.5px solid rgba(255,201,77,.9);
+    outline-offset:1px;
+    animation:bcfHaloPulse .45s ease-in-out infinite alternate;
+  }
+  @keyframes bcfHaloPulse{ from{ filter:brightness(1) saturate(1); } to{ filter:brightness(1.3) saturate(1.15); } }
+
+  .bcf-newcard{ position:absolute; transform-style:preserve-3d; will-change:transform,opacity; }
+  .bcf-newcard-idle{ animation:bcfIdleGlow 1.8s ease-in-out infinite alternate; border-radius:18px; }
+  @keyframes bcfIdleGlow{
+    from{ filter:drop-shadow(0 0 10px rgba(247,147,26,.45)); }
+    to{ filter:drop-shadow(0 0 26px rgba(255,201,77,.8)); }
+  }
+
+  .bcf-aura{
+    position:absolute; width:280px; height:280px; margin-left:-140px; margin-top:-140px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(255,201,77,.28), rgba(247,147,26,.10) 45%, transparent 72%);
+    animation:bcfAuraPulse 1.6s ease-in-out infinite;
+  }
+  @keyframes bcfAuraPulse{
+    0%,100%{ opacity:.55; transform:scale(.92); }
+    50%{ opacity:.95; transform:scale(1.05); }
+  }
+
+  .bcf-text{
+    position:absolute; text-align:center; opacity:0; pointer-events:none;
+    font-family:'Space Grotesk',sans-serif; white-space:nowrap;
+  }
+  .bcf-text-line1{
+    display:block; font-size:22px; font-weight:700; color:#fff;
+    text-shadow:0 0 18px rgba(247,147,26,.9), 0 2px 6px rgba(0,0,0,.6);
+  }
+  .bcf-text-line2{
+    display:block; margin-top:4px; font-size:13.5px; font-weight:600; letter-spacing:.02em;
+    color:#FFD98A;
+    text-shadow:0 0 12px rgba(247,147,26,.6);
+  }
+
+  /* Carte de résultat pour le nouveau moteur de fusion */
+  .bcf-fusion-card{
+    width:130px;aspect-ratio:2/3;border-radius:16px;border:2px solid rgba(240,185,11,.5);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+    padding:10px;text-align:center;background:linear-gradient(160deg,#251000,#100800);
+  }
+  .bcf-fusion-card .bcf-fc-icon{ font-size:40px; }
+  .bcf-fusion-card .bcf-fc-label{ font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em; }
+  .bcf-fusion-card .bcf-fc-name{ font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;color:var(--texte); }
+
+  @media (prefers-reduced-motion: reduce){
+    .bcf-card-clone.bcf-charging, .bcf-newcard-idle, .bcf-aura{ animation:none !important; }
   }
 
   /* ====== ÉCRAN RARETÉ DES CARTES ====== */
@@ -7904,8 +7977,937 @@
     return (entry.qty || 0) >= 3;
   }
 
-  // Lance la fusion avec animation
-  function fuseCard(cardId){
+  /* ====== MOTEUR DE FUSION PREMIUM (BitcoinCardFusion) ====== */
+/*!
+ * ============================================================================
+ *  BitcoinCardFusion — Animation de fusion de cartes premium
+ *  Projet : Opération Satoshi
+ * ============================================================================
+ *  Moteur autonome (aucune dépendance) qui orchestre une séquence de fusion
+ *  de cartes en 5 phases :
+ *    1. Attraction   (0.5s) — les 2 cartes se rejoignent + tremblement + halo
+ *    2. Charge        (0.8s) — sphère d'énergie, particules, anneau, éclairs
+ *    3. Explosion     (0.2s) — flash blanc, onde de choc, éclats dorés
+ *    4. Révélation    (0.8s) — la nouvelle carte apparaît (scale + rotation 3D)
+ *    5. Célébration   (1.0s) — étincelles, pluie de ₿, texte de victoire
+ *
+ *  Utilisation minimale :
+ *
+ *    const fusion = new BitcoinCardFusion();
+ *    fusion.play({
+ *      card1: document.querySelector('#carteA'),   // élément DOM existant
+ *      card2: document.querySelector('#carteB'),   // élément DOM existant
+ *      newCardData: { emoji:'🦊', name:'Satoshi Fantôme', role:'Légende',
+ *                     rarity:'legendaire' },
+ *      onComplete: () => {
+ *        // ici : mets à jour ta vraie collection / inventaire, ferme le modal…
+ *      }
+ *    });
+ *
+ *  Tu peux aussi fournir ta propre carte déjà stylée via `renderNewCard`
+ *  (fonction qui retourne un élément DOM) au lieu de `newCardData`, pour
+ *  réutiliser exactement le HTML de tes cartes existantes (ex: rcBuildCard).
+ *
+ *  Le moteur ne modifie AUCUN état de jeu : il ne fait qu'afficher un
+ *  calque plein écran temporaire (position:fixed, pointer-events:none),
+ *  entièrement asynchrone (Promises + requestAnimationFrame), donc il ne
+ *  bloque jamais l'interface.
+ * ============================================================================
+ */
+
+(function (global) {
+  "use strict";
+
+  // ==========================================================================
+  // 1. CONFIGURATION — durées (ms) et palette Bitcoin
+  // ==========================================================================
+  const DURATIONS = {
+    attraction: 500,
+    charge: 800,
+    explosion: 200,
+    reveal: 800,
+    celebration: 1000,
+    cleanup: 450
+  };
+
+  const COLORS = {
+    orange: "#F7931A",
+    gold: "#FFC94D",
+    amber: "#FFD98A",
+    white: "#FFFFFF",
+    deep: "#7A3E05"
+  };
+
+  const RARITY_COLORS = {
+    commune: "#8B93A6",
+    rare: "#3B82F6",
+    epique: "#7C3AED",
+    legendaire: "#F0B90B",
+    mythique: "#F7931A"
+  };
+
+  const HEX_CHARS = "0123456789ABCDEF".split("");
+  const PAD = 30; // débordement du calque (permet le screen-shake sans coupure aux bords)
+
+  // ==========================================================================
+  // 2. UTILITAIRES
+  // ==========================================================================
+  const rand = (min, max) => Math.random() * (max - min) + min;
+  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const clamp01 = (v) => Math.max(0, Math.min(1, v));
+  const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+  function randomHex(len) {
+    let s = "";
+    for (let i = 0; i < len; i++) s += HEX_CHARS[(Math.random() * 16) | 0];
+    return s;
+  }
+
+  /** Déplacement récursif du point médian → trajectoire d'éclair irrégulière */
+  function buildLightningPath(x1, y1, x2, y2, segments, jitter) {
+    let points = [
+      { x: x1, y: y1 },
+      { x: x2, y: y2 }
+    ];
+    for (let s = 0; s < segments; s++) {
+      const next = [];
+      for (let i = 0; i < points.length - 1; i++) {
+        const a = points[i];
+        const b = points[i + 1];
+        const mx = (a.x + b.x) / 2;
+        const my = (a.y + b.y) / 2;
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const len = Math.hypot(dx, dy) || 1;
+        const nx = -dy / len;
+        const ny = dx / len;
+        const offset = rand(-jitter, jitter);
+        next.push(a, { x: mx + nx * offset, y: my + ny * offset });
+      }
+      next.push(points[points.length - 1]);
+      points = next;
+      jitter *= 0.55;
+    }
+    return points;
+  }
+
+  function fitCanvas(canvas, ctx) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    const w = window.innerWidth + PAD * 2;
+    const h = window.innerHeight + PAD * 2;
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.translate(PAD, PAD); // les coordonnées passées aux fonctions draw restent en repère "viewport"
+  }
+
+  function cloneCardAt(sourceEl, rect) {
+    const clone = sourceEl.cloneNode(true);
+    clone.classList.add("bcf-card-clone");
+    clone.style.position = "absolute";
+    clone.style.left = rect.left + PAD + "px";
+    clone.style.top = rect.top + PAD + "px";
+    clone.style.width = rect.width + "px";
+    clone.style.height = rect.height + "px";
+    clone.style.margin = "0";
+    return clone;
+  }
+
+  function attractionKeyframes(dx, dy) {
+    // Trajectoire fluide vers le centre + petit tremblement juste avant contact (offsets 0.84 → 1)
+    return [
+      { transform: "translate(0px,0px)", offset: 0 },
+      { transform: `translate(${dx * 0.8}px, ${dy * 0.8}px)`, offset: 0.72 },
+      { transform: `translate(${dx * 0.97}px, ${dy * 0.97 - 3}px)`, offset: 0.84 },
+      { transform: `translate(${dx * 1.0 + 3}px, ${dy * 1.0}px)`, offset: 0.9 },
+      { transform: `translate(${dx - 2}px, ${dy}px)`, offset: 0.95 },
+      { transform: `translate(${dx}px, ${dy}px)`, offset: 1 }
+    ];
+  }
+
+  const REVEAL_KEYFRAMES = [
+    { transform: "translate(-50%,-50%) scale(0) rotateY(-100deg)", opacity: 0, offset: 0 },
+    { transform: "translate(-50%,-50%) scale(1.15) rotateY(14deg)", opacity: 1, offset: 0.55 },
+    { transform: "translate(-50%,-50%) scale(0.97) rotateY(-6deg)", opacity: 1, offset: 0.78 },
+    { transform: "translate(-50%,-50%) scale(1) rotateY(0deg)", opacity: 1, offset: 1 }
+  ];
+
+  // ==========================================================================
+  // 3. SYSTÈME DE PARTICULES (léger, orienté tableau, pas de classes lourdes)
+  // ==========================================================================
+  function updateParticle(p, dtMs) {
+    p.age += dtMs;
+    switch (p.type) {
+      case "orbit":
+        p.angle += p.angularSpeed * dtMs;
+        p.x = p.cx + Math.cos(p.angle) * p.radius;
+        p.y = p.cy + Math.sin(p.angle) * p.radius;
+        break;
+      case "spark":
+      case "block":
+        p.vy += (p.gravity || 0) * dtMs;
+        p.x += p.vx * dtMs;
+        p.y += p.vy * dtMs;
+        p.vx *= 0.985;
+        p.vy *= 0.985;
+        p.rotation += p.spin * dtMs;
+        break;
+      case "converge": {
+        const t = clamp01(p.age / p.maxAge);
+        const e = easeOutCubic(t);
+        p.x = p.startX + (p.targetX - p.startX) * e;
+        p.y = p.startY + (p.targetY - p.startY) * e;
+        break;
+      }
+      case "satoshi":
+        p.x += Math.sin(p.age * 0.004 + p.seed) * p.sway * dtMs;
+        p.y -= p.speed * dtMs;
+        break;
+      case "sparkle":
+        break;
+    }
+    return p.age < p.maxAge;
+  }
+
+  function drawParticle(ctx, p) {
+    const lifeRatio = clamp01(1 - p.age / p.maxAge);
+    ctx.save();
+    ctx.globalAlpha = lifeRatio * (p.baseAlpha || 1);
+    switch (p.type) {
+      case "orbit":
+      case "spark":
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        break;
+      case "block":
+      case "converge":
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation || 0);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+        ctx.strokeStyle = "rgba(255,255,255,.55)";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(-p.size / 2, -p.size / 2, p.size, p.size);
+        break;
+      case "satoshi":
+        ctx.fillStyle = p.color;
+        ctx.font = `${p.size}px "Space Grotesk", sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.shadowColor = COLORS.orange;
+        ctx.shadowBlur = 6;
+        ctx.fillText("₿", p.x, p.y);
+        break;
+      case "sparkle": {
+        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
+        g.addColorStop(0, "rgba(255,255,255,0.95)");
+        g.addColorStop(0.45, "rgba(255,201,77,0.65)");
+        g.addColorStop(1, "rgba(255,201,77,0)");
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        break;
+      }
+    }
+    ctx.restore();
+  }
+
+  // ==========================================================================
+  // 4. CLASSE PRINCIPALE
+  // ==========================================================================
+  class BitcoinCardFusion {
+    constructor(options = {}) {
+      this.zIndex = options.zIndex || 99999;
+      this.particles = [];
+      this.shockwaves = [];
+      this.ringAngle = 0;
+      this.ringSpeed = 0.0016;
+      this.lightningActive = false;
+      this._lightningNext = 0;
+      this._boltA = null;
+      this._boltB = null;
+      this.phase = "idle";
+    }
+
+    /** Respecte les préférences d'accessibilité système */
+    _reducedMotion() {
+      return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    }
+
+    // -------------------------------------------------------------------
+    // API PUBLIQUE
+    // -------------------------------------------------------------------
+    async play(opts = {}) {
+      const { card1, card2, renderNewCard, newCardData, container, onPhase, onComplete } = opts;
+      if (!card1 || !card2) {
+        console.error("BitcoinCardFusion.play(): card1 et card2 sont requis.");
+        return null;
+      }
+
+      if (this._reducedMotion()) {
+        return this._playReduced(opts);
+      }
+
+      this._buildOverlay(container || document.body);
+
+      onPhase && onPhase("attraction");
+      await this._phaseAttraction(card1, card2);
+
+      onPhase && onPhase("charge");
+      await this._phaseCharge();
+
+      onPhase && onPhase("explosion");
+      await this._phaseExplosion();
+
+      onPhase && onPhase("reveal");
+      const newCardEl = await this._phaseReveal(renderNewCard, newCardData);
+
+      onPhase && onPhase("celebration");
+      await this._phaseCelebration();
+
+      await this._cleanup();
+
+      onComplete && onComplete(newCardEl);
+      return newCardEl;
+    }
+
+    // -------------------------------------------------------------------
+    // OVERLAY + BOUCLE DE RENDU
+    // -------------------------------------------------------------------
+    _buildOverlay(container) {
+      this.overlay = document.createElement("div");
+      this.overlay.className = "bcf-overlay";
+      this.overlay.style.zIndex = this.zIndex;
+
+      this.dim = document.createElement("div");
+      this.dim.className = "bcf-dim";
+
+      this.canvas = document.createElement("canvas");
+      this.canvas.className = "bcf-canvas";
+
+      this.flashEl = document.createElement("div");
+      this.flashEl.className = "bcf-flash";
+
+      this.textEl = document.createElement("div");
+      this.textEl.className = "bcf-text";
+      this.textEl.innerHTML =
+        '<span class="bcf-text-line1">Fusion réussie !</span>' +
+        '<span class="bcf-text-line2">Nouvelle carte débloquée !</span>';
+
+      this.overlay.append(this.dim, this.canvas, this.flashEl, this.textEl);
+      container.appendChild(this.overlay);
+
+      this.ctx = this.canvas.getContext("2d");
+      this._resize = () => fitCanvas(this.canvas, this.ctx);
+      this._resize();
+      window.addEventListener("resize", this._resize);
+
+      this._startLoop();
+    }
+
+    _startLoop() {
+      this._running = true;
+      let last = performance.now();
+      const loop = (now) => {
+        if (!this._running) return;
+        const dt = Math.min(now - last, 32);
+        last = now;
+        this._update(now, dt);
+        this._draw(now);
+        this._rafId = requestAnimationFrame(loop);
+      };
+      this._rafId = requestAnimationFrame(loop);
+    }
+
+    _stopLoop() {
+      this._running = false;
+      if (this._rafId) cancelAnimationFrame(this._rafId);
+    }
+
+    _update(now, dt) {
+      this.particles = this.particles.filter((p) => updateParticle(p, dt));
+      this.shockwaves = this.shockwaves.filter((sw) => {
+        sw.r += sw.speed * dt;
+        sw.alpha -= sw.fade * dt;
+        return sw.alpha > 0;
+      });
+
+      const ringBoost = this.phase === "charge" ? 1 + this._phaseProgress(now) * 1.8 : 1;
+      this.ringAngle += this.ringSpeed * dt * ringBoost;
+
+      if (this.lightningActive && now > this._lightningNext) {
+        this._regenLightning();
+        this._lightningNext = now + rand(45, 85);
+      }
+
+      if (this._celebrationSpawning) {
+        this._sparkleAccum = (this._sparkleAccum || 0) + dt;
+        this._satoshiAccum = (this._satoshiAccum || 0) + dt;
+        if (this._sparkleAccum > 70) {
+          this._sparkleAccum = 0;
+          this._spawnSparkle();
+        }
+        if (this._satoshiAccum > 110) {
+          this._satoshiAccum = 0;
+          this._spawnSatoshi();
+        }
+      }
+    }
+
+    _phaseProgress(now) {
+      return clamp01((now - this.phaseStart) / this.phaseDuration);
+    }
+
+    _draw(now) {
+      const ctx = this.ctx;
+      ctx.clearRect(-PAD, -PAD, this.canvas.width, this.canvas.height);
+      ctx.globalCompositeOperation = "lighter";
+
+      if (this.phase === "charge" || this.phase === "explosion") {
+        this._drawSphere(now);
+        this._drawTransactionLines(now);
+        this._drawHexRing(now);
+      }
+      if (this.lightningActive) this._drawLightning();
+      this._drawShockwaves();
+
+      for (const p of this.particles) drawParticle(ctx, p);
+
+      if (this.phase === "reveal" && this._raysActive) this._drawRays(now);
+
+      ctx.globalCompositeOperation = "source-over";
+    }
+
+    // -------------------------------------------------------------------
+    // PHASE 1 — ATTRACTION
+    // -------------------------------------------------------------------
+    async _phaseAttraction(card1, card2) {
+      this.phase = "attraction";
+      this.phaseStart = performance.now();
+      this.phaseDuration = DURATIONS.attraction;
+
+      const r1 = card1.getBoundingClientRect();
+      const r2 = card2.getBoundingClientRect();
+      const cx = (r1.left + r1.right + r2.left + r2.right) / 4;
+      const cy = (r1.top + r1.bottom + r2.top + r2.bottom) / 4;
+      this.center = { x: cx, y: cy };
+
+      this.clone1 = cloneCardAt(card1, r1);
+      this.clone2 = cloneCardAt(card2, r2);
+      this.overlay.append(this.clone1, this.clone2);
+
+      const dx1 = cx - (r1.left + r1.width / 2);
+      const dy1 = cy - (r1.top + r1.height / 2);
+      const dx2 = cx - (r2.left + r2.width / 2);
+      const dy2 = cy - (r2.top + r2.height / 2);
+
+      const opts = { duration: DURATIONS.attraction, easing: "cubic-bezier(.5,0,.3,1)", fill: "forwards" };
+      const a1 = this.clone1.animate(attractionKeyframes(dx1, dy1), opts);
+      const a2 = this.clone2.animate(attractionKeyframes(dx2, dy2), opts);
+
+      // Halo + bordure néon dès que le contact approche
+      setTimeout(() => {
+        this.clone1.classList.add("bcf-charging");
+        this.clone2.classList.add("bcf-charging");
+      }, DURATIONS.attraction * 0.55);
+
+      await Promise.all([a1.finished, a2.finished]);
+    }
+
+    // -------------------------------------------------------------------
+    // PHASE 2 — CHARGE D'ÉNERGIE
+    // -------------------------------------------------------------------
+    async _phaseCharge() {
+      this.phase = "charge";
+      this.phaseStart = performance.now();
+      this.phaseDuration = DURATIONS.charge;
+
+      this.dim.classList.add("bcf-dim-active");
+      this._spawnOrbitParticles(26);
+      this._hexChars = Array.from({ length: 24 }, () => randomHex(2));
+      this.lightningActive = true;
+
+      setTimeout(() => this._screenShake(320), DURATIONS.charge - 320);
+
+      await wait(DURATIONS.charge);
+    }
+
+    // -------------------------------------------------------------------
+    // PHASE 3 — EXPLOSION
+    // -------------------------------------------------------------------
+    async _phaseExplosion() {
+      this.phase = "explosion";
+      this.phaseStart = performance.now();
+      this.phaseDuration = DURATIONS.explosion;
+
+      this.lightningActive = false;
+      this.clone1 && this.clone1.remove();
+      this.clone2 && this.clone2.remove();
+
+      this._spawnShockwave();
+      this._spawnExplosionBurst(46);
+
+      this.flashEl.animate(
+        [{ opacity: 0 }, { opacity: 1, offset: 0.2 }, { opacity: 0 }],
+        { duration: DURATIONS.explosion + 140, easing: "ease-out" }
+      );
+
+      await wait(DURATIONS.explosion);
+    }
+
+    // -------------------------------------------------------------------
+    // PHASE 4 — RÉVÉLATION
+    // -------------------------------------------------------------------
+    async _phaseReveal(renderNewCard, newCardData) {
+      this.phase = "reveal";
+      this.phaseStart = performance.now();
+      this.phaseDuration = DURATIONS.reveal;
+
+      const newCardEl =
+        typeof renderNewCard === "function" ? renderNewCard() : this._buildDefaultCard(newCardData || {});
+      newCardEl.classList.add("bcf-newcard");
+      newCardEl.style.left = this.center.x + PAD + "px";
+      newCardEl.style.top = this.center.y + PAD + "px";
+      this.overlay.appendChild(newCardEl);
+      this.newCardEl = newCardEl;
+
+      this._raysActive = true;
+      this._raysStart = performance.now();
+
+      // Blocs de blockchain qui "se reconstruisent" autour de la nouvelle carte
+      this._spawnConvergingBlocks(10, newCardEl);
+
+      const anim = newCardEl.animate(REVEAL_KEYFRAMES, {
+        duration: DURATIONS.reveal,
+        easing: "cubic-bezier(.22,1,.36,1)",
+        fill: "forwards"
+      });
+      await anim.finished;
+
+      newCardEl.classList.add("bcf-newcard-idle");
+      this._raysActive = false;
+      return newCardEl;
+    }
+
+    // -------------------------------------------------------------------
+    // PHASE 5 — CÉLÉBRATION
+    // -------------------------------------------------------------------
+    async _phaseCelebration() {
+      this.phase = "celebration";
+      this.phaseStart = performance.now();
+      this.phaseDuration = DURATIONS.celebration;
+
+      this._auraEl = document.createElement("div");
+      this._auraEl.className = "bcf-aura";
+      this._auraEl.style.left = this.center.x + PAD + "px";
+      this._auraEl.style.top = this.center.y + PAD + "px";
+      this.overlay.insertBefore(this._auraEl, this.newCardEl);
+
+      this._celebrationSpawning = true;
+
+      this.textEl.style.left = this.center.x + PAD + "px";
+      const cardH = this.newCardEl.offsetHeight || 180;
+      this.textEl.style.top = this.center.y + PAD - cardH / 2 - 30 + "px";
+
+      this.textEl.animate(
+        [
+          { opacity: 0, transform: "translate(-50%,-40%)", offset: 0 },
+          { opacity: 1, transform: "translate(-50%,-50%)", offset: 0.18 },
+          { opacity: 1, transform: "translate(-50%,-50%)", offset: 0.75 },
+          { opacity: 0, transform: "translate(-50%,-58%)", offset: 1 }
+        ],
+        { duration: DURATIONS.celebration, easing: "ease-out", fill: "forwards" }
+      );
+
+      await wait(DURATIONS.celebration);
+      this._celebrationSpawning = false;
+    }
+
+    // -------------------------------------------------------------------
+    // NETTOYAGE
+    // -------------------------------------------------------------------
+    async _cleanup() {
+      this.dim.classList.remove("bcf-dim-active");
+      const fade = this.overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: DURATIONS.cleanup,
+        easing: "ease-in"
+      });
+      await fade.finished;
+      this._stopLoop();
+      window.removeEventListener("resize", this._resize);
+      this.overlay.remove();
+    }
+
+    // -------------------------------------------------------------------
+    // EFFETS — spawn helpers
+    // -------------------------------------------------------------------
+    _spawnOrbitParticles(count) {
+      const { x: cx, y: cy } = this.center;
+      for (let i = 0; i < count; i++) {
+        this.particles.push({
+          type: "orbit",
+          cx,
+          cy,
+          angle: rand(0, Math.PI * 2),
+          radius: rand(50, 95),
+          angularSpeed: rand(0.003, 0.006) * (Math.random() < 0.5 ? 1 : -1),
+          size: rand(1.6, 3.4),
+          color: Math.random() < 0.5 ? COLORS.gold : COLORS.orange,
+          age: 0,
+          maxAge: DURATIONS.charge + DURATIONS.explosion + 100,
+          baseAlpha: 0.9
+        });
+      }
+    }
+
+    _spawnExplosionBurst(count) {
+      const { x: cx, y: cy } = this.center;
+      for (let i = 0; i < count; i++) {
+        const angle = rand(0, Math.PI * 2);
+        const speed = rand(0.25, 0.75);
+        const isBlock = i % 3 === 0;
+        this.particles.push({
+          type: isBlock ? "block" : "spark",
+          x: cx,
+          y: cy,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          gravity: 0.0009,
+          size: isBlock ? rand(6, 11) : rand(2, 4),
+          rotation: rand(0, Math.PI * 2),
+          spin: rand(-0.004, 0.004),
+          color: [COLORS.orange, COLORS.gold, COLORS.amber][i % 3],
+          age: 0,
+          maxAge: rand(550, 950),
+          baseAlpha: 1
+        });
+      }
+    }
+
+    _spawnConvergingBlocks(count, targetEl) {
+      const rect = { w: targetEl.offsetWidth || 160, h: targetEl.offsetHeight || 220 };
+      const { x: cx, y: cy } = this.center;
+      for (let i = 0; i < count; i++) {
+        const edgeAngle = (i / count) * Math.PI * 2;
+        const startRadius = rand(140, 220);
+        const targetRadius = Math.max(rect.w, rect.h) / 2 + rand(-4, 4);
+        this.particles.push({
+          type: "converge",
+          startX: cx + Math.cos(edgeAngle) * startRadius,
+          startY: cy + Math.sin(edgeAngle) * startRadius,
+          targetX: cx + Math.cos(edgeAngle) * targetRadius,
+          targetY: cy + Math.sin(edgeAngle) * targetRadius,
+          x: 0,
+          y: 0,
+          size: rand(5, 9),
+          rotation: rand(0, Math.PI * 2),
+          color: Math.random() < 0.5 ? COLORS.gold : COLORS.orange,
+          age: 0,
+          maxAge: DURATIONS.reveal * 0.8,
+          baseAlpha: 0.85
+        });
+      }
+    }
+
+    _spawnSparkle() {
+      const rect = this.newCardEl.getBoundingClientRect();
+      this.particles.push({
+        type: "sparkle",
+        x: rand(rect.left, rect.right),
+        y: rand(rect.top, rect.bottom),
+        size: rand(10, 22),
+        age: 0,
+        maxAge: rand(450, 700),
+        baseAlpha: 1
+      });
+    }
+
+    _spawnSatoshi() {
+      const rect = this.newCardEl.getBoundingClientRect();
+      this.particles.push({
+        type: "satoshi",
+        x: rand(rect.left + 10, rect.right - 10),
+        y: rect.bottom - rand(0, 20),
+        size: rand(14, 22),
+        speed: rand(0.05, 0.09),
+        sway: rand(0.02, 0.05),
+        seed: rand(0, 100),
+        color: Math.random() < 0.6 ? COLORS.gold : COLORS.white,
+        age: 0,
+        maxAge: rand(1400, 2000),
+        baseAlpha: 0.95
+      });
+    }
+
+    _spawnShockwave() {
+      this.shockwaves.push({ x: this.center.x, y: this.center.y, r: 4, speed: 1.1, alpha: 1, fade: 0.0016 });
+    }
+
+    _regenLightning() {
+      const { x: cx, y: cy } = this.center;
+      const spread = 42;
+      const x1 = cx - spread,
+        y1 = cy;
+      const x2 = cx + spread,
+        y2 = cy;
+      this._boltA = buildLightningPath(x1, y1, x2, y2, 3, 22);
+      this._boltB = buildLightningPath(x1, y1 + 6, x2, y2 - 6, 3, 14);
+    }
+
+    // -------------------------------------------------------------------
+    // EFFETS — draw helpers (canvas)
+    // -------------------------------------------------------------------
+    _drawSphere(now) {
+      const ctx = this.ctx;
+      const { x: cx, y: cy } = this.center;
+      let radiusT;
+      if (this.phase === "charge") {
+        radiusT = easeOutCubic(this._phaseProgress(now));
+      } else {
+        radiusT = 1 + this._phaseProgress(now) * 2.2; // gonfle puis "pop" à l'explosion
+      }
+      const pulse = 1 + Math.sin(now * 0.012) * 0.05;
+      const radius = Math.max(2, 14 + radiusT * 46 * pulse);
+      const alpha = this.phase === "explosion" ? 1 - this._phaseProgress(now) : 0.9;
+
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+      g.addColorStop(0, `rgba(255,255,255,${0.95 * alpha})`);
+      g.addColorStop(0.3, `rgba(255,201,77,${0.85 * alpha})`);
+      g.addColorStop(0.7, `rgba(247,147,26,${0.55 * alpha})`);
+      g.addColorStop(1, "rgba(247,147,26,0)");
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    _drawHexRing(now) {
+      const ctx = this.ctx;
+      const { x: cx, y: cy } = this.center;
+      const progress = this.phase === "charge" ? this._phaseProgress(now) : 1;
+      const radius = 78 + progress * 14 + Math.sin(now * 0.006) * 3;
+      const alpha = this.phase === "explosion" ? (1 - this._phaseProgress(now)) * 0.8 : 0.75;
+
+      if (!this._hexChars) return;
+      if (Math.random() < 0.06) {
+        const idx = (Math.random() * this._hexChars.length) | 0;
+        this._hexChars[idx] = randomHex(2);
+      }
+
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.font = '11px "JetBrains Mono", monospace';
+      ctx.fillStyle = COLORS.amber;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      const n = this._hexChars.length;
+      for (let i = 0; i < n; i++) {
+        const a = this.ringAngle + (i / n) * Math.PI * 2;
+        const x = cx + Math.cos(a) * radius;
+        const y = cy + Math.sin(a) * radius;
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(a + Math.PI / 2);
+        ctx.fillText(this._hexChars[i], 0, 0);
+        ctx.restore();
+      }
+      ctx.restore();
+    }
+
+    _drawTransactionLines(now) {
+      // Fines lignes de "transaction" qui pulsent du centre vers l'anneau
+      const ctx = this.ctx;
+      const { x: cx, y: cy } = this.center;
+      const count = 6;
+      ctx.save();
+      ctx.strokeStyle = `rgba(255,201,77,0.35)`;
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 5]);
+      ctx.lineDashOffset = -(now * 0.05) % 100;
+      for (let i = 0; i < count; i++) {
+        const a = this.ringAngle * 1.4 + (i / count) * Math.PI * 2;
+        const r1 = 20,
+          r2 = 90;
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1);
+        ctx.lineTo(cx + Math.cos(a) * r2, cy + Math.sin(a) * r2);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    _drawLightning() {
+      if (!this._boltA) return;
+      const ctx = this.ctx;
+      const drawBolt = (points, width, color, glow) => {
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = width;
+        ctx.shadowColor = glow;
+        ctx.shadowBlur = 10;
+        ctx.lineCap = "round";
+        ctx.stroke();
+      };
+      ctx.save();
+      drawBolt(this._boltA, 3, "rgba(247,147,26,0.55)", COLORS.orange);
+      drawBolt(this._boltA, 1.3, "rgba(255,255,255,0.9)", COLORS.white);
+      drawBolt(this._boltB, 1, "rgba(255,201,77,0.7)", COLORS.gold);
+      ctx.restore();
+    }
+
+    _drawShockwaves() {
+      const ctx = this.ctx;
+      for (const sw of this.shockwaves) {
+        ctx.save();
+        ctx.globalAlpha = clamp01(sw.alpha);
+        ctx.strokeStyle = sw.r < 60 ? COLORS.white : COLORS.gold;
+        ctx.lineWidth = Math.max(1, 6 - sw.r / 40);
+        ctx.beginPath();
+        ctx.arc(sw.x, sw.y, sw.r, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    _drawRays(now) {
+      const ctx = this.ctx;
+      const { x: cx, y: cy } = this.center;
+      const t = clamp01((now - this._raysStart) / DURATIONS.reveal);
+      const alpha = Math.sin(t * Math.PI) * 0.5; // monte puis redescend
+      const rays = 12;
+      const len = 60 + t * 140;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      for (let i = 0; i < rays; i++) {
+        const a = (i / rays) * Math.PI * 2 + now * 0.0004;
+        const grad = ctx.createLinearGradient(cx, cy, cx + Math.cos(a) * len, cy + Math.sin(a) * len);
+        grad.addColorStop(0, "rgba(255,222,150,0.65)");
+        grad.addColorStop(1, "rgba(255,222,150,0)");
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + Math.cos(a) * len, cy + Math.sin(a) * len);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    _screenShake(duration) {
+      const steps = 8;
+      const kf = [];
+      for (let i = 0; i <= steps; i++) {
+        const amp = 6 * (1 - i / steps);
+        kf.push({ transform: `translate(${rand(-amp, amp).toFixed(1)}px, ${rand(-amp, amp).toFixed(1)}px)`, offset: i / steps });
+      }
+      this.overlay.animate(kf, { duration, easing: "linear" });
+    }
+
+    // -------------------------------------------------------------------
+    // CARTE PAR DÉFAUT (utile en démo, ou comme fallback rapide)
+    // -------------------------------------------------------------------
+    _buildDefaultCard(data) {
+      const color = RARITY_COLORS[data.rarity] || RARITY_COLORS.commune;
+      const el = document.createElement("div");
+      el.className = "bcf-default-card";
+      el.style.setProperty("--rarity-color", color);
+      el.innerHTML =
+        `<div class="bcf-dc-rarity">${(data.rarity || "commune").toUpperCase()}</div>` +
+        `<div class="bcf-dc-emoji">${data.emoji || "🃏"}</div>` +
+        `<div class="bcf-dc-name">${data.name || "Nouvelle carte"}</div>` +
+        `<div class="bcf-dc-role">${data.role || ""}</div>`;
+      return el;
+    }
+
+    // -------------------------------------------------------------------
+    // FALLBACK — prefers-reduced-motion (version courte, sans particules)
+    // -------------------------------------------------------------------
+    async _playReduced(opts) {
+      const { card1, card2, renderNewCard, newCardData, container, onComplete } = opts;
+      this._buildOverlaySimple(container || document.body);
+      const r1 = card1.getBoundingClientRect();
+      const r2 = card2.getBoundingClientRect();
+      const cx = (r1.left + r1.right + r2.left + r2.right) / 4;
+      const cy = (r1.top + r1.bottom + r2.top + r2.bottom) / 4;
+
+      const fadeOld = this.overlay.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 250, fill: "forwards" });
+      await fadeOld.finished;
+
+      const newCardEl =
+        typeof renderNewCard === "function" ? renderNewCard() : this._buildDefaultCard(newCardData || {});
+      newCardEl.className += " bcf-newcard bcf-newcard-idle";
+      newCardEl.style.left = cx + "px";
+      newCardEl.style.top = cy + "px";
+      newCardEl.style.opacity = "0";
+      newCardEl.style.transform = "translate(-50%,-50%) scale(0.9)";
+      this.overlay.style.opacity = "1";
+      this.overlay.appendChild(newCardEl);
+      const reveal = newCardEl.animate(
+        [
+          { opacity: 0, transform: "translate(-50%,-50%) scale(0.9)" },
+          { opacity: 1, transform: "translate(-50%,-50%) scale(1)" }
+        ],
+        { duration: 300, fill: "forwards" }
+      );
+      await reveal.finished;
+
+      this.textEl.style.left = cx + "px";
+      this.textEl.style.top = cy - (newCardEl.offsetHeight || 180) / 2 - 30 + "px";
+      this.textEl.style.opacity = "1";
+      await wait(1100);
+
+      const fadeAll = this.overlay.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: "forwards" });
+      await fadeAll.finished;
+      this.overlay.remove();
+      onComplete && onComplete(newCardEl);
+      return newCardEl;
+    }
+
+    _buildOverlaySimple(container) {
+      this.overlay = document.createElement("div");
+      this.overlay.className = "bcf-overlay bcf-overlay-simple";
+      this.overlay.style.zIndex = this.zIndex;
+      this.dim = document.createElement("div");
+      this.dim.className = "bcf-dim bcf-dim-active";
+      this.textEl = document.createElement("div");
+      this.textEl.className = "bcf-text";
+      this.textEl.style.opacity = "0";
+      this.textEl.innerHTML =
+        '<span class="bcf-text-line1">Fusion réussie !</span>' +
+        '<span class="bcf-text-line2">Nouvelle carte débloquée !</span>';
+      this.overlay.append(this.dim, this.textEl);
+      container.appendChild(this.overlay);
+    }
+  }
+
+  global.BitcoinCardFusion = BitcoinCardFusion;
+})(window);
+
+
+  // Construit la carte affichée à la révélation, avec les classes de rareté du jeu
+  function buildFusionResultCard(card, nextLevel){
+    const el = document.createElement('div');
+    el.className = `bcf-fusion-card ${FUSION_RARITY_CSS[nextLevel]}`;
+    const labelColor = nextLevel === 'or' ? 'var(--or)'
+      : nextLevel === 'legendaire' ? '#f0b90b'
+      : nextLevel === 'argent' ? '#ccc' : '#cd7f32';
+    el.innerHTML = `
+      <div class="bcf-fc-icon">${card.icon}</div>
+      <div class="bcf-fc-label" style="color:${labelColor};">${FUSION_LABEL[nextLevel]}</div>
+      <div class="bcf-fc-name">${card.name}</div>
+    `;
+    return el;
+  }
+
+  // Lance la fusion avec la nouvelle animation premium (BitcoinCardFusion)
+  function fuseCard(cardId, evt){
     if(!canFuse(cardId)) return;
     const card = cards.find(c => c.id === cardId);
     if(!card) return;
@@ -7913,64 +8915,34 @@
     const currentLevel = cardQuantities[cardId].fusionLevel;
     const nextLevel = FUSION_NEXT[currentLevel];
 
-    // Rempli les slots de l'overlay
-    ['fslot0-icon','fslot1-icon','fslot2-icon'].forEach(id => {
-      const el = document.getElementById(id);
-      if(el) el.textContent = card.icon;
+    // Carte source = l'élément sur lequel le joueur a tapé (carte grille ou ligne de la liste fusible)
+    const sourceEl = evt && evt.currentTarget
+      ? (evt.currentTarget.closest('.c3d-wrap') || evt.currentTarget.closest('div'))
+      : null;
+    if(!sourceEl){ console.warn('fuseCard: élément source introuvable'); return; }
+
+    const fusion = new BitcoinCardFusion();
+    fusion.play({
+      card1: sourceEl,
+      card2: sourceEl, // même carte qui "charge" et se transforme (mécanique 3→1)
+      renderNewCard: () => buildFusionResultCard(card, nextLevel),
+      onPhase: (phase) => {
+        if(phase === 'explosion'){
+          // Applique les effets de jeu au moment de l'explosion (comme avant, ~1.3s)
+          cardQuantities[cardId].qty = (cardQuantities[cardId].qty || 0) - 3;
+          cardQuantities[cardId].fusionLevel = nextLevel;
+          fusionCount++;
+          saveFusion();
+          try { sfxCorrect && sfxCorrect(); } catch(e) {}
+          checkFusionAchievements(nextLevel);
+        }
+      },
+      onComplete: () => {
+        renderFusibleList();
+        renderCardGridFinale();
+        updateFusionProfileStats();
+      }
     });
-    // Configurer la carte résultat
-    const resultCard = document.getElementById('fusion-result-card');
-    const resultIcon = document.getElementById('fusion-result-icon');
-    const resultLabel = document.getElementById('fusion-result-label');
-    const resultName = document.getElementById('fusion-result-name');
-    if(resultCard){ resultCard.className = 'fusion-result-card'; resultCard.style.border = ''; }
-    if(resultIcon) resultIcon.textContent = card.icon;
-    if(resultLabel){ resultLabel.textContent = FUSION_LABEL[nextLevel]; resultLabel.style.color = nextLevel === 'or' ? 'var(--or)' : nextLevel === 'legendaire' ? '#f0b90b' : nextLevel === 'argent' ? '#ccc' : '#cd7f32'; }
-    if(resultName){ resultName.textContent = card.name; resultName.style.opacity = '0'; }
-
-    // Afficher l'overlay
-    const overlay = document.getElementById('fusion-overlay');
-    const closeBtn = document.getElementById('fusion-close-btn');
-    if(overlay) overlay.classList.add('show');
-    if(closeBtn) closeBtn.style.display = 'none';
-
-    // Animation des slots → centre
-    setTimeout(() => {
-      ['fslot0','fslot1','fslot2'].forEach(id => {
-        const el = document.getElementById(id);
-        if(el) el.classList.add('animating');
-      });
-    }, 400);
-
-    // Flash + particules + résultat
-    setTimeout(() => {
-      // Flash lumineux
-      const flash = document.getElementById('fusion-flash');
-      if(flash){
-        flash.style.background = FUSION_FLASH_COLOR[nextLevel] || 'rgba(240,185,11,0.7)';
-        flash.classList.add('show');
-        setTimeout(() => flash.classList.remove('show'), 250);
-      }
-      // Particules ₿
-      spawnFusionParticles();
-      // Appliquer la fusion
-      cardQuantities[cardId].qty = (cardQuantities[cardId].qty || 0) - 3;
-      cardQuantities[cardId].fusionLevel = nextLevel;
-      fusionCount++;
-      saveFusion();
-      // Afficher la nouvelle carte
-      if(resultCard){
-        resultCard.classList.add('show');
-        resultCard.className = `fusion-result-card ${FUSION_RARITY_CSS[nextLevel]} show`;
-        resultCard.style.border = '';
-      }
-      if(resultName) setTimeout(() => resultName.style.opacity = '1', 100);
-      if(closeBtn) setTimeout(() => closeBtn.style.display = '', 600);
-      // Son
-      try { sfxCorrect && sfxCorrect(); } catch(e) {}
-      // Vérifier succès
-      checkFusionAchievements(nextLevel);
-    }, 1100);
   }
 
   function spawnFusionParticles(){
@@ -8023,7 +8995,7 @@
           <div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--texte);">${c.name}</div>
           <div style="font-size:11px;color:var(--texte-dim);">${FUSION_LABEL[lvl]} · ${qty} exemplaire${qty>1?'s':''} · → ${FUSION_LABEL[next]}</div>
         </div>
-        <button class="c3d-fusion-btn" style="width:auto;padding:7px 14px;" onclick="fuseCard(${c.id})">🔨 Fusionner</button>
+        <button class="c3d-fusion-btn" style="width:auto;padding:7px 14px;" onclick="fuseCard(${c.id}, event)">🔨 Fusionner</button>
       </div>`;
     }).join('');
   }
@@ -8795,7 +9767,7 @@
       const qty = owned ? getFusionQty(c.id) : 0;
       const fusionLvl = owned ? getFusionLevel(c.id) : 'bronze';
       const fusionBtn = (owned && fusible)
-        ? `<button class="c3d-fusion-btn" onclick="event.stopPropagation();fuseCard(${c.id})">🔨 Fusionner (×${qty}/3)</button>`
+        ? `<button class="c3d-fusion-btn" onclick="event.stopPropagation();fuseCard(${c.id}, event)">🔨 Fusionner (×${qty}/3)</button>`
         : '';
 
       const wrap = document.createElement('div');
