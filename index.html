@@ -569,6 +569,24 @@
   }
   .hub-cta-secondary:hover{color:var(--texte);}
 
+  /* Briefing en paysage, sous les colonnes (pleine largeur). */
+  .hub-cta-card{ margin-top:16px; }
+  @media (min-width:640px){
+    .hub-cta-card{
+      display:flex; align-items:center; gap:26px;
+      padding:26px 28px;
+    }
+    .hub-cta-left{ flex:1 1 56%; min-width:0; }
+    .hub-cta-right{
+      flex:1 1 44%; min-width:0;
+      display:flex; flex-direction:column; justify-content:center;
+      padding-left:26px; border-left:1px solid var(--card-border);
+    }
+    .hub-cta-card .brief{ margin:0; }
+    .hub-cta-card .hub-cta-sub{ text-align:left; }
+    .hub-cta-card .hub-cta-secondary-row{ justify-content:flex-start; }
+  }
+
   /* ====== MODAL CHOIX DE CLASSE ====== */
   .class-modal-overlay{
     position:fixed;inset:0;z-index:200;background:rgba(5,7,14,0.82);backdrop-filter:blur(6px);
@@ -1177,44 +1195,133 @@
   .lb-empty{text-align:center;padding:16px;color:var(--texte-dim);font-size:13px;font-style:italic;}
 
   /* ====== CLASSEMENT MONDIAL ====== */
-  .wlb-wrap{margin-top:14px;}
-  .wlb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;}
+  .wlb-wrap{margin-bottom:14px;}
+  .wlb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;}
   .wlb-title{
-    font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;
-    color:var(--or);display:flex;align-items:center;gap:6px;
+    font-family:'Space Grotesk',sans-serif;font-size:13.5px;font-weight:700;
+    color:var(--texte);display:flex;align-items:center;gap:7px;
   }
+  .wlb-title-icon{font-size:15px;filter:drop-shadow(0 0 6px rgba(240,185,11,.5));}
   .wlb-refresh{
-    font-size:11px;font-weight:600;color:var(--texte-dim);
-    background:rgba(255,255,255,0.05);border:1px solid var(--card-border);
-    border-radius:8px;padding:5px 10px;cursor:pointer;transition:background .15s ease-out;
-    font-family:'Inter',sans-serif;
+    font-size:10.5px;font-weight:600;color:var(--texte-dim);
+    background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
+    border-radius:20px;padding:5px 11px;cursor:pointer;transition:all .18s ease-out;
+    font-family:'Inter',sans-serif;-webkit-tap-highlight-color:transparent;
   }
-  .wlb-refresh:hover{background:rgba(255,255,255,0.1);}
+  .wlb-refresh:hover{background:rgba(124,58,237,.15);border-color:rgba(124,58,237,.35);color:#c4b5fd;}
+  .wlb-refresh:active{transform:scale(0.95);}
   .wlb-row{
     display:flex;align-items:center;gap:12px;
-    padding:9px 14px;border-radius:12px;margin-bottom:6px;
+    padding:9px 12px;border-radius:12px;margin-bottom:6px;
     background:rgba(255,255,255,0.03);border:1px solid var(--card-border);
+    transition:transform .15s cubic-bezier(.22,1,.36,1), border-color .15s ease-out;
   }
+  .wlb-row:last-child{margin-bottom:0;}
+  .wlb-row:hover{transform:translateX(2px);border-color:rgba(255,255,255,0.14);}
   .wlb-row.wlb-me{
     background:rgba(124,58,237,0.14);border:1px solid rgba(124,58,237,0.45);
   }
-  .wlb-rank{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;min-width:30px;text-align:center;color:var(--texte-dim);}
+  .wlb-row.r1{background:linear-gradient(160deg,rgba(240,185,11,.1),rgba(240,185,11,.03));border-color:rgba(240,185,11,.35);}
+  .wlb-row.r2{border-color:rgba(156,163,175,.35);}
+  .wlb-row.r3{border-color:rgba(180,83,9,.35);}
+  .wlb-rank{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;min-width:28px;text-align:center;color:var(--texte-dim);}
   .wlb-rank.r1{color:var(--or);font-size:19px;}
   .wlb-rank.r2{color:#9ca3af;font-size:18px;}
   .wlb-rank.r3{color:#b45309;font-size:17px;}
-  .wlb-pseudo{flex:1;min-width:0;font-size:13.5px;font-weight:600;color:var(--texte);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .wlb-pseudo{flex:1;min-width:0;font-size:13px;font-weight:600;color:var(--texte);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .wlb-you-tag{
-    font-size:9.5px;font-weight:700;color:var(--violet);background:rgba(124,58,237,0.18);
+    font-size:9px;font-weight:700;color:var(--violet);background:rgba(124,58,237,0.18);
     border:1px solid rgba(124,58,237,0.4);padding:1px 6px;border-radius:5px;margin-left:6px;
     text-transform:uppercase;letter-spacing:0.03em;white-space:nowrap;
   }
-  .wlb-sats{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--or);white-space:nowrap;}
-  .wlb-empty{text-align:center;padding:16px;color:var(--texte-dim);font-size:13px;font-style:italic;}
+  .wlb-sats{font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:700;color:var(--or);white-space:nowrap;}
+  .wlb-empty{text-align:center;padding:16px 10px;color:var(--texte-dim);font-size:12.5px;font-style:italic;}
   .wlb-me-rank{
-    margin-top:8px;padding:9px 14px;border-radius:12px;
+    margin-top:10px;padding:9px 14px;border-radius:12px;
     background:rgba(240,185,11,0.06);border:1px dashed rgba(240,185,11,0.3);
-    font-size:11.5px;color:var(--texte-dim);text-align:center;line-height:1.5;
+    font-size:11px;color:var(--texte-dim);text-align:center;line-height:1.5;
   }
+
+  /* Mise en valeur du classement mondial : liseré doré animé + lueur douce */
+  .wlb-highlight{
+    position:relative;
+    border-color:rgba(240,185,11,0.3);
+    background:linear-gradient(160deg, rgba(240,185,11,0.06), rgba(124,58,237,0.05));
+    animation:wlbPulse 3.4s ease-in-out infinite;
+  }
+  .wlb-highlight::before{
+    content:'';position:absolute;inset:-1px;border-radius:17px;padding:1px;z-index:-1;
+    background:linear-gradient(120deg, rgba(240,185,11,0.55), rgba(124,58,237,0.45), rgba(240,185,11,0.55));
+    background-size:220% 220%;
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    animation:wlbBorderShift 5s linear infinite;
+    pointer-events:none;
+  }
+  @keyframes wlbPulse{
+    0%,100%{ box-shadow:0 6px 20px rgba(0,0,0,0.22), 0 0 0 rgba(240,185,11,0); }
+    50%{ box-shadow:0 8px 26px rgba(0,0,0,0.28), 0 0 20px rgba(240,185,11,0.22); }
+  }
+  @keyframes wlbBorderShift{
+    0%{background-position:0% 50%;}
+    100%{background-position:200% 50%;}
+  }
+  .wlb-live-dot{
+    display:inline-block;width:7px;height:7px;border-radius:50%;
+    background:var(--vert);margin-left:2px;
+    box-shadow:0 0 6px rgba(34,197,94,0.9);
+    animation:wlbLiveDot 1.8s ease-in-out infinite;
+  }
+  @keyframes wlbLiveDot{
+    0%,100%{ opacity:1; transform:scale(1); }
+    50%{ opacity:0.35; transform:scale(0.75); }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .wlb-highlight, .wlb-highlight::before, .wlb-live-dot{ animation:none; }
+  }
+
+  /* ====== ACCORDÉON DASHBOARD (sections secondaires repliables) ====== */
+  .hub-accordion{margin-top:0;}
+  .hub-accordion-item{
+    border:1px solid var(--card-border);border-radius:16px;overflow:hidden;
+    margin-bottom:10px;background:var(--card);backdrop-filter:blur(12px);
+    box-shadow:0 6px 20px rgba(0,0,0,0.22);
+    transition:border-color .2s ease-out, box-shadow .2s ease-out;
+  }
+  .hub-accordion-item:last-child{margin-bottom:0;}
+  .hub-accordion-item.open{border-color:rgba(124,58,237,0.35);box-shadow:0 10px 28px rgba(0,0,0,0.3),0 0 0 1px rgba(124,58,237,0.12);}
+  .hub-accordion-header{
+    width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:14px 16px;background:transparent;border:none;cursor:pointer;
+    font-family:'Space Grotesk',sans-serif;font-size:13.5px;font-weight:700;color:var(--texte);
+    text-align:left;transition:background .18s ease-out;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .hub-accordion-header:hover{background:rgba(255,255,255,0.035);}
+  .hub-accordion-header-title{display:flex;align-items:center;gap:8px;}
+  .hub-accordion-chevron{
+    font-size:17px;color:var(--texte-dim);transition:transform .25s cubic-bezier(.22,1,.36,1), color .2s ease-out;flex-shrink:0;
+  }
+  .hub-accordion-item.open .hub-accordion-chevron{transform:rotate(90deg);color:var(--violet);}
+  .hub-accordion-body{
+    max-height:0;overflow:hidden;transition:max-height .35s ease-out;padding:0 16px;
+  }
+  .hub-accordion-item.open .hub-accordion-body{
+    max-height:3000px;padding:0 16px 16px;
+  }
+
+  /* ====== CARTE COMMUNE DASHBOARD (missions, classement mondial...) ====== */
+  .hub-card{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:16px;
+    padding:16px 16px 14px;
+    backdrop-filter:blur(12px);
+    box-shadow:0 6px 20px rgba(0,0,0,0.22);
+    margin-bottom:14px;
+    transition:box-shadow .2s ease-out, border-color .2s ease-out;
+  }
+  .hub-card:hover{box-shadow:0 10px 28px rgba(0,0,0,0.3);}
 
   /* ====== V6 : BOSS #3 ====== */
   .boss3-intro{
@@ -3601,129 +3708,12 @@
       <div style="font-size:11px;color:var(--texte-dim);margin-top:8px;line-height:1.4;">Tes cartes et pouvoirs sont actifs pour la prochaine partie !</div>
     </div>
 
-    <!-- CTA dominant : reprendre ou démarrer l'enquête -->
-    <div class="card hub-cta-card">
-      <div class="brief" id="hub-brief">
-        <strong>BRIEFING :</strong> Entre 2008 et 2011, Satoshi a laissé des traces écrites sur plusieurs forums et listes de diffusion bien réels — et toujours archivés aujourd'hui.<br><br>
-        21 étapes t'attendent, de plus en plus corsées : trouver un mot caché, déchiffrer un message, déjouer un piège... Chaque preuve validée te rapporte des <strong>sats virtuels</strong> dans ton wallet.<br><br>
-        <span class="warn">📡 Ce jeu va ouvrir de vrais liens externes (metzdowd.com, bitcointalk.org, etc.). Connexion internet et un peu de lecture nécessaires à chaque étape.</span>
-      </div>
-      <button class="hub-cta-main" id="hub-cta-main" onclick="handleHubMainCta()">🚀 Commencer l'enquête</button>
-      <div class="hub-cta-sub" id="hub-cta-sub" style="display:none;"></div>
-      <div class="hub-cta-secondary-row" id="hub-cta-secondary-row" style="display:none;">
-        <button class="hub-cta-secondary" onclick="handleHubNewInvestigation()">Démarrer une nouvelle enquête à la place</button>
-      </div>
-    </div>
-
     </div><!-- /hub-col-left -->
 
     <div class="hub-col-right">
 
-    <!-- Cartes collectées -->
-    <div class="hub-cards-section" id="hub-cards-section">
-      <div class="hub-cards-header">
-        <div class="hub-cards-title">
-          <span class="hub-cards-title-icon">🃏</span>
-          Cartes collectées
-        </div>
-        <span class="hub-cards-link" onclick="showScreen('screen-collection')" role="button" tabindex="0" aria-label="Voir la collection complète">Voir tout →</span>
-      </div>
-
-      <!-- Barre globale -->
-      <div class="hub-cards-progress-wrap">
-        <div class="hub-cards-progress-fill" id="hub-cards-progress-fill" style="width:0%"></div>
-      </div>
-      <div class="hub-cards-progress-label" id="hub-cards-progress-label">
-        <strong>0</strong> / 21 cartes collectées
-      </div>
-
-      <!-- Grid 4 raretés -->
-      <div class="hub-cards-rarity-grid">
-        <div class="hub-rarity-pill hub-rarity-legendaire">
-          <div class="hub-rarity-count" id="hub-rc-legendaire">0</div>
-          <div class="hub-rarity-total">/3</div>
-          <div class="hub-rarity-label">Légend.</div>
-          <div class="hub-rarity-bar"><div class="hub-rarity-bar-fill" id="hub-rb-legendaire" style="width:0%"></div></div>
-        </div>
-        <div class="hub-rarity-pill hub-rarity-epique">
-          <div class="hub-rarity-count" id="hub-rc-epique">0</div>
-          <div class="hub-rarity-total">/3</div>
-          <div class="hub-rarity-label">Épique</div>
-          <div class="hub-rarity-bar"><div class="hub-rarity-bar-fill" id="hub-rb-epique" style="width:0%"></div></div>
-        </div>
-        <div class="hub-rarity-pill hub-rarity-rare">
-          <div class="hub-rarity-count" id="hub-rc-rare">0</div>
-          <div class="hub-rarity-total">/3</div>
-          <div class="hub-rarity-label">Rare</div>
-          <div class="hub-rarity-bar"><div class="hub-rarity-bar-fill" id="hub-rb-rare" style="width:0%"></div></div>
-        </div>
-        <div class="hub-rarity-pill hub-rarity-commune">
-          <div class="hub-rarity-count" id="hub-rc-commune">0</div>
-          <div class="hub-rarity-total">/12</div>
-          <div class="hub-rarity-label">Commune</div>
-          <div class="hub-rarity-bar"><div class="hub-rarity-bar-fill" id="hub-rb-commune" style="width:0%"></div></div>
-        </div>
-      </div>
-
-      <!-- Mini-cartes récentes (6 dernières) -->
-      <div class="hub-cards-recent-label">Dernières obtenues</div>
-      <div class="hub-cards-recent-row" id="hub-cards-recent-row">
-        <!-- rempli par JS -->
-      </div>
-
-      <!-- Collections complétées -->
-      <div class="hub-cards-collections-row" id="hub-cards-collections-row" style="display:none"></div>
-    </div>
-
-    <!-- Reliques collectées -->
-    <div class="hub-relics-section" id="hub-relics-section">
-      <div class="hub-cards-header">
-        <div class="hub-cards-title">
-          <span class="hub-cards-title-icon hub-relics-title-icon">🏺</span>
-          Reliques collectées
-        </div>
-        <span class="hub-cards-link" onclick="openRelicsModal()" role="button" tabindex="0" aria-label="Voir toutes les reliques de l'enquête" onkeydown="if(event.key==='Enter')openRelicsModal()">Voir tout →</span>
-      </div>
-
-      <!-- Barre globale -->
-      <div class="hub-cards-progress-wrap">
-        <div class="hub-relics-progress-fill" id="hub-relics-progress-fill" style="width:0%"></div>
-      </div>
-      <div class="hub-cards-progress-label" id="hub-relics-progress-label">
-        <strong>0</strong> / 21 reliques découvertes
-      </div>
-
-      <!-- Grid 3 paliers -->
-      <div class="hub-relics-tier-grid">
-        <div class="hub-tier-pill hub-tier-reperes">
-          <div class="hub-rarity-count" id="hub-tc-reperes">0</div>
-          <div class="hub-rarity-total">/6</div>
-          <div class="hub-rarity-label">Repères</div>
-          <div class="hub-rarity-bar"><div class="hub-rarity-bar-fill" id="hub-tb-reperes" style="width:0%"></div></div>
-        </div>
-        <div class="hub-tier-pill hub-tier-pistes">
-          <div class="hub-rarity-count" id="hub-tc-pistes">0</div>
-          <div class="hub-rarity-total">/8</div>
-          <div class="hub-rarity-label">Pistes</div>
-          <div class="hub-rarity-bar"><div class="hub-rarity-bar-fill" id="hub-tb-pistes" style="width:0%"></div></div>
-        </div>
-        <div class="hub-tier-pill hub-tier-revelations">
-          <div class="hub-rarity-count" id="hub-tc-revelations">0</div>
-          <div class="hub-rarity-total">/7</div>
-          <div class="hub-rarity-label">Révél.</div>
-          <div class="hub-rarity-bar"><div class="hub-rarity-bar-fill" id="hub-tb-revelations" style="width:0%"></div></div>
-        </div>
-      </div>
-
-      <!-- Mini-reliques récentes (6 dernières) -->
-      <div class="hub-cards-recent-label">Dernières découvertes</div>
-      <div class="hub-cards-recent-row" id="hub-relics-recent-row">
-        <!-- rempli par JS -->
-      </div>
-    </div>
-
     <!-- Missions actives (reprise d'enquête + objectifs du jour) -->
-    <div class="hub-missions-section" id="hub-missions-section">
+    <div class="hub-missions-section hub-card" id="hub-missions-section">
       <div class="hub-cards-header">
         <div class="hub-cards-title">
           <span class="hub-cards-title-icon hub-missions-title-icon">🎯</span>
@@ -3742,32 +3732,184 @@
       <div class="hub-missions-claimed-note" id="hub-missions-claimed-note" style="display:none;">✓ Récompense du jour réclamée — reviens demain !</div>
     </div>
 
-    <!-- Énigmes communautaires -->
-    <div class="comm-card" onclick="openCommunityScreen()">
-      <div class="comm-card-title">🧩 Le Cercle de Satoshi <span style="font-size:11px;font-weight:600;color:var(--or);background:rgba(240,185,11,0.12);border:1px solid rgba(240,185,11,0.3);padding:2px 7px;border-radius:6px;margin-left:auto;">COMMUNAUTAIRE</span></div>
-      <div class="comm-card-desc">5 fragments de clé sont dispersés entre les joueurs du monde entier. Toi seul ne peux pas tout résoudre — il faut que la communauté mette ses indices en commun pour ouvrir le coffre final.</div>
-      <div class="comm-progress-pips" id="home-comm-pips"></div>
-      <div style="font-size:11px;color:var(--texte-dim);"><span id="home-comm-count">0</span>/5 fragments révélés par la communauté</div>
-    </div>
-
-    <!-- Tableau des scores -->
-    <div class="leaderboard-wrap" id="home-leaderboard">
-      <div class="leaderboard-title">🏅 Tes meilleurs scores (partie principale)</div>
-      <div id="home-lb-rows"></div>
-    </div>
-
     <!-- Classement mondial -->
-    <div class="wlb-wrap" id="world-leaderboard">
+    <div class="wlb-wrap wlb-highlight hub-card" id="world-leaderboard">
       <div class="wlb-header">
-        <div class="wlb-title">🌍 Classement mondial</div>
+        <div class="wlb-title"><span class="wlb-title-icon">🌍</span> Classement mondial <span class="wlb-live-dot" aria-hidden="true"></span></div>
         <button class="wlb-refresh" onclick="refreshWorldLeaderboard()">↻ Actualiser</button>
       </div>
       <div id="world-lb-rows"><div class="wlb-empty">Chargement du classement...</div></div>
       <div id="world-lb-me-rank"></div>
     </div>
 
+    <!-- Sections secondaires repliables -->
+    <div class="hub-accordion" id="hub-accordion">
+
+      <!-- Cartes & reliques collectées -->
+      <div class="hub-accordion-item" id="hub-acc-collection-item">
+        <button class="hub-accordion-header" onclick="toggleHubAccordion('hub-acc-collection')">
+          <span class="hub-accordion-header-title">🃏 Cartes &amp; reliques collectées</span>
+          <span class="hub-accordion-chevron">›</span>
+        </button>
+        <div class="hub-accordion-body" id="hub-acc-collection">
+
+          <!-- Cartes collectées -->
+          <div class="hub-cards-section" id="hub-cards-section">
+            <div class="hub-cards-header">
+              <div class="hub-cards-title">
+                <span class="hub-cards-title-icon">🃏</span>
+                Cartes collectées
+              </div>
+              <span class="hub-cards-link" onclick="showScreen('screen-collection')" role="button" tabindex="0" aria-label="Voir la collection complète">Voir tout →</span>
+            </div>
+
+            <!-- Barre globale -->
+            <div class="hub-cards-progress-wrap">
+              <div class="hub-cards-progress-fill" id="hub-cards-progress-fill" style="width:0%"></div>
+            </div>
+            <div class="hub-cards-progress-label" id="hub-cards-progress-label">
+              <strong>0</strong> / 21 cartes collectées
+            </div>
+
+            <!-- Grid 4 raretés -->
+            <div class="hub-cards-rarity-grid">
+              <div class="hub-rarity-pill hub-rarity-legendaire">
+                <div class="hub-rarity-count" id="hub-rc-legendaire">0</div>
+                <div class="hub-rarity-total">/3</div>
+                <div class="hub-rarity-label">Légend.</div>
+                <div class="hub-rarity-bar"><div class="hub-rarity-bar-fill" id="hub-rb-legendaire" style="width:0%"></div></div>
+              </div>
+              <div class="hub-rarity-pill hub-rarity-epique">
+                <div class="hub-rarity-count" id="hub-rc-epique">0</div>
+                <div class="hub-rarity-total">/3</div>
+                <div class="hub-rarity-label">Épique</div>
+                <div class="hub-rarity-bar"><div class="hub-rarity-bar-fill" id="hub-rb-epique" style="width:0%"></div></div>
+              </div>
+              <div class="hub-rarity-pill hub-rarity-rare">
+                <div class="hub-rarity-count" id="hub-rc-rare">0</div>
+                <div class="hub-rarity-total">/3</div>
+                <div class="hub-rarity-label">Rare</div>
+                <div class="hub-rarity-bar"><div class="hub-rarity-bar-fill" id="hub-rb-rare" style="width:0%"></div></div>
+              </div>
+              <div class="hub-rarity-pill hub-rarity-commune">
+                <div class="hub-rarity-count" id="hub-rc-commune">0</div>
+                <div class="hub-rarity-total">/12</div>
+                <div class="hub-rarity-label">Commune</div>
+                <div class="hub-rarity-bar"><div class="hub-rarity-bar-fill" id="hub-rb-commune" style="width:0%"></div></div>
+              </div>
+            </div>
+
+            <!-- Mini-cartes récentes (6 dernières) -->
+            <div class="hub-cards-recent-label">Dernières obtenues</div>
+            <div class="hub-cards-recent-row" id="hub-cards-recent-row">
+              <!-- rempli par JS -->
+            </div>
+
+            <!-- Collections complétées -->
+            <div class="hub-cards-collections-row" id="hub-cards-collections-row" style="display:none"></div>
+          </div>
+
+          <!-- Reliques collectées -->
+          <div class="hub-relics-section" id="hub-relics-section">
+            <div class="hub-cards-header">
+              <div class="hub-cards-title">
+                <span class="hub-cards-title-icon hub-relics-title-icon">🏺</span>
+                Reliques collectées
+              </div>
+              <span class="hub-cards-link" onclick="openRelicsModal()" role="button" tabindex="0" aria-label="Voir toutes les reliques de l'enquête" onkeydown="if(event.key==='Enter')openRelicsModal()">Voir tout →</span>
+            </div>
+
+            <!-- Barre globale -->
+            <div class="hub-cards-progress-wrap">
+              <div class="hub-relics-progress-fill" id="hub-relics-progress-fill" style="width:0%"></div>
+            </div>
+            <div class="hub-cards-progress-label" id="hub-relics-progress-label">
+              <strong>0</strong> / 21 reliques découvertes
+            </div>
+
+            <!-- Grid 3 paliers -->
+            <div class="hub-relics-tier-grid">
+              <div class="hub-tier-pill hub-tier-reperes">
+                <div class="hub-rarity-count" id="hub-tc-reperes">0</div>
+                <div class="hub-rarity-total">/6</div>
+                <div class="hub-rarity-label">Repères</div>
+                <div class="hub-rarity-bar"><div class="hub-rarity-bar-fill" id="hub-tb-reperes" style="width:0%"></div></div>
+              </div>
+              <div class="hub-tier-pill hub-tier-pistes">
+                <div class="hub-rarity-count" id="hub-tc-pistes">0</div>
+                <div class="hub-rarity-total">/8</div>
+                <div class="hub-rarity-label">Pistes</div>
+                <div class="hub-rarity-bar"><div class="hub-rarity-bar-fill" id="hub-tb-pistes" style="width:0%"></div></div>
+              </div>
+              <div class="hub-tier-pill hub-tier-revelations">
+                <div class="hub-rarity-count" id="hub-tc-revelations">0</div>
+                <div class="hub-rarity-total">/7</div>
+                <div class="hub-rarity-label">Révél.</div>
+                <div class="hub-rarity-bar"><div class="hub-rarity-bar-fill" id="hub-tb-revelations" style="width:0%"></div></div>
+              </div>
+            </div>
+
+            <!-- Mini-reliques récentes (6 dernières) -->
+            <div class="hub-cards-recent-label">Dernières découvertes</div>
+            <div class="hub-cards-recent-row" id="hub-relics-recent-row">
+              <!-- rempli par JS -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Énigme communautaire -->
+      <div class="hub-accordion-item" id="hub-acc-community-item">
+        <button class="hub-accordion-header" onclick="toggleHubAccordion('hub-acc-community')">
+          <span class="hub-accordion-header-title">🧩 Énigme communautaire</span>
+          <span class="hub-accordion-chevron">›</span>
+        </button>
+        <div class="hub-accordion-body" id="hub-acc-community">
+          <div class="comm-card" onclick="openCommunityScreen()" style="margin-top:0;">
+            <div class="comm-card-title">🧩 Le Cercle de Satoshi <span style="font-size:11px;font-weight:600;color:var(--or);background:rgba(240,185,11,0.12);border:1px solid rgba(240,185,11,0.3);padding:2px 7px;border-radius:6px;margin-left:auto;">COMMUNAUTAIRE</span></div>
+            <div class="comm-card-desc">5 fragments de clé sont dispersés entre les joueurs du monde entier. Toi seul ne peux pas tout résoudre — il faut que la communauté mette ses indices en commun pour ouvrir le coffre final.</div>
+            <div class="comm-progress-pips" id="home-comm-pips"></div>
+            <div style="font-size:11px;color:var(--texte-dim);"><span id="home-comm-count">0</span>/5 fragments révélés par la communauté</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tes meilleurs scores (perso) -->
+      <div class="hub-accordion-item" id="hub-acc-scores-item">
+        <button class="hub-accordion-header" onclick="toggleHubAccordion('hub-acc-scores')">
+          <span class="hub-accordion-header-title">🏅 Tes meilleurs scores</span>
+          <span class="hub-accordion-chevron">›</span>
+        </button>
+        <div class="hub-accordion-body" id="hub-acc-scores">
+          <div class="leaderboard-wrap" id="home-leaderboard" style="margin-top:0;">
+            <div id="home-lb-rows"></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /hub-accordion -->
+
     </div><!-- /hub-col-right -->
     </div><!-- /hub-columns -->
+
+    <!-- CTA dominant : reprendre ou démarrer l'enquête (paysage, pleine largeur) -->
+    <div class="card hub-cta-card">
+      <div class="hub-cta-left">
+        <div class="brief" id="hub-brief">
+          <strong>BRIEFING :</strong> Entre 2008 et 2011, Satoshi a laissé des traces écrites sur plusieurs forums et listes de diffusion bien réels — et toujours archivés aujourd'hui.<br><br>
+          21 étapes t'attendent, de plus en plus corsées : trouver un mot caché, déchiffrer un message, déjouer un piège... Chaque preuve validée te rapporte des <strong>sats virtuels</strong> dans ton wallet.<br><br>
+          <span class="warn">📡 Ce jeu va ouvrir de vrais liens externes (metzdowd.com, bitcointalk.org, etc.). Connexion internet et un peu de lecture nécessaires à chaque étape.</span>
+        </div>
+      </div>
+      <div class="hub-cta-right">
+        <button class="hub-cta-main" id="hub-cta-main" onclick="handleHubMainCta()">🚀 Commencer l'enquête</button>
+        <div class="hub-cta-sub" id="hub-cta-sub" style="display:none;"></div>
+        <div class="hub-cta-secondary-row" id="hub-cta-secondary-row" style="display:none;">
+          <button class="hub-cta-secondary" onclick="handleHubNewInvestigation()">Démarrer une nouvelle enquête à la place</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ============ ÉCRAN ÉNIGMES COMMUNAUTAIRES ============ -->
@@ -9232,6 +9374,14 @@
     `).join("");
   }
 
+  // ===================== ACCORDÉON DASHBOARD =====================
+  window.toggleHubAccordion = function(bodyId){
+    const body = document.getElementById(bodyId);
+    if(!body) return;
+    const item = body.closest(".hub-accordion-item");
+    if(item) item.classList.toggle("open");
+  };
+
   function refreshHomeLB(){
     const lb = loadLeaderboard(LB_KEY);
     renderLeaderboard(lb, "home-lb-rows");
@@ -9279,7 +9429,7 @@
         const satsCount = (r.sats || 0).toLocaleString("fr-FR");
         const isMe = !!(myUid && r.__uid === myUid);
         if(isMe) myIndex = i;
-        return '<div class="wlb-row' + (isMe ? " wlb-me" : "") + '">'
+        return '<div class="wlb-row' + (isMe ? " wlb-me" : "") + (rankCls[i] ? " " + rankCls[i] : "") + '">'
           + '<div class="wlb-rank ' + (rankCls[i] || "") + '">' + (rankEmojis[i] || ("#" + (i + 1))) + '</div>'
           + '<div class="wlb-pseudo">' + pseudo + (isMe ? '<span class="wlb-you-tag">Toi</span>' : "") + '</div>'
           + '<div class="wlb-sats">' + satsCount + ' sats</div>'
