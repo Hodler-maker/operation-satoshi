@@ -4420,7 +4420,7 @@
     <!-- Section Fusion -->
     <div class="fusion-section">
       <div class="fusion-section-title">🔨 Atelier de Fusion</div>
-      <div class="fusion-section-sub">Cumule 3 exemplaires d'une même carte pour la forger en une version supérieure.</div>
+      <div class="fusion-section-sub">Cumule 3 cartes du même rang (bronze, argent ou or) — même de personnages différents — pour les forger en une version supérieure.</div>
       <div class="fusion-rules">
         <div class="fusion-rule"><span>⚙️ 3× Bronze</span><span class="fusion-rule-arrow">→</span><span>🥈 Argent (+10% XP)</span></div>
         <div class="fusion-rule"><span>🥈 3× Argent</span><span class="fusion-rule-arrow">→</span><span>🏆 Or (+20% XP)</span></div>
@@ -7622,21 +7622,27 @@
     return pool[pool.length-1][0];
   }
 
-  function pickCardOfRarity(rarity, alreadyPicked){
-    // Priorité : cartes de cette rareté non possédées et pas déjà tirées dans ce pack
-    const fresh = cards.filter(c => c.rarity === rarity && !alreadyPicked.includes(c.id) && !ownedCards.includes(c.id));
-    if(fresh.length) return fresh[Math.floor(Math.random()*fresh.length)];
+  // Tirage pondéré : favorise les cartes non encore possédées (x3) sans jamais
+  // exclure totalement les doublons — sinon impossible d'obtenir 2+ exemplaires
+  // d'une carte tant qu'on n'a pas TOUTES les cartes de sa rareté (bug corrigé).
+  function weightedCardPick(pool){
+    if(!pool.length) return null;
+    const weighted = [];
+    pool.forEach(c => {
+      const weight = ownedCards.includes(c.id) ? 1 : 3;
+      for(let i = 0; i < weight; i++) weighted.push(c);
+    });
+    return weighted[Math.floor(Math.random() * weighted.length)];
+  }
 
+  function pickCardOfRarity(rarity, alreadyPicked){
     const pool = cards.filter(c => c.rarity === rarity && !alreadyPicked.includes(c.id));
-    if(!pool.length){
-      // fallback : any not picked, en priorisant les cartes non possédées
-      const freshFallback = cards.filter(c => !alreadyPicked.includes(c.id) && !ownedCards.includes(c.id));
-      if(freshFallback.length) return freshFallback[Math.floor(Math.random()*freshFallback.length)];
-      const fallback = cards.filter(c => !alreadyPicked.includes(c.id));
-      if(!fallback.length) return null;
-      return fallback[Math.floor(Math.random()*fallback.length)];
-    }
-    return pool[Math.floor(Math.random()*pool.length)];
+    if(pool.length) return weightedCardPick(pool);
+
+    // fallback : plus aucune carte de cette rareté dispo dans ce pack, on pioche ailleurs
+    const fallback = cards.filter(c => !alreadyPicked.includes(c.id));
+    if(!fallback.length) return null;
+    return weightedCardPick(fallback);
   }
 
   function generatePackCards(packType){
@@ -7936,12 +7942,21 @@
     renderCardGridFinale();
   }
 
-  // Vérifie si une carte peut être fusionnée (3 exemplaires, pas légendaire)
+  // Total d'exemplaires disponibles pour un rang donné, toutes cartes confondues
+  // (permet de fusionner des cartes d'auteurs différents tant qu'elles sont du même rang)
+  function getRankTotal(rank){
+    return Object.values(cardQuantities).reduce(function(sum, e){
+      return sum + (e && e.fusionLevel === rank ? (e.qty || 0) : 0);
+    }, 0);
+  }
+
+  // Vérifie si une carte peut être fusionnée : il faut 3 exemplaires au total
+  // du même rang (bronze/argent/or), peu importe de quelles cartes ils viennent.
   function canFuse(cardId){
     const entry = cardQuantities[cardId];
     if(!entry) return false;
     if(entry.fusionLevel === 'legendaire') return false;
-    return (entry.qty || 0) >= 3;
+    return getRankTotal(entry.fusionLevel) >= 3;
   }
 
   /* ====== MOTEUR DE FUSION PREMIUM (BitcoinCardFusion) ====== */
@@ -8896,7 +8911,25 @@
       onPhase: (phase) => {
         if(phase === 'explosion'){
           // Applique les effets de jeu au moment de l'explosion (comme avant, ~1.3s)
-          cardQuantities[cardId].qty = (cardQuantities[cardId].qty || 0) - 3;
+          // Consomme 3 exemplaires du même rang au total, en piochant d'abord sur la
+          // carte ciblée puis, si besoin, sur les autres cartes de même rang possédées
+          // (fusion inter-auteurs : plus besoin d'avoir 3× la même carte).
+          let need = 3;
+          const ownQty = cardQuantities[cardId].qty || 0;
+          const takeOwn = Math.min(ownQty, need);
+          cardQuantities[cardId].qty = ownQty - takeOwn;
+          need -= takeOwn;
+          if(need > 0){
+            const others = Object.keys(cardQuantities)
+              .filter(function(id){ return Number(id) !== cardId && cardQuantities[id].fusionLevel === currentLevel && (cardQuantities[id].qty || 0) > 0; })
+              .sort(function(a, b){ return (cardQuantities[b].qty || 0) - (cardQuantities[a].qty || 0); });
+            for(let i = 0; i < others.length && need > 0; i++){
+              const id = others[i];
+              const take = Math.min(cardQuantities[id].qty, need);
+              cardQuantities[id].qty -= take;
+              need -= take;
+            }
+          }
           cardQuantities[cardId].fusionLevel = nextLevel;
           fusionCount++;
           saveFusion();
@@ -8953,14 +8986,14 @@
       return;
     }
     el.innerHTML = fusible.map(c => {
-      const qty = getFusionQty(c.id);
       const lvl = getFusionLevel(c.id);
+      const poolQty = getRankTotal(lvl);
       const next = FUSION_NEXT[lvl];
       return `<div style="display:flex;align-items:center;gap:10px;background:rgba(240,185,11,0.06);border:1px solid rgba(240,185,11,0.2);border-radius:12px;padding:10px 12px;">
         <span style="font-size:24px;">${c.icon}</span>
         <div style="flex:1;">
           <div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--texte);">${c.name}</div>
-          <div style="font-size:11px;color:var(--texte-dim);">${FUSION_LABEL[lvl]} · ${qty} exemplaire${qty>1?'s':''} · → ${FUSION_LABEL[next]}</div>
+          <div style="font-size:11px;color:var(--texte-dim);">${FUSION_LABEL[lvl]} · ${poolQty} carte${poolQty>1?'s':''} de ce rang · → ${FUSION_LABEL[next]}</div>
         </div>
         <button class="c3d-fusion-btn" style="width:auto;padding:7px 14px;" onclick="fuseCard(${c.id}, event)">🔨 Fusionner</button>
       </div>`;
@@ -9714,11 +9747,12 @@
         }
       }
 
-      const fusible = owned && canFuse(c.id);
       const qty = owned ? getFusionQty(c.id) : 0;
       const fusionLvl = owned ? getFusionLevel(c.id) : 'bronze';
+      const rankPoolQty = owned ? getRankTotal(fusionLvl) : 0;
+      const fusible = owned && canFuse(c.id);
       const fusionBtn = (owned && fusible)
-        ? `<button class="c3d-fusion-btn" onclick="event.stopPropagation();fuseCard(${c.id}, event)">🔨 Fusionner (×${qty}/3)</button>`
+        ? `<button class="c3d-fusion-btn" onclick="event.stopPropagation();fuseCard(${c.id}, event)">🔨 Fusionner (×${rankPoolQty}/3)</button>`
         : '';
 
       const wrap = document.createElement('div');
@@ -9749,7 +9783,7 @@
             <div class="c3d-back-name">${c.name}</div>
             <div class="c3d-back-desc">${isSatoshi ? 'Créateur de Bitcoin. Identité inconnue. Actif 2008–2011.' : c.desc}</div>
             <div class="c3d-back-power">${c.powerIcon} ${c.powerDesc}</div>
-            ${owned && qty > 0 ? `<div style="font-size:10px;color:var(--texte-dim);text-align:center;margin-top:4px;">${qty >= 3 ? '⚗️ Fusion disponible !' : `${qty}/3 exemplaires`}</div>` : ''}
+            ${owned && qty > 0 ? `<div style="font-size:10px;color:var(--texte-dim);text-align:center;margin-top:4px;">${rankPoolQty >= 3 ? '⚗️ Fusion disponible !' : `${rankPoolQty}/3 cartes de rang ${FUSION_LABEL[fusionLvl]}`}</div>` : ''}
             ${fusionBtn}
             ${backBtn}
             <div class="c3d-back-cta">Tap pour retourner</div>
