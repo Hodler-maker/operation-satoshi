@@ -2925,6 +2925,70 @@
   .adv-dossiers-entry-sub { font-size:12px;color:var(--texte-dim);line-height:1.4;margin-top:2px; }
   .adv-dossiers-entry-arrow { font-size:20px;color:var(--violet);flex-shrink:0; }
 
+  /* ====== MANIFESTE CHIFFRÉ (Adam Back) — clé d'accès à la Partie 2 ====== */
+  .adam-manifesto{
+    position:relative;
+    background:linear-gradient(160deg, rgba(20,10,0,0.55), rgba(10,6,2,0.75));
+    border:1px solid rgba(240,185,11,0.28);
+    border-radius:16px;
+    padding:18px 18px 16px;
+    margin-top:18px;
+    overflow:hidden;
+  }
+  .adam-manifesto::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
+    pointer-events:none;
+  }
+  .adam-manifesto-header{
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;
+    margin-bottom:12px;
+  }
+  .adam-manifesto-flag{
+    font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+    color:var(--or); letter-spacing:0.08em;
+    background:rgba(240,185,11,0.1); border:1px solid rgba(240,185,11,0.3);
+    padding:4px 8px;border-radius:6px;
+  }
+  .adam-manifesto-sig{ font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--texte-dim); }
+  .adam-manifesto-text{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px; line-height:1.85; color:var(--texte-dim);
+    position:relative; z-index:1;
+  }
+  .adam-manifesto-text p{ margin-bottom:6px; }
+  .adam-manifesto-text .am-letter{
+    color:var(--or); font-weight:700;
+    text-shadow:0 0 8px rgba(240,185,11,0.5);
+  }
+  .adam-manifesto-hint{
+    font-size:11.5px; color:var(--texte-dim); font-style:italic;
+    margin:12px 0 10px; opacity:0.75;
+  }
+  .adam-manifesto-form{
+    display:flex; gap:8px; flex-wrap:wrap;
+  }
+  .adam-manifesto-form input{
+    flex:1; min-width:160px;
+    font-family:'JetBrains Mono',monospace; letter-spacing:0.12em; text-transform:uppercase;
+    background:rgba(255,255,255,0.04); border:1px solid var(--card-border);
+    border-radius:10px; padding:11px 12px; color:var(--texte); font-size:13px;
+  }
+  .adam-manifesto-form input:focus{ outline:none; border-color:rgba(240,185,11,0.5); }
+  .adam-manifesto-form button{ flex-shrink:0; }
+  .adam-code-feedback{
+    font-size:12px; margin-top:10px; min-height:16px; font-weight:600;
+  }
+  .adam-code-feedback.ok{ color:var(--vert); }
+  .adam-code-feedback.err{ color:var(--rouge); }
+  @keyframes adamShake{
+    0%,100%{transform:translateX(0);}
+    20%{transform:translateX(-6px);} 40%{transform:translateX(6px);}
+    60%{transform:translateX(-4px);} 80%{transform:translateX(4px);}
+  }
+  .adam-manifesto-form input.shake{ animation:adamShake .4s ease-in-out; border-color:rgba(239,68,68,0.6); }
+
   .adv-level-card {
     display:flex;align-items:center;gap:14px;
     padding:16px;border-radius:16px;margin-bottom:10px;cursor:pointer;
@@ -5534,16 +5598,44 @@
         <div id="owned-card-chips" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
       </div>
 
-      <!-- Partie 2 : Dossiers On-Chain Avancés (débloqué à 20/21 preuves min.) -->
+      <!-- Partie 2 : Dossiers On-Chain Avancés — accès via le manifeste chiffré d'Adam Back (dès 18/21 preuves) -->
       <div id="adv-dossiers-unlock-block" style="display:none;margin:14px 0;">
-        <div style="font-size:11px;color:var(--or);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-bottom:8px;text-align:center;">🔓 Partie 2 débloquée</div>
-        <div class="adv-dossiers-entry" onclick="openAdvancedDossiers()">
-          <div class="adv-dossiers-entry-icon">🗂️</div>
-          <div class="adv-dossiers-entry-text">
-            <div class="adv-dossiers-entry-title">Dossiers On-Chain Avancés</div>
-            <div class="adv-dossiers-entry-sub">Pour les agents qui maîtrisent déjà les bases — BIP, GitHub, UTXO, Lightning, et plus.</div>
+
+        <!-- État 1 : message intercepté à décoder -->
+        <div id="adam-manifesto-block" class="adam-manifesto">
+          <div class="adam-manifesto-header">
+            <span class="adam-manifesto-flag">📡 SIGNAL INTERCEPTÉ</span>
+            <span class="adam-manifesto-sig">— signé A.B., 1997</span>
           </div>
-          <div class="adv-dossiers-entry-arrow">→</div>
+          <div class="adam-manifesto-text">
+            <p><span class="am-letter">H</span>onorer la preuve, pas la confiance : voilà ce qui a tout changé.</p>
+            <p><span class="am-letter">A</span>vant Bitcoin, il fallait déjà résoudre un problème : comment prouver qu'on a travaillé, sans autorité pour le certifier ?</p>
+            <p><span class="am-letter">S</span>ans intermédiaire, sans banque, sans permission — c'est ainsi que j'ai conçu mon système.</p>
+            <p><span class="am-letter">H</span>achez, encore et encore, jusqu'à trouver la preuve : c'est le coût qui décourage les indésirables.</p>
+            <p><span class="am-letter">C</span>haque cycle de calcul devient un sceau, un coût réel gravé dans le silicium.</p>
+            <p><span class="am-letter">A</span>près moi, un certain Satoshi a repris cette idée et l'a transformée en monnaie.</p>
+            <p><span class="am-letter">S</span>i tu es arrivé jusqu'ici, c'est que tu comprends déjà la valeur du travail prouvé.</p>
+            <p><span class="am-letter">H</span>onore ce principe, et le second dossier s'ouvrira à toi.</p>
+          </div>
+          <div class="adam-manifesto-hint">🔍 Un cryptographe ne signe jamais un message au hasard...</div>
+          <div class="adam-manifesto-form">
+            <input type="text" id="adam-code-input" placeholder="Entrer le code caché" maxlength="16" autocomplete="off" onkeydown="if(event.key==='Enter')checkAdamManifestoCode();">
+            <button class="btn btn-gold" onclick="checkAdamManifestoCode()">🔓 Déverrouiller</button>
+          </div>
+          <div id="adam-code-feedback" class="adam-code-feedback"></div>
+        </div>
+
+        <!-- État 2 : accès débloqué -->
+        <div id="adv-dossiers-entry-wrap" style="display:none;">
+          <div style="font-size:11px;color:var(--or);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin:14px 0 8px;text-align:center;">🔓 Partie 2 débloquée</div>
+          <div class="adv-dossiers-entry" onclick="openAdvancedDossiers()">
+            <div class="adv-dossiers-entry-icon">🗂️</div>
+            <div class="adv-dossiers-entry-text">
+              <div class="adv-dossiers-entry-title">Dossiers On-Chain Avancés</div>
+              <div class="adv-dossiers-entry-sub">Pour les agents qui maîtrisent déjà les bases — BIP, GitHub, UTXO, Lightning, et plus.</div>
+            </div>
+            <div class="adv-dossiers-entry-arrow">→</div>
+          </div>
         </div>
       </div>
 
@@ -9558,6 +9650,9 @@
     mult += countPower("sats_bonus_pct") * 0.10;
     // Collection Origines: +50%
     if(completedCollections.includes("origines")) mult += 0.50;
+    // Bonus de fusion : le niveau de fusion le plus élevé possédé (Argent/Or/Légendaire)
+    // donne un bonus supplémentaire sur toutes les récompenses en sats.
+    mult += getFusionXpBonus() / 100;
     return mult;
   }
 
@@ -9605,6 +9700,8 @@
     if(completedCollections.includes("origines")) powers.push({ icon: "₿", label: "Pack Origines +50%", gold: true });
     if(completedCollections.includes("cypherpunks")) powers.push({ icon: "🔐", label: "Pack Cypherpunks: indices gratuits", gold: true });
     if(completedCollections.includes("devs")) powers.push({ icon: "💻", label: "Pack Devs +15s", gold: true });
+    const fusionBonus = getFusionXpBonus();
+    if(fusionBonus > 0) powers.push({ icon: "🔨", label: `Fusion: +${fusionBonus}% sats`, gold: true });
 
     if(powers.length === 0){ wrap.style.display = "none"; return; }
     wrap.style.display = "flex";
@@ -11310,7 +11407,8 @@ const ADVANCED_MISSIONS = [
     advSats: 0,
     advRelics: [],          // relicId débloqués
     dossier22Unlocked: false,
-    dossier22Done: false
+    dossier22Done: false,
+    codeSolved: false       // manifeste d'Adam Back déchiffré (clé d'accès à la Partie 2)
   };
 
   let advCurrentLevel = 1;       // niveau actuellement parcouru (1 à 4), 5 = dossier secret
@@ -11333,7 +11431,43 @@ const ADVANCED_MISSIONS = [
       advState.advRelics = data.advRelics || [];
       advState.dossier22Unlocked = !!data.dossier22Unlocked;
       advState.dossier22Done = !!data.dossier22Done;
+      advState.codeSolved = !!data.codeSolved;
     } catch(e) {}
+  }
+
+  // ---------- MANIFESTE CHIFFRÉ D'ADAM BACK (clé d'accès à la Partie 2) ----------
+  // Le mot caché est formé par la première lettre de chaque ligne du manifeste : HASHCASH
+  const ADAM_MANIFESTO_CODE = "HASHCASH";
+
+  function checkAdamManifestoCode(){
+    const input = document.getElementById('adam-code-input');
+    const feedback = document.getElementById('adam-code-feedback');
+    if(!input) return;
+    const guess = input.value.trim().toUpperCase().replace(/\s+/g, '');
+    if(guess === ADAM_MANIFESTO_CODE){
+      advLoadState();
+      advState.codeSolved = true;
+      advSaveState();
+      feedback.textContent = "✅ Code accepté. Le second dossier s'ouvre à toi.";
+      feedback.className = "adam-code-feedback ok";
+      if(typeof sfxCorrect === "function") sfxCorrect();
+      sats += 500;
+      if(typeof updateWalletDisplay === "function") updateWalletDisplay();
+      if(typeof popSats === "function") popSats(500);
+      const manifestoBlock = document.getElementById('adam-manifesto-block');
+      const entryWrap = document.getElementById('adv-dossiers-entry-wrap');
+      setTimeout(function(){
+        if(manifestoBlock) manifestoBlock.style.display = 'none';
+        if(entryWrap) entryWrap.style.display = 'block';
+      }, 700);
+    } else {
+      feedback.textContent = "❌ Ce n'est pas le bon code. Relis chaque ligne attentivement...";
+      feedback.className = "adam-code-feedback err";
+      input.classList.remove('shake');
+      void input.offsetWidth;
+      input.classList.add('shake');
+      if(typeof sfxWrong === "function") sfxWrong();
+    }
   }
 
   function advMissionsOfLevel(level){
@@ -12339,7 +12473,24 @@ const ADVANCED_MISSIONS = [
     // Partie 2 : Dossiers On-Chain Avancés — débloqués à partir de 18 preuves sur 21
     const advUnlockBlock = document.getElementById('adv-dossiers-unlock-block');
     if(advUnlockBlock){
-      advUnlockBlock.style.display = (score >= 18) ? 'block' : 'none';
+      const eligible = score >= 18;
+      advUnlockBlock.style.display = eligible ? 'block' : 'none';
+      if(eligible){
+        advLoadState();
+        const manifestoBlock = document.getElementById('adam-manifesto-block');
+        const entryWrap = document.getElementById('adv-dossiers-entry-wrap');
+        const feedback = document.getElementById('adam-code-feedback');
+        const input = document.getElementById('adam-code-input');
+        if(advState.codeSolved){
+          if(manifestoBlock) manifestoBlock.style.display = 'none';
+          if(entryWrap) entryWrap.style.display = 'block';
+        } else {
+          if(manifestoBlock) manifestoBlock.style.display = 'block';
+          if(entryWrap) entryWrap.style.display = 'none';
+          if(feedback){ feedback.textContent = ''; feedback.className = 'adam-code-feedback'; }
+          if(input) input.value = '';
+        }
+      }
     }
 
     // Save to leaderboard
