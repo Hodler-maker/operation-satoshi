@@ -1,0 +1,21 @@
+{
+  "name": "La vraie chasse aux indices - Satoshi",
+  "short_name": "Satoshi",
+  "description": "Chasse aux indices Bitcoin / Web3",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d1030",
+  "theme_color": "#0d1030",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
