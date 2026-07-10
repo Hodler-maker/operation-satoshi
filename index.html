@@ -3669,6 +3669,79 @@
   }
   .logout-toggle:hover{background:rgba(239,68,68,0.38);border-color:rgba(239,68,68,0.9);transform:scale(1.08);box-shadow:0 0 20px rgba(239,68,68,0.5), 0 4px 12px rgba(0,0,0,0.35);}
 
+  /* ====== MARKETPLACE / ÉCHANGE DE CARTES ====== */
+  .trade-toggle{
+    position:fixed; top:14px; left:64px; z-index:50;
+    width:48px;height:48px;display:flex;align-items:center;justify-content:center;
+    font-size:24px;border-radius:50%;
+    background:radial-gradient(circle, rgba(34,197,94,0.18) 0%, rgba(34,197,94,0.06) 55%, transparent 75%);
+    border:none;box-shadow:0 0 10px rgba(34,197,94,0.25);
+    cursor:pointer;backdrop-filter:none;
+    transition:transform .15s ease-out;
+  }
+  .trade-toggle:hover{transform:scale(1.1);}
+  .trade-header{
+    display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px;
+  }
+  .trade-publish-btn{
+    width:100%;padding:14px;border:none;border-radius:14px;margin-bottom:18px;
+    font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;cursor:pointer;
+    background:linear-gradient(135deg,var(--vert),#4ade80);color:#04210f;
+    box-shadow:0 4px 20px rgba(34,197,94,0.35);
+    transition:transform .15s ease-out;
+  }
+  .trade-publish-btn:active{transform:scale(0.97);}
+  .trade-section-title{
+    font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;
+    color:var(--or);margin:18px 0 10px;
+  }
+  .trade-list{display:flex;flex-direction:column;gap:10px;}
+  .trade-item{
+    background:var(--card);border:1px solid var(--card-border);border-radius:14px;
+    padding:14px;display:flex;align-items:center;gap:12px;
+  }
+  .trade-offerer{font-size:11px;color:var(--texte-dim);margin-bottom:6px;}
+  .trade-card-chip{
+    display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:10px;
+    background:rgba(255,255,255,0.04);border:1px solid var(--card-border);
+    font-size:13px;font-weight:600;white-space:nowrap;
+  }
+  .trade-card-chip.give{border-color:rgba(34,197,94,0.35);color:var(--vert);}
+  .trade-card-chip.want{border-color:rgba(240,185,11,0.35);color:var(--or);}
+  .trade-item-arrow{font-size:18px;color:var(--texte-dim);}
+  .trade-actions{display:flex;gap:8px;flex-shrink:0;}
+  .trade-accept{
+    padding:9px 14px;border:none;border-radius:10px;cursor:pointer;
+    font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;
+    background:linear-gradient(135deg,var(--vert),#4ade80);color:#04210f;
+  }
+  .trade-accept:disabled{opacity:0.4;cursor:not-allowed;}
+  .trade-cancel{
+    padding:9px 14px;border:1px solid var(--card-border);border-radius:10px;cursor:pointer;
+    background:transparent;color:var(--texte-dim);font-size:13px;font-weight:600;
+  }
+  .trade-empty{font-size:13px;color:var(--texte-dim);text-align:center;padding:14px 0;}
+  .trade-publish-overlay{
+    position:fixed;inset:0;z-index:200;display:none;
+    align-items:center;justify-content:center;padding:20px;
+    background:rgba(5,8,16,0.7);backdrop-filter:blur(4px);
+  }
+  .trade-publish-overlay.show{display:flex;}
+  .trade-publish-modal{
+    width:100%;max-width:420px;background:var(--bg2);border:1px solid var(--card-border);
+    border-radius:20px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,0.5);
+  }
+  .trade-publish-modal h3{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;margin-bottom:4px;}
+  .trade-publish-modal .shop-sub{font-size:13px;color:var(--texte-dim);margin-bottom:16px;}
+  .trade-field{margin-bottom:14px;}
+  .trade-field label{display:block;font-size:12px;color:var(--texte-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em;}
+  .trade-field select{
+    width:100%;padding:13px 14px;border-radius:12px;background:rgba(0,0,0,0.3);
+    border:1.5px solid var(--card-border);color:var(--texte);font-size:14px;font-family:'Inter',sans-serif;
+    outline:none;
+  }
+  .trade-field select:focus{border-color:var(--violet);}
+
 </style>
 </head>
 <body>
@@ -3696,6 +3769,7 @@
     </g>
   </svg>
 </div>
+<div class="trade-toggle" id="trade-toggle" onclick="openTradeScreen()" title="Marketplace des cartes" style="display:none;">🤝</div>
 <div class="wrap">
 
   <!-- ============ ÉCRAN AUTH : CONNEXION / INSCRIPTION ============ -->
@@ -5638,44 +5712,16 @@
         <div id="owned-card-chips" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
       </div>
 
-      <!-- Partie 2 : Dossiers On-Chain Avancés — accès via le manifeste chiffré d'Adam Back (dès 18/21 preuves) -->
+      <!-- Partie 2 : Dossiers On-Chain Avancés — le déchiffrement se fait désormais dans un pop-up juste après la victoire sur le Boss Final (voir #adv-dossiers-popup-overlay), plus ici. On laisse juste un accès rapide si déjà débloqué. -->
       <div id="adv-dossiers-unlock-block" style="display:none;margin:14px 0;">
-
-        <!-- État 1 : message intercepté à décoder -->
-        <div id="adam-manifesto-block" class="adam-manifesto">
-          <div class="adam-manifesto-header">
-            <span class="adam-manifesto-flag">📡 SIGNAL INTERCEPTÉ</span>
-            <span class="adam-manifesto-sig">— signé A.B., 1997</span>
+        <div style="font-size:11px;color:var(--or);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin:0 0 8px;text-align:center;">🔓 Partie 2 débloquée</div>
+        <div class="adv-dossiers-entry" onclick="openAdvancedDossiers()">
+          <div class="adv-dossiers-entry-icon">🗂️</div>
+          <div class="adv-dossiers-entry-text">
+            <div class="adv-dossiers-entry-title">Dossiers On-Chain Avancés</div>
+            <div class="adv-dossiers-entry-sub">Pour les agents qui maîtrisent déjà les bases — BIP, GitHub, UTXO, Lightning, et plus.</div>
           </div>
-          <div class="adam-manifesto-text">
-            <p><span class="am-letter">H</span>onorer la preuve, pas la confiance : voilà ce qui a tout changé.</p>
-            <p><span class="am-letter">A</span>vant Bitcoin, il fallait déjà résoudre un problème : comment prouver qu'on a travaillé, sans autorité pour le certifier ?</p>
-            <p><span class="am-letter">S</span>ans intermédiaire, sans banque, sans permission — c'est ainsi que j'ai conçu mon système.</p>
-            <p><span class="am-letter">H</span>achez, encore et encore, jusqu'à trouver la preuve : c'est le coût qui décourage les indésirables.</p>
-            <p><span class="am-letter">C</span>haque cycle de calcul devient un sceau, un coût réel gravé dans le silicium.</p>
-            <p><span class="am-letter">A</span>près moi, un certain Satoshi a repris cette idée et l'a transformée en monnaie.</p>
-            <p><span class="am-letter">S</span>i tu es arrivé jusqu'ici, c'est que tu comprends déjà la valeur du travail prouvé.</p>
-            <p><span class="am-letter">H</span>onore ce principe, et le second dossier s'ouvrira à toi.</p>
-          </div>
-          <div class="adam-manifesto-hint">🔍 Un cryptographe ne signe jamais un message au hasard...</div>
-          <div class="adam-manifesto-form">
-            <input type="text" id="adam-code-input" placeholder="Entrer le code caché" maxlength="16" autocomplete="off" onkeydown="if(event.key==='Enter')checkAdamManifestoCode();">
-            <button class="btn btn-gold" onclick="checkAdamManifestoCode()">🔓 Déverrouiller</button>
-          </div>
-          <div id="adam-code-feedback" class="adam-code-feedback"></div>
-        </div>
-
-        <!-- État 2 : accès débloqué -->
-        <div id="adv-dossiers-entry-wrap" style="display:none;">
-          <div style="font-size:11px;color:var(--or);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin:14px 0 8px;text-align:center;">🔓 Partie 2 débloquée</div>
-          <div class="adv-dossiers-entry" onclick="openAdvancedDossiers()">
-            <div class="adv-dossiers-entry-icon">🗂️</div>
-            <div class="adv-dossiers-entry-text">
-              <div class="adv-dossiers-entry-title">Dossiers On-Chain Avancés</div>
-              <div class="adv-dossiers-entry-sub">Pour les agents qui maîtrisent déjà les bases — BIP, GitHub, UTXO, Lightning, et plus.</div>
-            </div>
-            <div class="adv-dossiers-entry-arrow">→</div>
-          </div>
+          <div class="adv-dossiers-entry-arrow">→</div>
         </div>
       </div>
 
@@ -5695,6 +5741,47 @@
     <p class="signature">🔗 Opération Satoshi — Mission Web3 éducative, basée sur des archives réelles</p>
   </div>
 
+  <!-- ============ ÉCRAN MARKETPLACE (ÉCHANGE DE CARTES) ============ -->
+  <div class="screen" id="screen-trade">
+    <div class="trade-header">
+      <span class="comm-link-back" onclick="showScreen('screen-accueil')">← Retour</span>
+      <span class="badge">🤝 Marketplace</span>
+    </div>
+    <h2 style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin-bottom:4px;">Échange de cartes</h2>
+    <p style="font-size:13.5px;color:var(--texte-dim);line-height:1.6;margin-bottom:16px;">Propose une carte contre une autre, ou fais un don. Les cartes des fondateurs (Satoshi, Hal, Szabo) ne sont pas échangeables.</p>
+    <button class="trade-publish-btn" onclick="rcOpenPublishModal()">➕ Publier une offre</button>
+
+    <div class="trade-section-title">📡 Offres du marché</div>
+    <div class="trade-list" id="trade-list">
+      <div class="trade-empty">Chargement des offres…</div>
+    </div>
+
+    <div class="trade-section-title">📦 Mes offres</div>
+    <div class="trade-list" id="my-trade-list">
+      <div class="trade-empty">Tu n'as pas encore publié d'offre.</div>
+    </div>
+  </div>
+
+  <!-- ============ MODAL PUBLICATION D'OFFRE ============ -->
+  <div class="trade-publish-overlay" id="trade-publish-overlay">
+    <div class="trade-publish-modal">
+      <h3>🤝 Publier une offre</h3>
+      <p class="shop-sub">Choisis la carte que tu donnes et celle que tu veux en retour.</p>
+      <div class="trade-field">
+        <label for="trade-give-select">Je donne</label>
+        <select id="trade-give-select"></select>
+      </div>
+      <div class="trade-field">
+        <label for="trade-want-select">Je veux (en échange)</label>
+        <select id="trade-want-select"></select>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" style="flex:1;" onclick="rcClosePublishModal()">Annuler</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="rcPublishTrade()">Publier l'offre</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ============ MODAL AVERTISSEMENT TIMER ============ -->
   <div class="shop-overlay" id="timer-warning-overlay" style="align-items:center;justify-content:center;">
     <div class="shop-panel" style="border-radius:20px;max-width:340px;text-align:center;padding:28px 24px;">
@@ -5702,6 +5789,53 @@
       <h3 style="font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;margin-bottom:8px;color:var(--or);">Chrono activé !</h3>
       <p style="font-size:14.5px;line-height:1.65;color:var(--texte-dim);margin-bottom:20px;">À partir de maintenant, chaque étape est <strong style="color:var(--texte);">chronométrée à 30 secondes</strong>. Si le temps s'écoule, la réponse est révélée et tu passes à la suite sans gagner de sats. Reste concentré.</p>
       <button class="btn btn-primary" id="timer-warning-btn" onclick="dismissTimerWarning()">⚡ Compris, j'suis prêt !</button>
+    </div>
+  </div>
+
+  <!-- ============ MODAL — SIGNAL INTERCEPTÉ APRÈS LE BOSS FINAL (manifeste chiffré d'Adam Back) ============ -->
+  <div class="shop-overlay" id="adv-dossiers-popup-overlay" style="align-items:center;justify-content:center;">
+    <div class="shop-panel" style="max-width:440px;border-radius:20px;">
+
+      <!-- État 1 : message intercepté à décoder -->
+      <div id="adam-manifesto-block" class="adam-manifesto">
+        <div class="adam-manifesto-header">
+          <span class="adam-manifesto-flag">📡 SIGNAL INTERCEPTÉ</span>
+          <span class="adam-manifesto-sig">— signé A.B., 1997</span>
+        </div>
+        <div class="adam-manifesto-text">
+          <p><span class="am-letter">H</span>onorer la preuve, pas la confiance : voilà ce qui a tout changé.</p>
+          <p><span class="am-letter">A</span>vant Bitcoin, il fallait déjà résoudre un problème : comment prouver qu'on a travaillé, sans autorité pour le certifier ?</p>
+          <p><span class="am-letter">S</span>ans intermédiaire, sans banque, sans permission — c'est ainsi que j'ai conçu mon système.</p>
+          <p><span class="am-letter">H</span>achez, encore et encore, jusqu'à trouver la preuve : c'est le coût qui décourage les indésirables.</p>
+          <p><span class="am-letter">C</span>haque cycle de calcul devient un sceau, un coût réel gravé dans le silicium.</p>
+          <p><span class="am-letter">A</span>près moi, un certain Satoshi a repris cette idée et l'a transformée en monnaie.</p>
+          <p><span class="am-letter">S</span>i tu es arrivé jusqu'ici, c'est que tu comprends déjà la valeur du travail prouvé.</p>
+          <p><span class="am-letter">H</span>onore ce principe, et le second dossier s'ouvrira à toi.</p>
+        </div>
+        <div class="adam-manifesto-hint">🔍 Un cryptographe ne signe jamais un message au hasard...</div>
+        <div class="adam-manifesto-form">
+          <input type="text" id="adam-code-input" placeholder="Entrer le code caché" maxlength="16" autocomplete="off" onkeydown="if(event.key==='Enter')checkAdamManifestoCode();">
+          <button class="btn btn-gold" onclick="checkAdamManifestoCode()">🔓 Déverrouiller</button>
+        </div>
+        <div id="adam-code-feedback" class="adam-code-feedback"></div>
+        <button class="btn btn-ghost" style="margin-top:14px;width:100%;" onclick="closeAdvDossiersPopup()">Plus tard</button>
+      </div>
+
+      <!-- État 2 : accès débloqué -->
+      <div id="adv-dossiers-entry-wrap" style="display:none;text-align:center;">
+        <div style="font-size:42px;margin-bottom:8px;">🗂️</div>
+        <div style="font-size:11px;color:var(--or);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin:0 0 10px;">🔓 Partie 2 débloquée</div>
+        <div class="adv-dossiers-entry" onclick="openAdvancedDossiers()">
+          <div class="adv-dossiers-entry-icon">🗂️</div>
+          <div class="adv-dossiers-entry-text">
+            <div class="adv-dossiers-entry-title">Dossiers On-Chain Avancés</div>
+            <div class="adv-dossiers-entry-sub">Pour les agents qui maîtrisent déjà les bases — BIP, GitHub, UTXO, Lightning, et plus.</div>
+          </div>
+          <div class="adv-dossiers-entry-arrow">→</div>
+        </div>
+        <button class="btn btn-ghost" style="margin-top:14px;width:100%;" onclick="closeAdvDossiersPopup()">Continuer l'aventure</button>
+      </div>
+
     </div>
   </div>
 
@@ -6082,9 +6216,11 @@
     const profileToggle = document.getElementById("profile-toggle");
     const shopToggle = document.getElementById("shop-toggle");
     const poolToggle = document.getElementById("pool-toggle");
+    const tradeToggle = document.getElementById("trade-toggle");
     if(profileToggle) profileToggle.style.display = "flex";
     if(shopToggle) shopToggle.style.display = "flex";
     if(poolToggle) poolToggle.style.display = "flex";
+    if(tradeToggle) tradeToggle.style.display = "flex";
     if(typeof window.rcLaunchGame === "function") window.rcLaunchGame();
   }
 
@@ -11498,14 +11634,12 @@ const ADVANCED_MISSIONS = [
       feedback.textContent = "✅ Code accepté. Le second dossier s'ouvre à toi.";
       feedback.className = "adam-code-feedback ok";
       if(typeof sfxCorrect === "function") sfxCorrect();
-      sats += 500;
-      if(typeof updateWalletDisplay === "function") updateWalletDisplay();
-      if(typeof popSats === "function") popSats(500);
       const manifestoBlock = document.getElementById('adam-manifesto-block');
       const entryWrap = document.getElementById('adv-dossiers-entry-wrap');
       setTimeout(function(){
         if(manifestoBlock) manifestoBlock.style.display = 'none';
         if(entryWrap) entryWrap.style.display = 'block';
+        if(typeof refreshAdvDossiersBilanBlock === "function") refreshAdvDossiersBilanBlock();
       }, 700);
     } else {
       feedback.textContent = "❌ Ce n'est pas le bon code. Relis chaque ligne attentivement...";
@@ -12038,6 +12172,54 @@ const ADVANCED_MISSIONS = [
     `;
     checkSecretCards();
     sfxSats();
+
+    // Le Boss Final vaincu (bossNum === 2) peut déclencher l'apparition du signal
+    // intercepté d'Adam Back (pop-up, message chiffré à déchiffrer) — pas dans le bilan final.
+    if(bossNum === 2){
+      setTimeout(maybeShowAdvDossiersPopup, 900);
+    }
+  }
+
+  // ---------- POP-UP « SIGNAL INTERCEPTÉ » (Dossiers On-Chain Avancés) ----------
+  function maybeShowAdvDossiersPopup(){
+    if(score < 18) return; // seuls les enquêteurs avec 18/21 preuves ou plus interceptent le signal
+    advLoadState();
+    if(advState.codeSolved) return; // déjà déchiffré lors d'une partie précédente, pas besoin de le repousser
+    openAdvDossiersPopup();
+  }
+
+  function openAdvDossiersPopup(){
+    const overlay = document.getElementById('adv-dossiers-popup-overlay');
+    if(!overlay) return;
+    advLoadState();
+    const manifestoBlock = document.getElementById('adam-manifesto-block');
+    const entryWrap = document.getElementById('adv-dossiers-entry-wrap');
+    const feedback = document.getElementById('adam-code-feedback');
+    const input = document.getElementById('adam-code-input');
+    if(advState.codeSolved){
+      if(manifestoBlock) manifestoBlock.style.display = 'none';
+      if(entryWrap) entryWrap.style.display = 'block';
+    } else {
+      if(manifestoBlock) manifestoBlock.style.display = 'block';
+      if(entryWrap) entryWrap.style.display = 'none';
+      if(feedback){ feedback.textContent = ''; feedback.className = 'adam-code-feedback'; }
+      if(input) input.value = '';
+    }
+    overlay.classList.add('show');
+    if(typeof sfxWhoosh === "function") sfxWhoosh();
+  }
+
+  function closeAdvDossiersPopup(){
+    const overlay = document.getElementById('adv-dossiers-popup-overlay');
+    if(overlay) overlay.classList.remove('show');
+    refreshAdvDossiersBilanBlock();
+  }
+
+  function refreshAdvDossiersBilanBlock(){
+    const block = document.getElementById('adv-dossiers-unlock-block');
+    if(!block) return;
+    advLoadState();
+    block.style.display = advState.codeSolved ? 'block' : 'none';
   }
 
   // ===================== ANCIENS STUBS (compatibilité) =====================
@@ -12517,28 +12699,9 @@ const ADVANCED_MISSIONS = [
     document.getElementById('final-sats').textContent = sats.toLocaleString('fr-FR');
     document.getElementById('final-score-text').textContent = `${score} preuve(s) sur ${total} retrouvées dans les archives réelles`;
 
-    // Partie 2 : Dossiers On-Chain Avancés — débloqués à partir de 18 preuves sur 21
-    const advUnlockBlock = document.getElementById('adv-dossiers-unlock-block');
-    if(advUnlockBlock){
-      const eligible = score >= 18;
-      advUnlockBlock.style.display = eligible ? 'block' : 'none';
-      if(eligible){
-        advLoadState();
-        const manifestoBlock = document.getElementById('adam-manifesto-block');
-        const entryWrap = document.getElementById('adv-dossiers-entry-wrap');
-        const feedback = document.getElementById('adam-code-feedback');
-        const input = document.getElementById('adam-code-input');
-        if(advState.codeSolved){
-          if(manifestoBlock) manifestoBlock.style.display = 'none';
-          if(entryWrap) entryWrap.style.display = 'block';
-        } else {
-          if(manifestoBlock) manifestoBlock.style.display = 'block';
-          if(entryWrap) entryWrap.style.display = 'none';
-          if(feedback){ feedback.textContent = ''; feedback.className = 'adam-code-feedback'; }
-          if(input) input.value = '';
-        }
-      }
-    }
+    // Partie 2 : Dossiers On-Chain Avancés — le déchiffrement se fait dans le pop-up après le Boss Final.
+    // Ici, dans le bilan, on affiche seulement un accès rapide si le code a déjà été déchiffré.
+    refreshAdvDossiersBilanBlock();
 
     // Save to leaderboard
     const lbEntry = {
@@ -14290,6 +14453,297 @@ const ADVANCED_MISSIONS = [
       });
     });
   }
+</script>
+
+<!-- ===== MARKETPLACE D'ÉCHANGE DE CARTES ⚡ (Firebase, temps réel) ===== -->
+<script>
+(function(){
+  // Filtre central : cartes échangeables (exclut les fondateurs légendaires : Satoshi/Hal/Szabo).
+  function isTradeable(card){ return card && card.rarity !== 'legendaire'; }
+
+  function safeCall(fn){ try { if(typeof fn === 'function') fn(); } catch(e){ console.warn(e); } }
+  function tradeCardById(id){
+    if(typeof cards === 'undefined') return null;
+    for(var i=0;i<cards.length;i++){ if(cards[i].id === id) return cards[i]; }
+    return null;
+  }
+
+  // ---- Parsing des sauvegardes Firestore (stockées en chaînes JSON) ----
+  function parseSave(saveObj){
+    saveObj = saveObj || {};
+    var v3 = {};
+    try { v3 = JSON.parse(saveObj['operation_satoshi_v3'] || '{}') || {}; } catch(e){ v3 = {}; }
+    var fusion = {};
+    try { fusion = JSON.parse(saveObj['operation_satoshi_fusion_v1'] || '{}') || {}; } catch(e){ fusion = {}; }
+    if(!v3.ownedCards) v3.ownedCards = [];
+    if(!v3.cardLevels) v3.cardLevels = {};
+    if(!fusion.cardQuantities) fusion.cardQuantities = {};
+    return { v3: v3, fusion: fusion };
+  }
+  function parseLocalSave(){
+    var save = {};
+    save['operation_satoshi_v3'] = (typeof localStorage !== 'undefined') ? (localStorage.getItem('operation_satoshi_v3') || '{}') : '{}';
+    save['operation_satoshi_fusion_v1'] = (typeof localStorage !== 'undefined') ? (localStorage.getItem('operation_satoshi_fusion_v1') || '{}') : '{}';
+    return parseSave(save);
+  }
+  function serializeSave(p){
+    var out = {};
+    out['operation_satoshi_v3'] = JSON.stringify(p.v3);
+    out['operation_satoshi_fusion_v1'] = JSON.stringify(p.fusion);
+    return out;
+  }
+  function removeCardFromParsed(p, cardId){
+    var i = p.v3.ownedCards.indexOf(cardId);
+    if(i !== -1) p.v3.ownedCards.splice(i, 1);
+    var q = p.fusion.cardQuantities[cardId];
+    if(q){
+      q.qty = (q.qty || 0) - 1;
+      if(q.qty <= 0) delete p.fusion.cardQuantities[cardId];
+    }
+  }
+  function addCardToParsed(p, cardId, fusionLevel){
+    if(p.v3.ownedCards.indexOf(cardId) === -1) p.v3.ownedCards.push(cardId);
+    if(!p.v3.cardLevels[cardId]) p.v3.cardLevels[cardId] = 'bronze';
+    if(!p.fusion.cardQuantities[cardId]) p.fusion.cardQuantities[cardId] = { qty: 0, fusionLevel: fusionLevel || 'bronze' };
+    p.fusion.cardQuantities[cardId].qty = (p.fusion.cardQuantities[cardId].qty || 0) + 1;
+    if(fusionLevel && !p.fusion.cardQuantities[cardId].fusionLevel) p.fusion.cardQuantities[cardId].fusionLevel = fusionLevel;
+  }
+
+  // ---- Mutations locales (in-memory + persistance) ----
+  function addLocalCard(cardId, fusionLevel){
+    if(typeof ownedCards === 'undefined') return;
+    if(ownedCards.indexOf(cardId) === -1) ownedCards.push(cardId);
+    if(cardLevels && !cardLevels[cardId]) cardLevels[cardId] = 'bronze';
+    if(!cardQuantities[cardId]) cardQuantities[cardId] = { qty: 0, fusionLevel: fusionLevel || 'bronze' };
+    cardQuantities[cardId].qty = (cardQuantities[cardId].qty || 0) + 1;
+    if(fusionLevel && !cardQuantities[cardId].fusionLevel) cardQuantities[cardId].fusionLevel = fusionLevel;
+  }
+  function removeLocalCard(cardId){
+    if(typeof ownedCards === 'undefined') return;
+    var i = ownedCards.indexOf(cardId);
+    if(i !== -1) ownedCards.splice(i, 1);
+    if(cardQuantities[cardId]){
+      cardQuantities[cardId].qty = (cardQuantities[cardId].qty || 0) - 1;
+      if(cardQuantities[cardId].qty <= 0) delete cardQuantities[cardId];
+    }
+  }
+
+  function refreshAfterTrade(){
+    safeCall(renderCollections);
+    safeCall(renderCardGridFinale);
+    safeCall(renderFusibleList);
+    safeCall(renderSecretCards);
+    safeCall(updateBoutiqueWallet);
+    safeCall(typeof renderHubCollection === 'function' ? renderHubCollection : null);
+    safeCall(typeof updateShopBadge === 'function' ? updateShopBadge : null);
+    safeCall(typeof updatePlayerProfile === 'function' ? updatePlayerProfile : null);
+  }
+
+  function getDb(){ return (typeof firebase !== 'undefined' && firebase.firestore) ? firebase.firestore() : null; }
+  function currentUser(){ return (typeof window !== 'undefined' && window.rcCurrentUser) ? window.rcCurrentUser : null; }
+  function firebaseReady(){ return (typeof window !== 'undefined') ? !!window.rcFirebaseReady : false; }
+  function byDateDesc(a, b){
+    var ta = (a.createdAt && a.createdAt.seconds) || 0;
+    var tb = (b.createdAt && b.createdAt.seconds) || 0;
+    return tb - ta;
+  }
+
+  window.openTradeScreen = function(){
+    if(typeof showScreen === 'function') showScreen('screen-trade');
+    window.rcLoadTrades();
+  };
+
+  var rcTradesUnsub = null;
+  window.rcLoadTrades = function(){
+    if(!firebaseReady() || !currentUser()) return;
+    var db = getDb(); if(!db) return;
+    var listEl = document.getElementById('trade-list');
+    var myEl = document.getElementById('my-trade-list');
+    if(rcTradesUnsub){ try { rcTradesUnsub(); } catch(e){} rcTradesUnsub = null; }
+    rcTradesUnsub = db.collection('trades').where('status','==','open').onSnapshot(function(snap){
+      var me = currentUser().uid;
+      var others = [], mine = [];
+      snap.forEach(function(d){
+        var t = Object.assign({ __id: d.id }, d.data());
+        if(t.offererUid === me) mine.push(t); else others.push(t);
+      });
+      others.sort(byDateDesc);
+      mine.sort(byDateDesc);
+      renderTradeList(listEl, others, false);
+      renderTradeList(myEl, mine, true);
+    }, function(err){ console.warn('trade listen error', err); });
+  };
+
+  function cardChipHtml(card, fusionLevel, kind){
+    if(!card) return '<span class="trade-card-chip ' + kind + '">🎁 Don</span>';
+    var lvl = fusionLevel ? ' (' + (fusionLevel.charAt(0).toUpperCase() + fusionLevel.slice(1)) + ')' : '';
+    return '<span class="trade-card-chip ' + kind + '">' + card.icon + ' ' + card.name + lvl + '</span>';
+  }
+
+  function renderTradeList(el, trades, mine){
+    if(!el) return;
+    if(!trades.length){
+      el.innerHTML = '<div class="trade-empty">' + (mine ? "Tu n'as pas encore publié d'offre." : 'Aucune offre pour le moment. Reviens plus tard !') + '</div>';
+      return;
+    }
+    el.innerHTML = trades.map(function(t){
+      var give = tradeCardById(t.giveCardId);
+      var want = t.wantCardId ? tradeCardById(t.wantCardId) : null;
+      var giveHtml = cardChipHtml(give, t.giveFusionLevel, 'give');
+      var wantHtml = cardChipHtml(want, t.wantFusionLevel, 'want');
+      var actions;
+      if(mine){
+        actions = '<button class="trade-cancel" onclick="rcCancelTrade(\'' + t.__id + '\')">Annuler</button>';
+      } else {
+        var canAccept = true;
+        if(t.wantCardId && (typeof ownedCards === 'undefined' || ownedCards.indexOf(t.wantCardId) === -1)){
+          canAccept = false;
+        }
+        actions = '<button class="trade-accept" ' + (canAccept ? '' : 'disabled') + ' onclick="rcAcceptTrade(\'' + t.__id + '\')">Accepter</button>';
+      }
+      var offerer = mine ? '' : '<div class="trade-offerer">par ' + String(t.offererPseudo || 'Joueur').replace(/</g,'&lt;') + '</div>';
+      return '<div class="trade-item">' +
+               '<div style="flex:1;min-width:0;">' + offerer +
+                 '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+                   giveHtml + '<span class="trade-item-arrow">⇄</span>' + wantHtml +
+                 '</div>' +
+               '</div>' +
+               '<div class="trade-actions">' + actions + '</div>' +
+             '</div>';
+    }).join('');
+  }
+
+  window.rcOpenPublishModal = function(){
+    var giveSel = document.getElementById('trade-give-select');
+    var wantSel = document.getElementById('trade-want-select');
+    if(!giveSel || !wantSel) return;
+    var tradeableOwned = (typeof ownedCards !== 'undefined' ? ownedCards : []).filter(function(id){
+      var c = tradeCardById(id);
+      return c && isTradeable(c) && (cardQuantities[id] && cardQuantities[id].qty > 0);
+    });
+    giveSel.innerHTML = tradeableOwned.length ? tradeableOwned.map(function(id){
+      var c = tradeCardById(id);
+      var qty = (cardQuantities[id] && cardQuantities[id].qty) || 0;
+      var lvl = (cardQuantities[id] && cardQuantities[id].fusionLevel) || 'bronze';
+      return '<option value="' + id + '">' + c.icon + ' ' + c.name + ' (x' + qty + ', ' + lvl + ')</option>';
+    }).join('') : '<option value="">Aucune carte échangeable en stock</option>';
+    var wantOpts = (typeof cards !== 'undefined' ? cards : []).filter(isTradeable).map(function(c){
+      return '<option value="' + c.id + '">' + c.icon + ' ' + c.name + '</option>';
+    }).join('');
+    wantSel.innerHTML = '<option value="0">🎁 N\'importe laquelle (don)</option>' + wantOpts;
+    var ov = document.getElementById('trade-publish-overlay');
+    if(ov) ov.classList.add('show');
+  };
+
+  window.rcClosePublishModal = function(){
+    var ov = document.getElementById('trade-publish-overlay');
+    if(ov) ov.classList.remove('show');
+  };
+
+  window.rcPublishTrade = function(){
+    var giveSel = document.getElementById('trade-give-select');
+    var wantSel = document.getElementById('trade-want-select');
+    if(!giveSel || !wantSel) return;
+    var giveId = parseInt(giveSel.value, 10);
+    var wantId = parseInt(wantSel.value, 10) || 0;
+    if(!giveId || (typeof cardQuantities !== 'undefined' && (!cardQuantities[giveId] || cardQuantities[giveId].qty < 1))){
+      alert('Choisis une carte à donner parmi ton stock.');
+      return;
+    }
+    if(!firebaseReady() || !currentUser()){
+      alert('Connecte-toi pour publier une offre.');
+      return;
+    }
+    var db = getDb(); if(!db) return;
+    var giveLevel = (cardQuantities[giveId] && cardQuantities[giveId].fusionLevel) || 'bronze';
+    db.collection('trades').add({
+      offererUid: currentUser().uid,
+      offererPseudo: (currentUser().displayName) || (typeof localStorage !== 'undefined' ? (localStorage.getItem('comm_satoshi_pseudo') || 'Joueur') : 'Joueur'),
+      giveCardId: giveId,
+      giveFusionLevel: giveLevel,
+      wantCardId: wantId,
+      wantFusionLevel: (wantId && cardQuantities[wantId]) ? (cardQuantities[wantId].fusionLevel || 'bronze') : 'bronze',
+      status: 'open',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function(){
+      window.rcClosePublishModal();
+      window.rcLoadTrades();
+    }).catch(function(e){
+      console.warn(e);
+      alert('Publication impossible : ' + (e && e.message ? e.message : e));
+    });
+  };
+
+  window.rcCancelTrade = function(tradeId){
+    if(!firebaseReady()) return;
+    var db = getDb(); if(!db) return;
+    db.collection('trades').doc(tradeId).update({ status: 'cancelled' })
+      .then(function(){ window.rcLoadTrades(); })
+      .catch(function(e){ console.warn(e); });
+  };
+
+  window.rcAcceptTrade = function(tradeId){
+    if(!firebaseReady() || !currentUser()){
+      alert('Connecte-toi pour accepter une offre.');
+      return;
+    }
+    var db = getDb(); if(!db) return;
+    var tradeRef = db.collection('trades').doc(tradeId);
+    var me = currentUser();
+    tradeRef.get().then(function(tradeSnap){
+      if(!tradeSnap.exists){ return; }
+      var t = tradeSnap.data();
+      if(t.status !== 'open'){ return; }
+      var offererUid = t.offererUid;
+      if(offererUid === me.uid){ alert('Tu ne peux pas accepter ta propre offre.'); return; }
+      var giveCardId = t.giveCardId;
+      var giveFusionLevel = t.giveFusionLevel || 'bronze';
+      var wantCardId = t.wantCardId || 0;
+      var wantFusionLevel = (wantCardId && cardQuantities[wantCardId]) ? (cardQuantities[wantCardId].fusionLevel || 'bronze') : 'bronze';
+      if(wantCardId && (typeof ownedCards === 'undefined' || ownedCards.indexOf(wantCardId) === -1 || !cardQuantities[wantCardId] || cardQuantities[wantCardId].qty < 1)){
+        alert('Tu ne possèdes pas la carte demandée en échange.');
+        return;
+      }
+      db.runTransaction(function(tx){
+        return tx.get(tradeRef).then(function(tradeDoc){
+          if(!tradeDoc.exists || tradeDoc.data().status !== 'open') throw new Error('offre indisponible');
+          var offererRef = db.collection('users').doc(offererUid);
+          var acceptorRef = db.collection('users').doc(me.uid);
+          return tx.get(offererRef).then(function(offererSnap){
+            return tx.get(acceptorRef).then(function(){
+              var offererSave = offererSnap.exists ? (offererSnap.data().save || {}) : {};
+              var o = parseSave(offererSave);
+              if(!o.fusion.cardQuantities[giveCardId] || o.fusion.cardQuantities[giveCardId].qty < 1 || o.v3.ownedCards.indexOf(giveCardId) === -1){
+                throw new Error('carte déjà échangée');
+              }
+              var a = parseLocalSave();
+              removeCardFromParsed(o, giveCardId, giveFusionLevel);
+              addCardToParsed(a, giveCardId, giveFusionLevel);
+              if(wantCardId){
+                removeCardFromParsed(a, wantCardId, wantFusionLevel);
+                addCardToParsed(o, wantCardId, wantFusionLevel);
+              }
+              tx.update(offererRef, { save: serializeSave(o), updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+              tx.update(acceptorRef, { save: serializeSave(a), updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+              tx.update(tradeRef, { status: 'completed', accepterUid: me.uid, completedAt: firebase.firestore.FieldValue.serverTimestamp() });
+            });
+          });
+        });
+      }).then(function(){
+        addLocalCard(giveCardId, giveFusionLevel);
+        if(wantCardId) removeLocalCard(wantCardId);
+        if(typeof saveProgress === 'function') saveProgress();
+        if(typeof saveFusion === 'function') saveFusion();
+        refreshAfterTrade();
+        if(typeof window.rcSaveCloudProgress === 'function') window.rcSaveCloudProgress();
+        alert('Échange réussi ! La carte a été ajoutée à ta collection.');
+      }).catch(function(err){
+        console.warn(err);
+        alert('Échange impossible : ' + (err && err.message ? err.message : 'réessaie plus tard.'));
+      });
+    });
+  };
+})();
 </script>
 
 </body>
