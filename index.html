@@ -265,7 +265,7 @@
     0%{opacity:0;transform:translateY(6px);}
     20%{opacity:1;transform:translateY(0);}
     80%{opacity:1;transform:translateY(-18px);}
-    100%{opacity:0;transform:translateY(-26px);}dialogueecran
+    100%{opacity:0;transform:translateY(-26px);}
   }
 
   /* ====== DIALOGUE / GUIDE ====== */
@@ -6332,42 +6332,35 @@
   let cineAutoTimer = null;
 
   function renderCineDots(){
-      const wrap = document.getElementById('cine-dots');
-      wrap.innerHTML = '';
-      cineLines.forEach((_, i) => {
-        const d = document.createElement('span');
-        d.className = 'cine-dot' + (i === cineIndex ? ' active' : '');
-        d.dataset.index = i;
-        wrap.appendChild(d);
-      });
-    }
+    const wrap = document.getElementById('cine-dots');
+    wrap.innerHTML = '';
+    cineLines.forEach((_, i) => {
+      const d = document.createElement('span');
+      if(i === cineIndex) d.classList.add('active');
+      wrap.appendChild(d);
+    });
+  }
 
-    function typeCineLine(){
-      cineTyping = true;
-      clearTimeout(cineAutoTimer);
-      const text = cineLines[cineIndex];
-      const target = document.getElementById('cine-text');
-      target.textContent = '';
-      let i = 0;
-      clearInterval(cineCharTimer);
-
-      const activeDot = document.querySelector('.cine-dot.active');
-      if(activeDot) activeDot.classList.add('scanning');
-
-      cineCharTimer = setInterval(() => {
-        target.textContent += text[i];
-        i++;
-        if(i % 3 === 0) sfxClick();
-        if(i >= text.length){
-          clearInterval(cineCharTimer);
-          cineTyping = false;
-          if(activeDot) activeDot.classList.remove('scanning');
-          scheduleCineAutoAdvance(text);
-        }
-      }, 22);
-      renderCineDots();
-    }
-  
+  function typeCineLine(){
+    cineTyping = true;
+    clearTimeout(cineAutoTimer);
+    const text = cineLines[cineIndex];
+    const target = document.getElementById('cine-text');
+    target.textContent = '';
+    let i = 0;
+    clearInterval(cineCharTimer);
+    cineCharTimer = setInterval(() => {
+      target.textContent += text[i];
+      i++;
+      if(i % 3 === 0) sfxClick();
+      if(i >= text.length){
+        clearInterval(cineCharTimer);
+        cineTyping = false;
+        scheduleCineAutoAdvance(text);
+      }
+    }, 22);
+    renderCineDots();
+  }
 
   function scheduleCineAutoAdvance(text){
     // Laisse un temps de lecture proportionnel à la longueur du texte, puis avance seule
@@ -6388,14 +6381,13 @@
 
   function advanceCine(){
     if(cineTyping){
-        clearInterval(cineCharTimer);
-        const text = cineLines[cineIndex];
-        document.getElementById('cine-text').textContent = text;
-        cineTyping = false;
-        document.querySelectorAll('.cine-dot.scanning').forEach(d => d.classList.remove('scanning'));
-        scheduleCineAutoAdvance(text);
-        return;
-      }
+      // si on clique pendant la frappe, on affiche tout d'un coup puis on programme la suite
+      clearInterval(cineCharTimer);
+      const text = cineLines[cineIndex];
+      document.getElementById('cine-text').textContent = text;
+      cineTyping = false;
+      scheduleCineAutoAdvance(text);
+      return;
     }
     // Un clic pendant la lecture passe directement à la ligne suivante, sans attendre
     goToNextCineLine();
