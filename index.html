@@ -1835,6 +1835,78 @@
     box-shadow:0 0 20px rgba(124,58,237,0.2);
     animation:glowPulse 2s ease-in-out infinite;
   }
+
+  /* ============================================================
+     MODAL GUIDE DU JOUEUR ("Comment jouer ?")
+  ============================================================ */
+  .guide-overlay{
+    position:fixed;inset:0;z-index:90;
+    background:rgba(5,7,14,0.86);
+    backdrop-filter:blur(7px);
+    display:none;align-items:center;justify-content:center;
+    padding:16px;
+  }
+  .guide-overlay.show{display:flex;animation:fadeBg .2s ease-out;}
+  .guide-modal{
+    width:100%;max-width:460px;max-height:88vh;
+    background:var(--bg2);
+    border:1px solid rgba(240,185,11,0.3);
+    border-radius:24px;
+    padding:26px 20px 20px;
+    animation:popIn .3s ease-out;
+    position:relative;overflow:hidden;
+    display:flex;flex-direction:column;
+  }
+  .guide-modal::before{
+    content:"";position:absolute;top:-50px;left:50%;transform:translateX(-50%);
+    width:240px;height:120px;border-radius:50%;
+    background:radial-gradient(circle,rgba(240,185,11,0.22),transparent 70%);
+    pointer-events:none;
+  }
+  .guide-modal-close{
+    position:absolute; top:14px; right:14px; width:30px; height:30px; border-radius:50%;
+    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); color:var(--texte);
+    font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition: background .18s ease-out; z-index:2;
+  }
+  .guide-modal-close:hover{ background:rgba(255,255,255,.16); }
+  .guide-modal-head{ text-align:center; position:relative; z-index:1; margin-bottom:14px; }
+  .guide-modal-icon{font-size:46px;display:block;margin-bottom:8px;}
+  .guide-modal-title{
+    font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;
+    background:linear-gradient(135deg,var(--or),#fff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    margin-bottom:6px;
+  }
+  .guide-modal-sub{font-size:12.5px;color:var(--texte-dim);line-height:1.55;}
+  .guide-modal-body{
+    overflow-y:auto; padding-right:4px; margin:0 -4px 14px; text-align:left; position:relative; z-index:1;
+  }
+  .guide-section{
+    background:rgba(255,255,255,0.03);border:1px solid var(--card-border);
+    border-radius:12px;padding:11px 12px;margin-bottom:8px;
+  }
+  .guide-section-title{
+    display:flex;align-items:center;gap:8px;
+    font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--texte);
+    margin-bottom:4px;
+  }
+  .guide-section-icon{font-size:17px;line-height:1;}
+  .guide-section-text{font-size:12px;color:var(--texte-dim);line-height:1.55;}
+  .guide-section-text strong{color:var(--texte);}
+  .guide-modal-cta{
+    position:relative;z-index:1;
+    font-size:14px;padding:13px 20px;width:100%;
+  }
+  .guide-help-btn{
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    padding:11px 10px;border-radius:12px;
+    background:rgba(34,211,238,0.08);border:1px solid rgba(34,211,238,0.3);
+    cursor:pointer;transition:background .15s ease-out;
+    font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:700;color:#67e8f9;
+  }
+  .guide-help-btn:hover{ background:rgba(34,211,238,0.14); }
+
   /* ============================================================
      HUB STATS GRID : XP + STREAK
   ============================================================ */
@@ -3865,6 +3937,10 @@
       <div onclick="openTradeScreen()" role="button" tabindex="0" aria-label="Ouvrir le marketplace des cartes" onkeydown="if(event.key==='Enter')openTradeScreen()" style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:11px 10px;border-radius:12px;background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.3);cursor:pointer;transition:background .15s ease-out;">
         <span style="font-size:18px;">🤝</span>
         <span style="font-family:'Space Grotesk',sans-serif;font-size:12.5px;font-weight:700;color:var(--violet);">Marketplace</span>
+      </div>
+      <div class="guide-help-btn" style="flex:1;" onclick="openGuideModal(true)" role="button" tabindex="0" aria-label="Comment jouer" onkeydown="if(event.key==='Enter')openGuideModal(true)">
+        <span style="font-size:18px;">❓</span>
+        <span>Règles</span>
       </div>
     </div>
 
@@ -5912,6 +5988,64 @@
     </div>
   </div>
 
+  <!-- ============ MODAL GUIDE DU JOUEUR ============ -->
+  <div class="guide-overlay" id="guide-overlay">
+    <div class="guide-modal">
+      <button class="guide-modal-close" onclick="closeGuideModal()" aria-label="Fermer">✕</button>
+      <div class="guide-modal-head">
+        <span class="guide-modal-icon">🕵️</span>
+        <div class="guide-modal-title">Bienvenue, enquêteur</div>
+        <p class="guide-modal-sub">0x_GHOST t'a recruté pour retrouver la trace de Satoshi Nakamoto. Voici comment se déroule l'enquête.</p>
+      </div>
+
+      <div class="guide-modal-body">
+
+        <div class="guide-section">
+          <div class="guide-section-title"><span class="guide-section-icon">🎯</span> L'objectif</div>
+          <div class="guide-section-text">L'enquête compte <strong>21 étapes</strong>, de plus en plus corsées. Chaque étape t'envoie fouiller de <strong>vraies archives</strong> (forums, mailing-lists) où Satoshi a réellement posté : trouve un mot caché, déchiffre un message ou déjoue un piège pour valider la preuve.</div>
+        </div>
+
+        <div class="guide-section">
+          <div class="guide-section-title"><span class="guide-section-icon">🪙</span> Les sats</div>
+          <div class="guide-section-text">Chaque preuve validée rapporte des <strong>sats virtuels</strong> dans ton wallet. Plus tu es rapide et précis, plus tu en gagnes — sers-t'en pour progresser dans le jeu.</div>
+        </div>
+
+        <div class="guide-section">
+          <div class="guide-section-title"><span class="guide-section-icon">🏪</span> La boutique</div>
+          <div class="guide-section-text">Dépense tes sats pour ouvrir des <strong>packs de cartes</strong>. Chaque carte donne un pouvoir (indice gratuit, seconde chance...). Fusionne des doublons pour faire monter une carte en rareté et renforcer son effet.</div>
+        </div>
+
+        <div class="guide-section">
+          <div class="guide-section-title"><span class="guide-section-icon">🤝</span> Le marketplace</div>
+          <div class="guide-section-text">Il te manque une carte précise ? Publie une offre d'échange ou récupère celle d'un autre enquêteur dans le <strong>marketplace</strong> — les cartes changent vraiment de main entre joueurs.</div>
+        </div>
+
+        <div class="guide-section">
+          <div class="guide-section-title"><span class="guide-section-icon">🔥</span> Streak &amp; missions du jour</div>
+          <div class="guide-section-text">Reviens chaque jour pour faire grimper ton <strong>streak</strong> et débloquer des bonus. Des <strong>missions quotidiennes</strong> t'attendent aussi sur l'écran d'accueil, avec une récompense en sats à la clé.</div>
+        </div>
+
+        <div class="guide-section">
+          <div class="guide-section-title"><span class="guide-section-icon">🏺</span> Reliques permanentes</div>
+          <div class="guide-section-text">La première fois que tu résous une étape, tu gagnes une <strong>relique</strong> conservée pour toujours, même si tu recommences une nouvelle enquête.</div>
+        </div>
+
+        <div class="guide-section">
+          <div class="guide-section-title"><span class="guide-section-icon">🧩</span> Énigme communautaire</div>
+          <div class="guide-section-text">5 fragments de clé sont dispersés entre les joueurs du monde entier. Toi seul ne peux pas tout résoudre : mets ton fragment en commun avec la communauté dans <strong>Le Cercle de Satoshi</strong> pour ouvrir le coffre final.</div>
+        </div>
+
+        <div class="guide-section">
+          <div class="guide-section-title"><span class="guide-section-icon">📡</span> À savoir avant de commencer</div>
+          <div class="guide-section-text">Le jeu ouvre de <strong>vrais liens externes</strong> (metzdowd.com, bitcointalk.org, etc.). Prévois une connexion internet et un peu de lecture à chaque étape.</div>
+        </div>
+
+      </div>
+
+      <button class="btn btn-gold guide-modal-cta" onclick="closeGuideModal()">🚀 J'ai compris, commencer l'enquête</button>
+    </div>
+  </div>
+
   <!-- ============ MODAL RELIQUES ============ -->
   <div class="relics-overlay" id="relics-overlay">
     <div class="relics-modal">
@@ -6590,11 +6724,12 @@
     renderStreakBanner();
     loadDailyMissions();
     ensureDailyMissionsFresh();
-    // Ouvrir le modal streak si non réclamé aujourd'hui, puis le pop-up Mode Sprint juste après
-    if(!streakData.claimedToday && streakData.lastDate === todayStr()){
-      setTimeout(() => openStreakModal(), 600);
+    // Au tout premier lancement, on affiche d'abord le guide "Comment jouer ?" ;
+    // les pop-ups streak/sprint habituels s'enchaînent juste après sa fermeture.
+    if(!hasSeenGuide()){
+      setTimeout(() => openGuideModal(false), 600);
     } else {
-      setTimeout(() => openSprintModal(), 600);
+      setTimeout(() => openPostBriefingModals(), 600);
     }
     // Afficher la collection sauvegardée si elle existe
     const hasSaved = loadProgress();
@@ -9659,6 +9794,41 @@
 
     // Enchaîne avec le pop-up Mode Sprint juste après le streak quotidien
     setTimeout(() => openSprintModal(), 400);
+  }
+
+  // Ouvre le pop-up streak (si récompense du jour non réclamée) puis le pop-up Mode Sprint juste après
+  function openPostBriefingModals(){
+    if(!streakData.claimedToday && streakData.lastDate === todayStr()){
+      openStreakModal();
+    } else {
+      openSprintModal();
+    }
+  }
+
+  // ===================== GUIDE DU JOUEUR ("Comment jouer ?") =====================
+  const GUIDE_SEEN_KEY = 'satoshi_guide_seen';
+
+  function hasSeenGuide(){
+    try { return localStorage.getItem(GUIDE_SEEN_KEY) === '1'; } catch(e){ return true; }
+  }
+
+  // manualOpen=true quand ouvert via le bouton "❓ Règles" (pas de chaînage vers les autres pop-ups)
+  function openGuideModal(manualOpen){
+    guideOpenedManually = !!manualOpen;
+    const ov = document.getElementById('guide-overlay');
+    if(ov) ov.classList.add('show');
+  }
+  let guideOpenedManually = false;
+
+  function closeGuideModal(){
+    const ov = document.getElementById('guide-overlay');
+    if(ov) ov.classList.remove('show');
+    try { localStorage.setItem(GUIDE_SEEN_KEY, '1'); } catch(e){}
+    // Si c'est la toute première ouverture automatique (pas un clic manuel sur "❓ Règles"),
+    // on enchaîne avec le pop-up streak/sprint habituel.
+    if(!guideOpenedManually){
+      setTimeout(() => openPostBriefingModals(), 300);
+    }
   }
 
   function openSprintModal(){
@@ -14569,182 +14739,4 @@ const ADVANCED_MISSIONS = [
       });
       others.sort(byDateDesc);
       mine.sort(byDateDesc);
-      renderTradeList(listEl, others, false);
-      renderTradeList(myEl, mine, true);
-    }, function(err){ console.warn('trade listen error', err); });
-  };
-
-  function cardChipHtml(card, fusionLevel, kind){
-    if(!card) return '<span class="trade-card-chip ' + kind + '">🎁 Don</span>';
-    var lvl = fusionLevel ? ' (' + (fusionLevel.charAt(0).toUpperCase() + fusionLevel.slice(1)) + ')' : '';
-    return '<span class="trade-card-chip ' + kind + '">' + card.icon + ' ' + card.name + lvl + '</span>';
-  }
-
-  function renderTradeList(el, trades, mine){
-    if(!el) return;
-    if(!trades.length){
-      el.innerHTML = '<div class="trade-empty">' + (mine ? "Tu n'as pas encore publié d'offre." : 'Aucune offre pour le moment. Reviens plus tard !') + '</div>';
-      return;
-    }
-    el.innerHTML = trades.map(function(t){
-      var give = tradeCardById(t.giveCardId);
-      var want = t.wantCardId ? tradeCardById(t.wantCardId) : null;
-      var giveHtml = cardChipHtml(give, t.giveFusionLevel, 'give');
-      var wantHtml = cardChipHtml(want, t.wantFusionLevel, 'want');
-      var actions;
-      if(mine){
-        actions = '<button class="trade-cancel" onclick="rcCancelTrade(\'' + t.__id + '\')">Annuler</button>';
-      } else {
-        var canAccept = true;
-        if(t.wantCardId && (typeof ownedCards === 'undefined' || ownedCards.indexOf(t.wantCardId) === -1)){
-          canAccept = false;
-        }
-        actions = '<button class="trade-accept" ' + (canAccept ? '' : 'disabled') + ' onclick="rcAcceptTrade(\'' + t.__id + '\')">Accepter</button>';
-      }
-      var offerer = mine ? '' : '<div class="trade-offerer">par ' + String(t.offererPseudo || 'Joueur').replace(/</g,'&lt;') + '</div>';
-      return '<div class="trade-item">' +
-               '<div style="flex:1;min-width:0;">' + offerer +
-                 '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
-                   giveHtml + '<span class="trade-item-arrow">⇄</span>' + wantHtml +
-                 '</div>' +
-               '</div>' +
-               '<div class="trade-actions">' + actions + '</div>' +
-             '</div>';
-    }).join('');
-  }
-
-  window.rcOpenPublishModal = function(){
-    var giveSel = document.getElementById('trade-give-select');
-    var wantSel = document.getElementById('trade-want-select');
-    if(!giveSel || !wantSel) return;
-    var tradeableOwned = (typeof ownedCards !== 'undefined' ? ownedCards : []).filter(function(id){
-      var c = tradeCardById(id);
-      return c && isTradeable(c) && (cardQuantities[id] && cardQuantities[id].qty > 0);
-    });
-    giveSel.innerHTML = tradeableOwned.length ? tradeableOwned.map(function(id){
-      var c = tradeCardById(id);
-      var qty = (cardQuantities[id] && cardQuantities[id].qty) || 0;
-      var lvl = (cardQuantities[id] && cardQuantities[id].fusionLevel) || 'bronze';
-      return '<option value="' + id + '">' + c.icon + ' ' + c.name + ' (x' + qty + ', ' + lvl + ')</option>';
-    }).join('') : '<option value="">Aucune carte échangeable en stock</option>';
-    var wantOpts = (typeof cards !== 'undefined' ? cards : []).filter(isTradeable).map(function(c){
-      return '<option value="' + c.id + '">' + c.icon + ' ' + c.name + '</option>';
-    }).join('');
-    wantSel.innerHTML = '<option value="0">🎁 N\'importe laquelle (don)</option>' + wantOpts;
-    var ov = document.getElementById('trade-publish-overlay');
-    if(ov) ov.classList.add('show');
-  };
-
-  window.rcClosePublishModal = function(){
-    var ov = document.getElementById('trade-publish-overlay');
-    if(ov) ov.classList.remove('show');
-  };
-
-  window.rcPublishTrade = function(){
-    var giveSel = document.getElementById('trade-give-select');
-    var wantSel = document.getElementById('trade-want-select');
-    if(!giveSel || !wantSel) return;
-    var giveId = parseInt(giveSel.value, 10);
-    var wantId = parseInt(wantSel.value, 10) || 0;
-    if(!giveId || (typeof cardQuantities !== 'undefined' && (!cardQuantities[giveId] || cardQuantities[giveId].qty < 1))){
-      alert('Choisis une carte à donner parmi ton stock.');
-      return;
-    }
-    if(!firebaseReady() || !currentUser()){
-      alert('Connecte-toi pour publier une offre.');
-      return;
-    }
-    var db = getDb(); if(!db) return;
-    var giveLevel = (cardQuantities[giveId] && cardQuantities[giveId].fusionLevel) || 'bronze';
-    db.collection('trades').add({
-      offererUid: currentUser().uid,
-      offererPseudo: (currentUser().displayName) || (typeof localStorage !== 'undefined' ? (localStorage.getItem('comm_satoshi_pseudo') || 'Joueur') : 'Joueur'),
-      giveCardId: giveId,
-      giveFusionLevel: giveLevel,
-      wantCardId: wantId,
-      wantFusionLevel: (wantId && cardQuantities[wantId]) ? (cardQuantities[wantId].fusionLevel || 'bronze') : 'bronze',
-      status: 'open',
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(function(){
-      window.rcClosePublishModal();
-      window.rcLoadTrades();
-    }).catch(function(e){
-      console.warn(e);
-      alert('Publication impossible : ' + (e && e.message ? e.message : e));
-    });
-  };
-
-  window.rcCancelTrade = function(tradeId){
-    if(!firebaseReady()) return;
-    var db = getDb(); if(!db) return;
-    db.collection('trades').doc(tradeId).update({ status: 'cancelled' })
-      .then(function(){ window.rcLoadTrades(); })
-      .catch(function(e){ console.warn(e); });
-  };
-
-  window.rcAcceptTrade = function(tradeId){
-    if(!firebaseReady() || !currentUser()){
-      alert('Connecte-toi pour accepter une offre.');
-      return;
-    }
-    var db = getDb(); if(!db) return;
-    var tradeRef = db.collection('trades').doc(tradeId);
-    var me = currentUser();
-    tradeRef.get().then(function(tradeSnap){
-      if(!tradeSnap.exists){ return; }
-      var t = tradeSnap.data();
-      if(t.status !== 'open'){ return; }
-      var offererUid = t.offererUid;
-      if(offererUid === me.uid){ alert('Tu ne peux pas accepter ta propre offre.'); return; }
-      var giveCardId = t.giveCardId;
-      var giveFusionLevel = t.giveFusionLevel || 'bronze';
-      var wantCardId = t.wantCardId || 0;
-      var wantFusionLevel = (wantCardId && cardQuantities[wantCardId]) ? (cardQuantities[wantCardId].fusionLevel || 'bronze') : 'bronze';
-      if(wantCardId && (typeof ownedCards === 'undefined' || ownedCards.indexOf(wantCardId) === -1 || !cardQuantities[wantCardId] || cardQuantities[wantCardId].qty < 1)){
-        alert('Tu ne possèdes pas la carte demandée en échange.');
-        return;
-      }
-      db.runTransaction(function(tx){
-        return tx.get(tradeRef).then(function(tradeDoc){
-          if(!tradeDoc.exists || tradeDoc.data().status !== 'open') throw new Error('offre indisponible');
-          var offererRef = db.collection('users').doc(offererUid);
-          var acceptorRef = db.collection('users').doc(me.uid);
-          return tx.get(offererRef).then(function(offererSnap){
-            return tx.get(acceptorRef).then(function(){
-              var offererSave = offererSnap.exists ? (offererSnap.data().save || {}) : {};
-              var o = parseSave(offererSave);
-              if(!o.fusion.cardQuantities[giveCardId] || o.fusion.cardQuantities[giveCardId].qty < 1 || o.v3.ownedCards.indexOf(giveCardId) === -1){
-                throw new Error('carte déjà échangée');
-              }
-              var a = parseLocalSave();
-              removeCardFromParsed(o, giveCardId, giveFusionLevel);
-              addCardToParsed(a, giveCardId, giveFusionLevel);
-              if(wantCardId){
-                removeCardFromParsed(a, wantCardId, wantFusionLevel);
-                addCardToParsed(o, wantCardId, wantFusionLevel);
-              }
-              tx.update(offererRef, { save: serializeSave(o), updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
-              tx.update(acceptorRef, { save: serializeSave(a), updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
-              tx.update(tradeRef, { status: 'completed', accepterUid: me.uid, completedAt: firebase.firestore.FieldValue.serverTimestamp() });
-            });
-          });
-        });
-      }).then(function(){
-        addLocalCard(giveCardId, giveFusionLevel);
-        if(wantCardId) removeLocalCard(wantCardId);
-        if(typeof saveProgress === 'function') saveProgress();
-        if(typeof saveFusion === 'function') saveFusion();
-        refreshAfterTrade();
-        if(typeof window.rcSaveCloudProgress === 'function') window.rcSaveCloudProgress();
-        alert('Échange réussi ! La carte a été ajoutée à ta collection.');
-      }).catch(function(err){
-        console.warn(err);
-        alert('Échange impossible : ' + (err && err.message ? err.message : 'réessaie plus tard.'));
-      });
-    });
-  };
-})();
-</script>
-
-</body>
-</html>
+      renderTra
