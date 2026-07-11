@@ -3731,15 +3731,29 @@
   .auth-guest:hover{border-color:var(--or);color:var(--or);}
   .auth-loading{opacity:0.6;pointer-events:none;}
   .logout-toggle{
-    position:fixed; top:64px; right:14px; z-index:50;
-    width:42px;height:42px;border-radius:50%;
-    background:rgba(239,68,68,0.22);border:1.5px solid rgba(239,68,68,0.65);
-    display:none;align-items:center;justify-content:center;
-    font-size:19px;cursor:pointer;backdrop-filter:blur(8px);
-    box-shadow:0 0 14px rgba(239,68,68,0.3), 0 4px 12px rgba(0,0,0,0.35);
-    transition:background .15s ease-out, transform .15s ease-out, box-shadow .15s ease-out;
+    position:fixed; left:50%; bottom:20px; z-index:50;
+    transform:translateX(-50%);
+    display:none;align-items:center;justify-content:center;gap:8px;
+    padding:11px 20px 11px 16px;min-height:44px;border-radius:999px;
+    background:linear-gradient(135deg, rgba(239,68,68,0.16), rgba(127,29,29,0.28));
+    border:1.5px solid rgba(239,68,68,0.4);
+    color:var(--rouge);
+    font-family:'Space Grotesk',sans-serif;font-size:13.5px;font-weight:600;letter-spacing:0.01em;
+    cursor:pointer;backdrop-filter:blur(10px);
+    box-shadow:0 0 16px rgba(239,68,68,0.18), 0 6px 18px rgba(0,0,0,0.35);
+    transition:background .18s ease-out, border-color .18s ease-out, transform .18s ease-out, box-shadow .18s ease-out;
   }
-  .logout-toggle:hover{background:rgba(239,68,68,0.38);border-color:rgba(239,68,68,0.9);transform:scale(1.08);box-shadow:0 0 20px rgba(239,68,68,0.5), 0 4px 12px rgba(0,0,0,0.35);}
+  .logout-toggle svg{width:18px;height:18px;flex-shrink:0;}
+  .logout-toggle:hover{
+    background:linear-gradient(135deg, rgba(239,68,68,0.26), rgba(127,29,29,0.4));
+    border-color:rgba(239,68,68,0.75);
+    transform:translateX(-50%) translateY(-2px);
+    box-shadow:0 0 22px rgba(239,68,68,0.32), 0 8px 22px rgba(0,0,0,0.4);
+  }
+  .logout-toggle:active{transform:translateX(-50%) translateY(0);}
+  @media (max-width:480px){
+    .logout-toggle{bottom:14px;padding:10px 16px 10px 13px;font-size:13px;}
+  }
 
   /* ====== MARKETPLACE / ÉCHANGE DE CARTES ====== */
   .trade-toggle{
@@ -3827,19 +3841,13 @@
   <span>👤</span>
   <span class="profile-lvl-badge" id="profile-lvl-badge">1</span>
 </div>
-<div class="logout-toggle" id="logout-toggle" onclick="rcAuthLogout()" title="Se déconnecter">
-  <svg width="22" height="13" viewBox="-1 0 46 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-    <path d="M13 4m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-    <path d="M4 17l5 1l.75 -1.5" />
-    <path d="M15 21l0 -4l-4 -3l1 -6" />
-    <path d="M7 12l0 -3l5 -1l3 3l3 1" />
-    <g transform="translate(22,0)">
-      <path d="M13 12v.01" />
-      <path d="M3 21h18" />
-      <path d="M5 21v-16a2 2 0 0 1 2 -2h7.5m2.5 10.5v7.5" />
-      <path d="M14 7h7m-3 -3l3 3l-3 3" />
-    </g>
+<div class="logout-toggle" id="logout-toggle" onclick="rcAuthLogout()" title="Se déconnecter" role="button" tabindex="0" aria-label="Se déconnecter" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();rcAuthLogout();}">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+    <path d="M16 17l5-5-5-5" />
+    <path d="M21 12H9" />
   </svg>
+  <span>Déconnexion</span>
 </div>
 <div class="trade-toggle" id="trade-toggle" onclick="openTradeScreen()" title="Marketplace des cartes" style="display:none;">🤝</div>
 <div class="wrap">
@@ -6295,15 +6303,6 @@
           if(typeof st.sats === "number" && st.sats > satsVal) satsVal = st.sats;
         }
       }
-    } catch(e){}
-    // Filet de sécurité n°2 : on ne descend jamais sous le meilleur score
-    // jamais atteint (record persistant), même si la partie en cours vient
-    // d'être réinitialisée (nouvelle enquête) ou si des sats ont été dépensés
-    // en boutique. C'est ce qui empêche le classement public de revenir à 0.
-    try {
-      const best = (typeof window.rcGetBestSats === "function") ? window.rcGetBestSats() : 0;
-      if(best > satsVal) satsVal = best;
-      if(typeof window.rcUpdateBestSats === "function") window.rcUpdateBestSats(satsVal);
     } catch(e){}
     try {
       const rawStreak = localStorage.getItem("operation_satoshi_streak");
@@ -12458,31 +12457,7 @@ const ADVANCED_MISSIONS = [
     document.getElementById('wallet-amount').textContent = sats.toLocaleString('fr-FR');
     const pct = Math.min(100, (sats / MAX_SATS) * 100);
     document.getElementById('wallet-bar-fill').style.width = pct + '%';
-    rcUpdateBestSats(sats);
   }
-
-  // ===== MEILLEUR SCORE PERSISTANT (pour le classement public) =====
-  // "sats" est un solde de partie en cours : il repart à 0 à chaque nouvelle
-  // enquête (startGame) et peut même diminuer (achats en boutique). Ce n'est
-  // donc PAS une bonne valeur à envoyer telle quelle au classement mondial :
-  // si la synchro (toutes les 20s) tombe juste après un reset, elle écrase
-  // le score public par 0. On garde donc à part un record qui ne fait
-  // qu'augmenter, et c'est LUI qui est envoyé au classement.
-  const BEST_SATS_KEY = "operation_satoshi_best_sats_v1";
-  function rcUpdateBestSats(currentSats){
-    try {
-      const prevBest = parseInt(localStorage.getItem(BEST_SATS_KEY) || "0", 10) || 0;
-      if(typeof currentSats === "number" && currentSats > prevBest){
-        localStorage.setItem(BEST_SATS_KEY, String(currentSats));
-      }
-    } catch(e) {}
-  }
-  function rcGetBestSats(){
-    try { return parseInt(localStorage.getItem(BEST_SATS_KEY) || "0", 10) || 0; }
-    catch(e) { return 0; }
-  }
-  window.rcGetBestSats = rcGetBestSats;
-  window.rcUpdateBestSats = rcUpdateBestSats;
 
   function popSats(amount){
     const pop = document.getElementById('sats-pop');
