@@ -3705,6 +3705,22 @@
     transition:border-color .15s ease-out,box-shadow .15s ease-out;
   }
   .auth-field input:focus{outline:none;border-color:var(--bleu);box-shadow:0 0 0 3px rgba(59,130,246,0.15);}
+  .auth-id-box{
+    display:flex;align-items:center;gap:8px;
+    width:100%;padding:12px 14px;border-radius:10px;
+    background:rgba(240,185,11,0.08);border:1px solid rgba(240,185,11,0.3);
+  }
+  .auth-id-box span{
+    flex:1;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;
+    color:var(--or);letter-spacing:0.03em;word-break:break-all;
+  }
+  .auth-id-copy{
+    flex-shrink:0;padding:7px 10px;border-radius:8px;font-size:12px;font-weight:600;
+    background:rgba(255,255,255,0.06);border:1px solid var(--card-border);color:var(--texte);
+    cursor:pointer;font-family:'Space Grotesk',sans-serif;
+  }
+  .auth-id-copy:hover{border-color:var(--or);color:var(--or);}
+  .auth-id-note{font-size:12px;color:var(--texte-dim);margin-top:8px;line-height:1.5;}
   .auth-form{display:none;}
   .auth-form.active{display:block;animation:fadeIn .3s ease-out;}
   .auth-error{
@@ -3876,61 +3892,41 @@
       <div class="auth-logo">
         <div class="auth-icon">🕵️</div>
         <h1>Opération Satoshi</h1>
-        <p>Connecte-toi pour garder ta progression, ton wallet de sats et ta collection de cartes, où que tu rejoues.</p>
+        <p>Ton identifiant garde ta progression, ton wallet de sats et ta collection de cartes, où que tu rejoues. Pas d'email, pas de mot de passe.</p>
       </div>
       <div class="card">
         <div class="auth-tabs">
-          <div class="auth-tab active" id="auth-tab-login" onclick="rcAuthSwitchTab('login')" role="button" tabindex="0" aria-label="Afficher le formulaire de connexion" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();rcAuthSwitchTab('login');}">Connexion</div>
-          <div class="auth-tab" id="auth-tab-register" onclick="rcAuthSwitchTab('register')" role="button" tabindex="0" aria-label="Afficher le formulaire d'inscription" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();rcAuthSwitchTab('register');}">Inscription</div>
+          <div class="auth-tab active" id="auth-tab-new" onclick="rcAuthSwitchTab('new')" role="button" tabindex="0" aria-label="Nouveau joueur" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();rcAuthSwitchTab('new');}">Nouveau joueur</div>
+          <div class="auth-tab" id="auth-tab-existing" onclick="rcAuthSwitchTab('existing')" role="button" tabindex="0" aria-label="J'ai déjà un identifiant" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();rcAuthSwitchTab('existing');}">J'ai un ID</div>
         </div>
 
         <div class="auth-error" id="auth-error"></div>
         <div class="auth-success" id="auth-success"></div>
 
-        <!-- Formulaire de connexion -->
-        <form class="auth-form active" id="auth-form-login" onsubmit="return rcAuthHandleLogin(event)">
+        <!-- Nouveau joueur : identifiant généré automatiquement -->
+        <div class="auth-form active" id="auth-form-new">
           <div class="auth-field">
-            <label for="auth-login-email">Email</label>
-            <input type="email" id="auth-login-email" autocomplete="email" required placeholder="toi@exemple.com">
+            <label>Ton identifiant de jeu</label>
+            <div class="auth-id-box">
+              <span id="auth-new-id-display">SAT-XXXXXX</span>
+              <button type="button" class="auth-id-copy" onclick="rcAuthCopyNewId()">Copier</button>
+            </div>
+            <div class="auth-id-note">Note bien cet identifiant : c'est lui qui te permettra de retrouver ta progression sur un autre appareil.</div>
           </div>
-          <div class="auth-field">
-            <label for="auth-login-password">Mot de passe</label>
-            <input type="password" id="auth-login-password" autocomplete="current-password" required placeholder="••••••••">
-          </div>
-          <button type="submit" class="btn btn-gold auth-submit" id="auth-login-btn">Se connecter</button>
-          <div class="auth-links">
-            <a onclick="rcAuthResetPassword()">Mot de passe oublié ?</a>
-            <a onclick="rcAuthSwitchTab('register')">Créer un compte</a>
-          </div>
-        </form>
+          <button type="button" class="btn btn-gold auth-submit" id="auth-new-btn" onclick="rcAuthStartNewId()">Commencer l'aventure</button>
+        </div>
 
-        <!-- Formulaire d'inscription -->
-        <form class="auth-form" id="auth-form-register" onsubmit="return rcAuthHandleRegister(event)">
+        <!-- Joueur existant : saisie de son identifiant -->
+        <form class="auth-form" id="auth-form-existing" onsubmit="return rcAuthHandleLoadExistingId(event)">
           <div class="auth-field">
-            <label for="auth-register-pseudo">Pseudo</label>
-            <input type="text" id="auth-register-pseudo" autocomplete="nickname" required placeholder="0x_Ghost" maxlength="24">
+            <label for="auth-existing-id">Ton identifiant</label>
+            <input type="text" id="auth-existing-id" autocomplete="off" required placeholder="SAT-XXXXXX" maxlength="24" style="text-transform:uppercase;">
           </div>
-          <div class="auth-field">
-            <label for="auth-register-email">Email</label>
-            <input type="email" id="auth-register-email" autocomplete="email" required placeholder="toi@exemple.com">
-          </div>
-          <div class="auth-field">
-            <label for="auth-register-password">Mot de passe</label>
-            <input type="password" id="auth-register-password" autocomplete="new-password" required placeholder="8 caractères minimum" minlength="8">
-          </div>
-          <div class="auth-field">
-            <label for="auth-register-password2">Confirmer le mot de passe</label>
-            <input type="password" id="auth-register-password2" autocomplete="new-password" required placeholder="••••••••" minlength="8">
-          </div>
-          <button type="submit" class="btn btn-gold auth-submit" id="auth-register-btn">Créer mon compte</button>
-          <div class="auth-links">
-            <span></span>
-            <a onclick="rcAuthSwitchTab('login')">J'ai déjà un compte</a>
-          </div>
+          <button type="submit" class="btn btn-gold auth-submit" id="auth-existing-btn">Charger ma progression</button>
         </form>
 
         <div class="auth-divider">ou</div>
-        <button class="auth-guest" onclick="rcAuthContinueGuest()">Continuer sans compte (progression non sauvegardée en ligne)</button>
+        <button class="auth-guest" onclick="rcAuthContinueGuest()">Continuer sans identifiant (progression non sauvegardée en ligne)</button>
       </div>
     </div>
   </div>
@@ -6142,12 +6138,12 @@
   // ⚠️ À REMPLACER : colle ici la config de TON projet Firebase.
   // Console Firebase (console.firebase.google.com) → Paramètres du projet → Tes applications → SDK setup and configuration.
   const firebaseConfig = {
-    apiKey: "AIzaSyCTHjJDPCF3wX5YheJUGebdrQ59EQPQWAA",
-    authDomain: "satoshi-35876.firebaseapp.com",
-    projectId: "satoshi-35876",
-    storageBucket: "satoshi-35876.firebasestorage.app",
-    messagingSenderId: "68142022354",
-    appId: "1:68142022354:web:2f4f22515fb48c99c6770b"
+    apiKey: "AIzaSyAwMRfTimvMW2TntrgW6dHit3mLn80w-Xs",
+    authDomain: "operation-satoshi.firebaseapp.com",
+    projectId: "operation-satoshi",
+    storageBucket: "operation-satoshi.firebasestorage.app",
+    messagingSenderId: "1852367177",
+    appId: "1:1852367177:web:c5b4dfa35e76d5e7e5ba98"
   };
 
   let rcFirebaseReady = false;
@@ -6187,13 +6183,23 @@
 
   let rcCurrentUser = null;
   let rcSyncTimer = null;
+  let rcPendingNewId = null;
+  const RC_PLAYER_ID_KEY = "operation_satoshi_player_id";
   function rcSetCurrentUser(u){ rcCurrentUser = u; window.rcCurrentUser = u; }
 
+  // Génère un identifiant lisible du type "SAT-4F9K2Q" (sans caractères ambigus 0/O/1/I).
+  function rcGenerateId(){
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let s = "";
+    for(let i = 0; i < 6; i++){ s += chars[Math.floor(Math.random() * chars.length)]; }
+    return "SAT-" + s;
+  }
+
   window.rcAuthSwitchTab = function(mode){
-    document.getElementById("auth-tab-login").classList.toggle("active", mode === "login");
-    document.getElementById("auth-tab-register").classList.toggle("active", mode === "register");
-    document.getElementById("auth-form-login").classList.toggle("active", mode === "login");
-    document.getElementById("auth-form-register").classList.toggle("active", mode === "register");
+    document.getElementById("auth-tab-new").classList.toggle("active", mode === "new");
+    document.getElementById("auth-tab-existing").classList.toggle("active", mode === "existing");
+    document.getElementById("auth-form-new").classList.toggle("active", mode === "new");
+    document.getElementById("auth-form-existing").classList.toggle("active", mode === "existing");
     rcAuthClearMessages();
   };
 
@@ -6218,84 +6224,77 @@
     ok.classList.add("show");
   }
 
-  function rcAuthMessageFromCode(code){
-    const map = {
-      "auth/invalid-email": "Cette adresse email n'est pas valide.",
-      "auth/user-not-found": "Aucun compte ne correspond à cet email.",
-      "auth/wrong-password": "Mot de passe incorrect.",
-      "auth/invalid-credential": "Email ou mot de passe incorrect.",
-      "auth/email-already-in-use": "Un compte existe déjà avec cet email.",
-      "auth/weak-password": "Le mot de passe doit contenir au moins 8 caractères.",
-      "auth/too-many-requests": "Trop de tentatives. Réessaie dans quelques minutes.",
-      "auth/network-request-failed": "Problème de connexion réseau."
-    };
-    return map[code] || "Une erreur est survenue. Réessaie.";
+  window.rcAuthCopyNewId = function(){
+    if(!rcPendingNewId) return;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(rcPendingNewId)
+        .then(function(){ rcAuthShowSuccess("Identifiant copié : " + rcPendingNewId); })
+        .catch(function(){});
+    }
+  };
+
+  // Assure une session Firebase Auth anonyme (pas d'email/mot de passe : juste un identifiant).
+  function rcEnsureAnonAuth(){
+    if(!rcFirebaseReady) return Promise.resolve(null);
+    if(rcAuth.currentUser) return Promise.resolve(rcAuth.currentUser);
+    return rcAuth.signInAnonymously()
+      .then(function(cred){ return cred.user; })
+      .catch(function(err){ console.warn("Connexion anonyme impossible :", err); return null; });
   }
 
-  window.rcAuthHandleLogin = function(e){
-    e.preventDefault();
+  function rcStartCloudSync(){
+    rcLoadCloudProgress(rcCurrentUser.uid).then(function(){
+      rcEnterGame();
+      if(rcSyncTimer) clearInterval(rcSyncTimer);
+      rcSyncTimer = setInterval(rcSaveCloudProgress, 20000);
+      window.addEventListener("beforeunload", rcSaveCloudProgress);
+      if(typeof refreshWorldLeaderboard === "function") refreshWorldLeaderboard();
+    });
+  }
+
+  window.rcAuthStartNewId = function(){
     rcAuthClearMessages();
-    if(!rcFirebaseReady){ rcAuthShowError("La connexion n'est pas encore configurée (clé Firebase manquante)."); return false; }
-    const email = document.getElementById("auth-login-email").value.trim();
-    const password = document.getElementById("auth-login-password").value;
-    const btn = document.getElementById("auth-login-btn");
+    const id = rcPendingNewId || rcGenerateId();
+    const btn = document.getElementById("auth-new-btn");
     btn.disabled = true; btn.textContent = "Connexion...";
-    rcAuth.signInWithEmailAndPassword(email, password)
-      .catch(function(err){
-        rcAuthShowError(rcAuthMessageFromCode(err.code));
-      })
-      .finally(function(){
-        btn.disabled = false; btn.textContent = "Se connecter";
-      });
-    return false;
+    rcEnsureAnonAuth().then(function(){
+      try { localStorage.setItem(RC_PLAYER_ID_KEY, id); } catch(e){}
+      rcSetCurrentUser({ uid: id, displayName: null });
+      document.getElementById("logout-toggle").style.display = "flex";
+      rcStartCloudSync();
+    }).finally(function(){
+      btn.disabled = false; btn.textContent = "Commencer l'aventure";
+    });
   };
 
-  window.rcAuthHandleRegister = function(e){
+  window.rcAuthHandleLoadExistingId = function(e){
     e.preventDefault();
     rcAuthClearMessages();
-    if(!rcFirebaseReady){ rcAuthShowError("L'inscription n'est pas encore configurée (clé Firebase manquante)."); return false; }
-    const pseudo = document.getElementById("auth-register-pseudo").value.trim();
-    const email = document.getElementById("auth-register-email").value.trim();
-    const password = document.getElementById("auth-register-password").value;
-    const password2 = document.getElementById("auth-register-password2").value;
-    if(password !== password2){ rcAuthShowError("Les mots de passe ne correspondent pas."); return false; }
-    if(password.length < 8){ rcAuthShowError("Le mot de passe doit contenir au moins 8 caractères."); return false; }
-    const btn = document.getElementById("auth-register-btn");
-    btn.disabled = true; btn.textContent = "Création...";
-    rcAuth.createUserWithEmailAndPassword(email, password)
-      .then(function(cred){
-        return cred.user.updateProfile({ displayName: pseudo }).then(function(){
-          try { localStorage.setItem("comm_satoshi_pseudo", pseudo); } catch(e){}
-          return rcDb.collection("users").doc(cred.user.uid).set({
-            pseudo: pseudo,
-            email: email,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          }, { merge: true });
-        });
-      })
-      .catch(function(err){
-        rcAuthShowError(rcAuthMessageFromCode(err.code));
-        btn.disabled = false; btn.textContent = "Créer mon compte";
-      });
+    const raw = document.getElementById("auth-existing-id").value.trim().toUpperCase();
+    if(!raw){ rcAuthShowError("Indique ton identifiant."); return false; }
+    const btn = document.getElementById("auth-existing-btn");
+    btn.disabled = true; btn.textContent = "Chargement...";
+    rcEnsureAnonAuth().then(function(){
+      try { localStorage.setItem(RC_PLAYER_ID_KEY, raw); } catch(e){}
+      rcSetCurrentUser({ uid: raw, displayName: null });
+      document.getElementById("logout-toggle").style.display = "flex";
+      rcStartCloudSync();
+    }).finally(function(){
+      btn.disabled = false; btn.textContent = "Charger ma progression";
+    });
     return false;
-  };
-
-  window.rcAuthResetPassword = function(){
-    rcAuthClearMessages();
-    if(!rcFirebaseReady){ rcAuthShowError("Fonction indisponible pour le moment."); return; }
-    const email = document.getElementById("auth-login-email").value.trim();
-    if(!email){ rcAuthShowError("Renseigne d'abord ton email ci-dessus, puis clique à nouveau sur ce lien."); return; }
-    rcAuth.sendPasswordResetEmail(email)
-      .then(function(){ rcAuthShowSuccess("Email de réinitialisation envoyé à " + email + "."); })
-      .catch(function(err){ rcAuthShowError(rcAuthMessageFromCode(err.code)); });
   };
 
   window.rcAuthLogout = function(){
     if(rcSyncTimer) clearInterval(rcSyncTimer);
-    if(rcFirebaseReady && rcCurrentUser){
-      rcSaveCloudProgress().finally(function(){ rcAuth.signOut().then(function(){ location.reload(); }); });
-    } else {
+    const finish = function(){
+      try { localStorage.removeItem(RC_PLAYER_ID_KEY); } catch(e){}
       location.reload();
+    };
+    if(rcFirebaseReady && rcCurrentUser){
+      rcSaveCloudProgress().finally(finish);
+    } else {
+      finish();
     }
   };
 
@@ -6370,6 +6369,7 @@
   window.rcSaveCloudProgress = rcSaveCloudProgress;
 
   function rcLoadCloudProgress(uid){
+    if(!rcFirebaseReady) return Promise.resolve();
     return rcDb.collection("users").doc(uid).get().then(function(doc){
       if(doc.exists){
         const data = doc.data();
@@ -6396,22 +6396,19 @@
     if(typeof window.rcLaunchGame === "function") window.rcLaunchGame();
   }
 
-  if(rcFirebaseReady){
-    rcAuth.onAuthStateChanged(function(user){
-      if(user){
-        rcSetCurrentUser(user);
-        document.getElementById("logout-toggle").style.display = "flex";
-        rcLoadCloudProgress(user.uid).then(function(){
-          rcEnterGame();
-          if(rcSyncTimer) clearInterval(rcSyncTimer);
-          rcSyncTimer = setInterval(rcSaveCloudProgress, 20000);
-          window.addEventListener("beforeunload", rcSaveCloudProgress);
-          refreshWorldLeaderboard();
-        });
-      } else {
-        rcSetCurrentUser(null);
-        document.getElementById("logout-toggle").style.display = "none";
-      }
+  // Affiche un identifiant prêt à l'emploi pour un nouveau joueur.
+  const rcIdDisplayEl = document.getElementById("auth-new-id-display");
+  rcPendingNewId = rcGenerateId();
+  if(rcIdDisplayEl) rcIdDisplayEl.textContent = rcPendingNewId;
+
+  // Joueur déjà connu sur cet appareil : reconnexion automatique et silencieuse.
+  let rcStoredId = null;
+  try { rcStoredId = localStorage.getItem(RC_PLAYER_ID_KEY); } catch(e){}
+  if(rcStoredId){
+    rcEnsureAnonAuth().then(function(){
+      rcSetCurrentUser({ uid: rcStoredId, displayName: null });
+      document.getElementById("logout-toggle").style.display = "flex";
+      rcStartCloudSync();
     });
   }
 })();
