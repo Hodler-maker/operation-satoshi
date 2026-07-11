@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>La vraie chasse aux indices</title>
 <link rel="icon" type="image/png" href="bitcoin.png">
 <link rel="manifest" href="/manifest.json">
@@ -241,7 +241,7 @@
   }
   .wallet-icon{font-size:26px;flex-shrink:0;}
   .wallet-info{flex:1;}
-  .wallet-label{font-size:10px;color:var(--texte-dim);text-transform:uppercase;letter-spacing:0.06em;}
+  .wallet-label{font-size:11px;color:var(--texte-dim);text-transform:uppercase;letter-spacing:0.06em;}
   .wallet-amount{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:18px;color:var(--or);}
   .wallet-amount .unit{font-size:12px;color:var(--texte-dim);font-weight:400;margin-left:4px;}
   .wallet-bar-track{
@@ -513,7 +513,7 @@
 
   /* ====== ICÔNE PROFIL JOUEUR ====== */
   .profile-toggle{
-    position:fixed; top:64px; right:64px; z-index:50;
+    position:fixed; top:14px; right:70px; z-index:50;
     width:42px;height:42px;border-radius:50%;
     background:linear-gradient(135deg, rgba(124,58,237,0.35), rgba(59,130,246,0.3));
     border:1.5px solid rgba(124,58,237,0.5);
@@ -707,7 +707,7 @@
     padding:13px 12px;text-align:center;
   }
   .pstat-box .pstat-num{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:19px;color:var(--or);}
-  .pstat-box .pstat-lab{font-size:10.5px;color:var(--texte-dim);margin-top:2px;line-height:1.3;}
+  .pstat-box .pstat-lab{font-size:11px;color:var(--texte-dim);margin-top:2px;line-height:1.3;}
 
   .achievement-item{
     display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:13px;
@@ -743,8 +743,8 @@
     background-size:18px 18px;pointer-events:none;
   }
   .idcard-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1;margin-bottom:18px;}
-  .idcard-brand{font-family:'Space Grotesk',sans-serif;font-size:10.5px;font-weight:700;color:var(--or);letter-spacing:0.08em;text-transform:uppercase;}
-  .idcard-rank{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--texte-dim);}
+  .idcard-brand{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:var(--or);letter-spacing:0.08em;text-transform:uppercase;}
+  .idcard-rank{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--texte-dim);}
   .idcard-body{display:flex;gap:16px;align-items:center;position:relative;z-index:1;margin-bottom:18px;}
   .idcard-avatar{
     width:64px;height:64px;border-radius:16px;flex-shrink:0;
@@ -761,10 +761,10 @@
   }
   .idcard-stat{text-align:center;}
   .idcard-stat .v{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;color:var(--vert);}
-  .idcard-stat .l{font-size:9.5px;color:var(--texte-dim);text-transform:uppercase;letter-spacing:0.03em;margin-top:2px;}
+  .idcard-stat .l{font-size:11px;color:var(--texte-dim);text-transform:uppercase;letter-spacing:0.03em;margin-top:2px;}
   .idcard-footer{
     position:relative;z-index:1;margin-top:16px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);
-    font-size:9.5px;color:var(--texte-dim);text-align:center;letter-spacing:0.02em;
+    font-size:11px;color:var(--texte-dim);text-align:center;letter-spacing:0.02em;
   }
   .idcard-screenshot-hint{
     margin-top:14px;text-align:center;font-size:12px;color:var(--texte-dim);
@@ -779,7 +779,7 @@
     border-radius:10px;padding:8px 10px;text-align:center;
   }
   .mini-stat .num{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:var(--or);}
-  .mini-stat .lab{font-size:10px;color:var(--texte-dim);text-transform:uppercase;letter-spacing:0.05em;}
+  .mini-stat .lab{font-size:11px;color:var(--texte-dim);text-transform:uppercase;letter-spacing:0.05em;}
 
   /* ====== TIMER (étapes 6+) ====== */
   .timer-bar{
@@ -793,7 +793,7 @@
   .timer-icon{font-size:20px;flex-shrink:0;animation:tickShake 1s ease-in-out infinite;}
   @keyframes tickShake{0%,100%{transform:rotate(0deg);}25%{transform:rotate(-6deg);}75%{transform:rotate(6deg);}}
   .timer-info{flex:1;}
-  .timer-label{font-size:10px;color:var(--texte-dim);text-transform:uppercase;letter-spacing:0.06em;}
+  .timer-label{font-size:11px;color:var(--texte-dim);text-transform:uppercase;letter-spacing:0.06em;}
   .timer-track{width:100%;height:8px;border-radius:5px;background:rgba(255,255,255,0.08);overflow:hidden;margin-top:4px;}
   .timer-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--vert),var(--or));transition:width 1s linear, background-color .3s;}
   .timer-fill.warning{background:linear-gradient(90deg,var(--or),var(--rouge));}
@@ -893,7 +893,7 @@
     font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;
     color:#fff;letter-spacing:0.02em;
   }
-  .pack-buy-desc{font-size:10px;color:rgba(255,255,255,0.5);line-height:1.3;text-align:center;}
+  .pack-buy-desc{font-size:11px;color:rgba(255,255,255,0.5);line-height:1.3;text-align:center;}
   .pack-buy-price{
     font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
     background:rgba(0,0,0,0.35);border-radius:6px;padding:3px 8px;
@@ -1125,7 +1125,7 @@
     line-height:1.2; color:#fff; margin-bottom:2px;
     text-shadow:0 1px 4px rgba(0,0,0,.9);
   }
-  .c3d-power-icon{ font-size:10px; }
+  .c3d-power-icon{ font-size:11px; }
   .c3d-price{
     font-family:'JetBrains Mono',monospace; font-size:7.5px; font-weight:700;
     background:rgba(0,0,0,.5); border-radius:4px; padding:1px 5px;
@@ -1142,7 +1142,7 @@
     position:absolute; top:6px; right:6px; z-index:8;
     width:18px; height:18px; border-radius:50%;
     background:var(--vert); display:flex; align-items:center; justify-content:center;
-    font-size:9px; box-shadow:0 0 10px rgba(34,197,94,.8);
+    font-size:11px; box-shadow:0 0 10px rgba(34,197,94,.8);
     border:1.5px solid rgba(255,255,255,.2);
   }
 
@@ -1210,7 +1210,7 @@
   }
   .wlb-title-icon{font-size:15px;filter:drop-shadow(0 0 6px rgba(240,185,11,.5));}
   .wlb-refresh{
-    font-size:10.5px;font-weight:600;color:var(--texte-dim);
+    font-size:11px;font-weight:600;color:var(--texte-dim);
     background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
     border-radius:20px;padding:5px 11px;cursor:pointer;transition:all .18s ease-out;
     font-family:'Inter',sans-serif;-webkit-tap-highlight-color:transparent;
@@ -1237,7 +1237,7 @@
   .wlb-rank.r3{color:#b45309;font-size:17px;}
   .wlb-pseudo{flex:1;min-width:0;font-size:13px;font-weight:600;color:var(--texte);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .wlb-you-tag{
-    font-size:9px;font-weight:700;color:var(--violet);background:rgba(124,58,237,0.18);
+    font-size:11px;font-weight:700;color:var(--violet);background:rgba(124,58,237,0.18);
     border:1px solid rgba(124,58,237,0.4);padding:1px 6px;border-radius:5px;margin-left:6px;
     text-transform:uppercase;letter-spacing:0.03em;white-space:nowrap;
   }
@@ -1352,7 +1352,7 @@
 
   /* ====== V6 : NOUVELLES COLLECTIONS ====== */
   .new-collection-tag{
-    display:inline-block;font-size:9px;font-weight:700;letter-spacing:0.08em;
+    display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.08em;
     text-transform:uppercase;padding:2px 6px;border-radius:4px;
     background:rgba(240,185,11,0.15);color:var(--or);border:1px solid rgba(240,185,11,0.3);
     margin-left:6px;vertical-align:middle;
@@ -1372,7 +1372,7 @@
   .share-stat-row{display:flex;justify-content:space-around;margin:12px 0 6px;}
   .share-stat{text-align:center;}
   .share-stat-num{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--or);}
-  .share-stat-lbl{font-size:10px;color:var(--texte-dim);text-transform:uppercase;letter-spacing:0.05em;margin-top:2px;}
+  .share-stat-lbl{font-size:11px;color:var(--texte-dim);text-transform:uppercase;letter-spacing:0.05em;margin-top:2px;}
 
   /* ====================================================
      FACE ARRIÈRE
@@ -1383,7 +1383,7 @@
     border:1.5px solid rgba(255,255,255,.08);
   }
   .c3d-back-name{
-    font-family:'Space Grotesk',sans-serif; font-size:9px; font-weight:700;
+    font-family:'Space Grotesk',sans-serif; font-size:11px; font-weight:700;
     color:#fff; text-align:center; margin-bottom:3px; line-height:1.2;
   }
   .c3d-back-desc{
@@ -1487,7 +1487,7 @@
   .power-chip.gold{background:rgba(240,185,11,0.12);border-color:rgba(240,185,11,0.35);color:var(--or);}
 
   /* ====== CARD LEVEL INDICATOR ====== */
-  .c-level{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;}
+  .c-level{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;}
   .c-level.bronze{color:#cd7f32;}
   .c-level.argent{color:#aaa;}
   .c-level.or{color:var(--or);}
@@ -1745,7 +1745,7 @@
     50%{transform:scale(1.15);}
   }
   .streak-info{flex:1;}
-  .streak-label{font-size:10px;color:var(--texte-dim);text-transform:uppercase;letter-spacing:0.06em;}
+  .streak-label{font-size:11px;color:var(--texte-dim);text-transform:uppercase;letter-spacing:0.06em;}
   .streak-count{
     font-family:'JetBrains Mono',monospace;font-weight:700;font-size:22px;
     background:linear-gradient(135deg,var(--or),#f59e0b);
@@ -1817,7 +1817,7 @@
   }
   .streak-week-day{
     display:flex;flex-direction:column;align-items:center;gap:4px;
-    font-size:9px;color:var(--texte-dim);
+    font-size:11px;color:var(--texte-dim);
   }
   .streak-week-day .sdot{
     width:32px;height:32px;border-radius:8px;
@@ -1989,7 +1989,7 @@
 
   /* Label */
   .hub-stat-label {
-    font-size: 9.5px;
+    font-size:11px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: .08em;
@@ -2043,7 +2043,7 @@
 
   /* Sub-texte */
   .hub-stat-sub {
-    font-size: 9px;
+    font-size:11px;
     color: var(--texte-dim);
     position: relative; z-index: 1;
     line-height: 1.3;
@@ -2106,7 +2106,7 @@
   }
   .hub-cards-title-icon { font-size: 15px; filter: drop-shadow(0 0 6px rgba(240,185,11,.5)); }
   .hub-cards-link {
-    font-size: 10px;
+    font-size:11px;
     font-weight: 600;
     color: var(--texte-dim);
     background: rgba(255,255,255,.06);
@@ -2141,7 +2141,7 @@
     animation: hubXpBarGlow 1.6s ease-in-out infinite;
   }
   .hub-cards-progress-label {
-    font-size: 9.5px; color: var(--texte-dim); text-align: center; margin-bottom: 10px;
+    font-size:11px; color: var(--texte-dim); text-align: center; margin-bottom: 10px;
   }
   .hub-cards-progress-label strong { color: var(--texte); font-weight: 700; }
 
@@ -2197,7 +2197,7 @@
   .hub-rarity-legendaire .hub-rarity-bar-fill { background:linear-gradient(90deg,#b45309,var(--or),#fde68a); background-size:200% 100%; animation:goldShift 2s linear infinite; }
 
   /* Mini-cartes récentes */
-  .hub-cards-recent-label { font-size:9.5px; color:var(--texte-dim); margin-bottom:6px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; }
+  .hub-cards-recent-label { font-size:11px; color:var(--texte-dim); margin-bottom:6px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; }
   .hub-cards-recent-row { display:flex; gap:6px; overflow-x:hidden; }
   .hub-card-mini {
     flex-shrink:0; width:44px; height:44px; border-radius:10px;
@@ -2221,7 +2221,7 @@
   /* Collections complétées */
   .hub-cards-collections-row { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; }
   .hub-collection-chip {
-    font-size:9.5px; font-weight:700; padding:3px 9px; border-radius:20px;
+    font-size:11px; font-weight:700; padding:3px 9px; border-radius:20px;
     background:rgba(240,185,11,.12); border:1px solid rgba(240,185,11,.3); color:var(--or);
     display:flex; align-items:center; gap:4px;
   }
@@ -2422,7 +2422,7 @@
   .hub-mission-text { flex:1; min-width:0; }
   .hub-mission-title { font-size:12px; font-weight:700; color:var(--texte); line-height:1.3; }
   .hub-mission-item.done .hub-mission-title { color:rgba(230,233,240,.55); text-decoration: line-through; text-decoration-color: rgba(74,222,128,.4); }
-  .hub-mission-sub { font-size:10.5px; color:var(--texte-dim); margin-top:1px; }
+  .hub-mission-sub { font-size:11px; color:var(--texte-dim); margin-top:1px; }
   .hub-mission-arrow { flex-shrink:0; font-size:13px; color:var(--texte-dim); }
 
   .hub-missions-bonus {
@@ -2442,7 +2442,7 @@
   }
   .hub-missions-claim-btn:active { transform: scale(.94); }
   .hub-missions-claimed-note {
-    text-align:center; font-size:10.5px; color:rgba(74,222,128,.75); font-weight:600;
+    text-align:center; font-size:11px; color:rgba(74,222,128,.75); font-weight:600;
     margin-top:10px;
   }
 
@@ -2801,7 +2801,7 @@
   .stl-dot.red { background:var(--rouge);box-shadow:0 0 8px var(--rouge); }
   .stl-dot.or { background:var(--or);box-shadow:0 0 10px var(--or); }
   .stl-date {
-    font-family:'JetBrains Mono',monospace;font-size:10.5px;
+    font-family:'JetBrains Mono',monospace;font-size:11px;
     color:var(--texte-dim);margin-bottom:5px;letter-spacing:0.04em;
   }
   .stl-card {
@@ -2845,7 +2845,7 @@
   .sai-icon { font-size:24px;flex-shrink:0; }
   .sai-body { flex:1; }
   .sai-title { font-size:13.5px;font-weight:700;margin-bottom:2px; }
-  .sai-meta { font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--texte-dim);margin-bottom:3px; }
+  .sai-meta { font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--texte-dim);margin-bottom:3px; }
   .sai-desc { font-size:12px;color:var(--texte-dim);line-height:1.5; }
   .sai-arrow { font-size:16px;color:var(--texte-dim);flex-shrink:0; }
 
@@ -3258,7 +3258,7 @@
   }
   .fusion-result-card.show{opacity:1;transform:scale(1);}
   .fusion-result-label{
-    font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;
+    font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;
     text-transform:uppercase;letter-spacing:.08em;
   }
   .fusion-flash{
@@ -3315,7 +3315,7 @@
   .fusion-stat-chip-val{
     font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--or);
   }
-  .fusion-stat-chip-lbl{font-size:10px;color:var(--texte-dim);line-height:1.3;}
+  .fusion-stat-chip-lbl{font-size:11px;color:var(--texte-dim);line-height:1.3;}
 
   /* Niveau badge rareté fusion */
   .rarity-fusion-bronze{border-color:rgba(205,127,50,0.5);background:linear-gradient(160deg,#1a0e00,#0e0800);}
@@ -3398,7 +3398,7 @@
     padding:10px;text-align:center;background:linear-gradient(160deg,#251000,#100800);
   }
   .bcf-fusion-card .bcf-fc-icon{ font-size:40px; }
-  .bcf-fusion-card .bcf-fc-label{ font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em; }
+  .bcf-fusion-card .bcf-fc-label{ font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em; }
   .bcf-fusion-card .bcf-fc-name{ font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;color:var(--texte); }
 
   @media (prefers-reduced-motion: reduce){
@@ -3461,7 +3461,7 @@
     font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--or);
     white-space: nowrap;
   }
-  .rc-season-countdown .rc-count-label { font-size: 10px; color: var(--texte-dim); margin-bottom: 2px; }
+  .rc-season-countdown .rc-count-label { font-size:11px; color: var(--texte-dim); margin-bottom: 2px; }
 
   /* Événement banner */
   .rc-event-banner {
@@ -3509,8 +3509,8 @@
   .rc-pack-name{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;margin-bottom:4px;}
   .rc-pack-price{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--or);margin-bottom:5px;}
   .rc-pack-desc{font-size:11px;color:var(--texte-dim);line-height:1.4;}
-  .rc-badge-new{position:absolute;top:7px;right:7px;background:var(--rouge);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:999px;text-transform:uppercase;}
-  .rc-badge-hot{position:absolute;top:7px;right:7px;background:linear-gradient(135deg,var(--or),#ff8c00);color:#000;font-size:9px;font-weight:700;padding:2px 6px;border-radius:999px;text-transform:uppercase;}
+  .rc-badge-new{position:absolute;top:7px;right:7px;background:var(--rouge);color:#fff;font-size:11px;font-weight:700;padding:2px 6px;border-radius:999px;text-transform:uppercase;}
+  .rc-badge-hot{position:absolute;top:7px;right:7px;background:linear-gradient(135deg,var(--or),#ff8c00);color:#000;font-size:11px;font-weight:700;padding:2px 6px;border-radius:999px;text-transform:uppercase;}
 
   /* Drop rates */
   .rc-drop-rates { background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:16px;margin-bottom:22px; }
@@ -3568,7 +3568,7 @@
   .rc-card-face{padding:16px 11px 9px;text-align:center;position:relative;}
   .rc-card-rarity-label{
     position:absolute;top:7px;left:7px;
-    font-size:9px;font-weight:700;padding:3px 6px;border-radius:999px;
+    font-size:11px;font-weight:700;padding:3px 6px;border-radius:999px;
     letter-spacing:0.07em;text-transform:uppercase;
   }
   .rc-commune .rc-card-rarity-label{background:rgba(138,154,181,0.18);color:var(--rarity-commune);}
@@ -3576,12 +3576,12 @@
   .rc-epique .rc-card-rarity-label{background:rgba(26,188,156,0.14);color:var(--rarity-epique);}
   .rc-legendaire .rc-card-rarity-label{background:rgba(240,185,11,0.14);color:var(--rarity-legendaire);}
   .rc-mythique .rc-card-rarity-label{background:rgba(255,111,216,0.14);color:#ff6fd8;}
-  .rc-card-edition{position:absolute;top:7px;right:7px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--texte-dim);}
+  .rc-card-edition{position:absolute;top:7px;right:7px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--texte-dim);}
   .rc-card-emoji{font-size:34px;display:block;margin-bottom:5px;}
   .rc-card-name{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;line-height:1.3;margin-bottom:3px;}
-  .rc-card-role{font-size:10px;color:var(--texte-dim);margin-bottom:8px;}
+  .rc-card-role{font-size:11px;color:var(--texte-dim);margin-bottom:8px;}
   .rc-card-footer{border-top:1px solid var(--card-border);padding:7px 11px;display:flex;justify-content:space-between;align-items:center;}
-  .rc-card-stock{font-size:10px;color:var(--texte-dim);font-family:'JetBrains Mono',monospace;}
+  .rc-card-stock{font-size:11px;color:var(--texte-dim);font-family:'JetBrains Mono',monospace;}
   .rc-card-stock-bar{height:3px;border-radius:99px;background:rgba(255,255,255,0.1);margin-top:3px;overflow:hidden;}
   .rc-card-stock-fill{height:100%;border-radius:99px;}
   .rc-commune .rc-card-stock-fill{background:var(--rarity-commune);}
@@ -3589,14 +3589,14 @@
   .rc-epique .rc-card-stock-fill{background:var(--rarity-epique);}
   .rc-legendaire .rc-card-stock-fill{background:var(--rarity-legendaire);}
   .rc-mythique .rc-card-stock-fill{background:linear-gradient(90deg,#ff6fd8,#00ffcc);}
-  .rc-card-bonus{font-size:10px;color:var(--vert);font-weight:600;}
+  .rc-card-bonus{font-size:11px;color:var(--vert);font-weight:600;}
   .rc-card-lock{
     position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
     flex-direction:column;gap:4px;background:rgba(10,14,26,0.65);
     backdrop-filter:blur(3px);border-radius:16px;
   }
   .rc-card-lock .rc-lock-icon{font-size:20px;}
-  .rc-card-lock .rc-lock-text{font-size:10px;color:var(--texte-dim);text-align:center;font-weight:600;}
+  .rc-card-lock .rc-lock-text{font-size:11px;color:var(--texte-dim);text-align:center;font-weight:600;}
 
   /* Collections rareté */
   .rc-collection-card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:15px;margin-bottom:11px;}
@@ -3656,7 +3656,7 @@
   .rc-pack-reveal-card.rc-mythique .rc-pack-rarity-glow{background:rgba(255,111,216,0.15);color:#ff6fd8;}
   .rc-reveal-emoji{font-size:48px;display:block;margin-bottom:7px;}
   .rc-reveal-name{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;margin-bottom:3px;}
-  .rc-reveal-edition{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,0.45);}
+  .rc-reveal-edition{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,0.45);}
   .rc-reveal-bonus{font-size:11px;color:var(--vert);margin-top:7px;font-weight:600;}
   .rc-pack-result-btns{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;}
   .rc-btn-secondary{padding:9px 16px;border-radius:999px;border:1.5px solid var(--card-border);cursor:pointer;background:transparent;color:var(--texte);font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;transition:all .15s;}
@@ -3757,7 +3757,7 @@
 
   /* ====== MARKETPLACE / ÉCHANGE DE CARTES ====== */
   .trade-toggle{
-    position:fixed; top:14px; left:64px; z-index:50;
+    position:fixed; top:14px; left:70px; z-index:50;
     width:48px;height:48px;display:flex;align-items:center;justify-content:center;
     font-size:24px;border-radius:50%;
     background:radial-gradient(circle, rgba(34,197,94,0.18) 0%, rgba(34,197,94,0.06) 55%, transparent 75%);
@@ -3836,9 +3836,20 @@
 <div class="grid-overlay"></div>
 <div class="scanline"></div>
 
-<div class="sound-toggle" id="sound-toggle" onclick="toggleSound()">🔊</div>
-<div class="profile-toggle" id="profile-toggle" onclick="openPlayerProfile()" title="Mon profil" style="display:none;">
-  <span>👤</span>
+<div class="sound-toggle" id="sound-toggle" onclick="toggleSound()" role="button" tabindex="0" aria-label="Activer ou couper le son" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleSound();}">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:19px;height:19px;">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+  </svg>
+</div>
+<div class="profile-toggle" id="profile-toggle" onclick="openPlayerProfile()" title="Mon profil" style="display:none;" role="button" tabindex="0" aria-label="Ouvrir mon profil" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openPlayerProfile();}">
+  <span class="profile-toggle-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:19px;height:19px;">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  </span>
   <span class="profile-lvl-badge" id="profile-lvl-badge">1</span>
 </div>
 <div class="logout-toggle" id="logout-toggle" onclick="rcAuthLogout()" title="Se déconnecter" role="button" tabindex="0" aria-label="Se déconnecter" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();rcAuthLogout();}">
@@ -3849,7 +3860,14 @@
   </svg>
   <span>Déconnexion</span>
 </div>
-<div class="trade-toggle" id="trade-toggle" onclick="openTradeScreen()" title="Marketplace des cartes" style="display:none;">🤝</div>
+<div class="trade-toggle" id="trade-toggle" onclick="openTradeScreen()" title="Marketplace des cartes" style="display:none;" role="button" tabindex="0" aria-label="Ouvrir le marketplace des cartes" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTradeScreen();}">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:22px;height:22px;">
+    <polyline points="17 1 21 5 17 9" />
+    <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+    <polyline points="7 23 3 19 7 15" />
+    <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+  </svg>
+</div>
 <div class="wrap">
 
   <!-- ============ ÉCRAN AUTH : CONNEXION / INSCRIPTION ============ -->
@@ -3862,8 +3880,8 @@
       </div>
       <div class="card">
         <div class="auth-tabs">
-          <div class="auth-tab active" id="auth-tab-login" onclick="rcAuthSwitchTab('login')">Connexion</div>
-          <div class="auth-tab" id="auth-tab-register" onclick="rcAuthSwitchTab('register')">Inscription</div>
+          <div class="auth-tab active" id="auth-tab-login" onclick="rcAuthSwitchTab('login')" role="button" tabindex="0" aria-label="Afficher le formulaire de connexion" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();rcAuthSwitchTab('login');}">Connexion</div>
+          <div class="auth-tab" id="auth-tab-register" onclick="rcAuthSwitchTab('register')" role="button" tabindex="0" aria-label="Afficher le formulaire d'inscription" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();rcAuthSwitchTab('register');}">Inscription</div>
         </div>
 
         <div class="auth-error" id="auth-error"></div>
@@ -4004,7 +4022,7 @@
     </div>
 
     <!-- Indicateur streak quotidien (ancien, conservé pour compatibilité) -->
-    <div id="streak-banner" style="display:none;" class="streak-banner" onclick="openStreakModal()">
+    <div id="streak-banner" style="display:none;" class="streak-banner" onclick="openStreakModal()" role="button" tabindex="0" aria-label="Voir mon streak quotidien" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openStreakModal();}">
       <div class="streak-fire" id="streak-fire-icon">🔥</div>
       <div class="streak-info">
         <div class="streak-label">Streak quotidien</div>
@@ -4182,7 +4200,7 @@
           <span class="hub-accordion-chevron">›</span>
         </button>
         <div class="hub-accordion-body" id="hub-acc-community">
-          <div class="comm-card" onclick="openCommunityScreen()" style="margin-top:0;">
+          <div class="comm-card" onclick="openCommunityScreen()" style="margin-top:0;" role="button" tabindex="0" aria-label="Ouvrir l'énigme communautaire" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openCommunityScreen();}">
             <div class="comm-card-title">🧩 Le Cercle de Satoshi <span style="font-size:11px;font-weight:600;color:var(--or);background:rgba(240,185,11,0.12);border:1px solid rgba(240,185,11,0.3);padding:2px 7px;border-radius:6px;margin-left:auto;">COMMUNAUTAIRE</span></div>
             <div class="comm-card-desc">5 fragments de clé sont dispersés entre les joueurs du monde entier. Toi seul ne peux pas tout résoudre — il faut que la communauté mette ses indices en commun pour ouvrir le coffre final.</div>
             <div class="comm-progress-pips" id="home-comm-pips"></div>
@@ -4329,10 +4347,10 @@
     </div>
 
     <div class="profile-tabs" id="profile-tabs">
-      <div class="profile-tab active" onclick="switchProfileTab('stats', this)">📊 Stats</div>
-      <div class="profile-tab" onclick="switchProfileTab('succes', this)">🏅 Succès</div>
-      <div class="profile-tab" onclick="switchProfileTab('collection', this)">🃏 Collection</div>
-      <div class="profile-tab" onclick="switchProfileTab('idcard', this)">🪪 Carte ID</div>
+      <div class="profile-tab active" onclick="switchProfileTab('stats', this)" role="button" tabindex="0" aria-label="Afficher l'onglet Stats" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchProfileTab('stats', this);}">📊 Stats</div>
+      <div class="profile-tab" onclick="switchProfileTab('succes', this)" role="button" tabindex="0" aria-label="Afficher l'onglet Succès" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchProfileTab('succes', this);}">🏅 Succès</div>
+      <div class="profile-tab" onclick="switchProfileTab('collection', this)" role="button" tabindex="0" aria-label="Afficher l'onglet Collection" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchProfileTab('collection', this);}">🃏 Collection</div>
+      <div class="profile-tab" onclick="switchProfileTab('idcard', this)" role="button" tabindex="0" aria-label="Afficher l'onglet Carte ID" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchProfileTab('idcard', this);}">🪪 Carte ID</div>
     </div>
 
     <!-- TAB STATS -->
@@ -4639,7 +4657,7 @@
 
 
     <!-- Accès Système de Rareté -->
-    <div class="rc-access-btn" onclick="openRareteScreen()">
+    <div class="rc-access-btn" onclick="openRareteScreen()" role="button" tabindex="0" aria-label="Ouvrir le système de rareté et éditions limitées" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openRareteScreen();}">
       <div class="rc-access-icon">✨</div>
       <div class="rc-access-info">
         <div class="rc-access-title">Système de Rareté — Éditions Limitées</div>
@@ -4718,10 +4736,10 @@
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-top:4px;">
       <button class="btn btn-ghost" style="font-size:12px;padding:8px 14px;flex-shrink:0;" onclick="closeRareteScreen()">← Retour</button>
       <div style="flex:1;">
-        <div style="font-size:10px;color:var(--texte-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px;">Opération Satoshi</div>
+        <div style="font-size:11px;color:var(--texte-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:2px;">Opération Satoshi</div>
         <h2 style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:800;background:linear-gradient(135deg,#fff 40%,#ff6fd8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">🃏 Système de Rareté</h2>
       </div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--or);background:rgba(240,185,11,0.1);border:1px solid rgba(240,185,11,0.3);padding:4px 10px;border-radius:999px;">21M BTC MAX</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--or);background:rgba(240,185,11,0.1);border:1px solid rgba(240,185,11,0.3);padding:4px 10px;border-radius:999px;">21M BTC MAX</div>
     </div>
 
     <!-- STATS FOMO -->
@@ -4773,20 +4791,20 @@
     <!-- PACKS -->
     <div class="rc-section-title">📦 Packs disponibles</div>
     <div class="rc-pack-container">
-      <div class="rc-pack-card" onclick="rcOpenPackModal('standard')">
+      <div class="rc-pack-card" onclick="rcOpenPackModal('standard')" role="button" tabindex="0" aria-label="Ouvrir le Pack Standard" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();rcOpenPackModal('standard');}">
         <div class="rc-badge-new">Gratuit</div>
         <div class="rc-pack-icon">📦</div>
         <div class="rc-pack-name">Pack Standard</div>
         <div class="rc-pack-price">0 sats</div>
         <div class="rc-pack-desc">1 carte aléatoire.<br>Majorité communes.</div>
       </div>
-      <div class="rc-pack-card" onclick="rcOpenPackModal('elite')">
+      <div class="rc-pack-card" onclick="rcOpenPackModal('elite')" role="button" tabindex="0" aria-label="Ouvrir le Pack Élite" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();rcOpenPackModal('elite');}">
         <div class="rc-pack-icon">💜</div>
         <div class="rc-pack-name">Pack Élite</div>
         <div class="rc-pack-price">500 sats</div>
         <div class="rc-pack-desc">1 carte Rare garantie ou plus.</div>
       </div>
-      <div class="rc-pack-card" onclick="rcOpenPackModal('legendaire')">
+      <div class="rc-pack-card" onclick="rcOpenPackModal('legendaire')" role="button" tabindex="0" aria-label="Ouvrir le Pack Légendaire" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();rcOpenPackModal('legendaire');}">
         <div class="rc-badge-hot">HOT</div>
         <div class="rc-pack-icon">🌟</div>
         <div class="rc-pack-name">Pack Légendaire</div>
@@ -4833,12 +4851,12 @@
     <!-- MA COLLECTION -->
     <div class="rc-section-title">🗂️ Ma Collection</div>
     <div class="rc-rarity-tabs" id="rc-rarity-tabs">
-      <div class="rc-rarity-tab rc-tab-all rc-active" onclick="rcFilterCards('all', this)">Toutes</div>
-      <div class="rc-rarity-tab rc-tab-commune" onclick="rcFilterCards('commune', this)">⚪ Commune</div>
-      <div class="rc-rarity-tab rc-tab-rare" onclick="rcFilterCards('rare', this)">💜 Rare</div>
-      <div class="rc-rarity-tab rc-tab-epique" onclick="rcFilterCards('epique', this)">💚 Épique</div>
-      <div class="rc-rarity-tab rc-tab-legendaire" onclick="rcFilterCards('legendaire', this)">🌟 Légendaire</div>
-      <div class="rc-rarity-tab rc-tab-mythique" onclick="rcFilterCards('mythique', this)">✨ Mythique</div>
+      <div class="rc-rarity-tab rc-tab-all rc-active" onclick="rcFilterCards('all', this)" role="button" tabindex="0" aria-label="Filtrer : Toutes les cartes" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();rcFilterCards('all', this);}">Toutes</div>
+      <div class="rc-rarity-tab rc-tab-commune" onclick="rcFilterCards('commune', this)" role="button" tabindex="0" aria-label="Filtrer : Cartes Communes" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();rcFilterCards('commune', this);}">⚪ Commune</div>
+      <div class="rc-rarity-tab rc-tab-rare" onclick="rcFilterCards('rare', this)" role="button" tabindex="0" aria-label="Filtrer : Cartes Rares" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();rcFilterCards('rare', this);}">💜 Rare</div>
+      <div class="rc-rarity-tab rc-tab-epique" onclick="rcFilterCards('epique', this)" role="button" tabindex="0" aria-label="Filtrer : Cartes Épiques" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();rcFilterCards('epique', this);}">💚 Épique</div>
+      <div class="rc-rarity-tab rc-tab-legendaire" onclick="rcFilterCards('legendaire', this)" role="button" tabindex="0" aria-label="Filtrer : Cartes Légendaires" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();rcFilterCards('legendaire', this);}">🌟 Légendaire</div>
+      <div class="rc-rarity-tab rc-tab-mythique" onclick="rcFilterCards('mythique', this)" role="button" tabindex="0" aria-label="Filtrer : Cartes Mythiques" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();rcFilterCards('mythique', this);}">✨ Mythique</div>
     </div>
     <div class="rc-cards-grid" id="rc-cards-grid"></div>
 
@@ -5799,7 +5817,7 @@
       <!-- Partie 2 : Dossiers On-Chain Avancés — le déchiffrement se fait désormais dans un pop-up juste après la victoire sur le Boss Final (voir #adv-dossiers-popup-overlay), plus ici. On laisse juste un accès rapide si déjà débloqué. -->
       <div id="adv-dossiers-unlock-block" style="display:none;margin:14px 0;">
         <div style="font-size:11px;color:var(--or);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin:0 0 8px;text-align:center;">🔓 Partie 2 débloquée</div>
-        <div class="adv-dossiers-entry" onclick="openAdvancedDossiers()">
+        <div class="adv-dossiers-entry" onclick="openAdvancedDossiers()" role="button" tabindex="0" aria-label="Ouvrir les dossiers on-chain avancés" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openAdvancedDossiers();}">
           <div class="adv-dossiers-entry-icon">🗂️</div>
           <div class="adv-dossiers-entry-text">
             <div class="adv-dossiers-entry-title">Dossiers On-Chain Avancés</div>
@@ -5859,9 +5877,9 @@
   </div>
 
   <!-- ============ MODAL PUBLICATION D'OFFRE ============ -->
-  <div class="trade-publish-overlay" id="trade-publish-overlay">
+  <div class="trade-publish-overlay" id="trade-publish-overlay" role="dialog" aria-modal="true" aria-labelledby="trade-publish-title">
     <div class="trade-publish-modal">
-      <h3>🤝 Publier une offre</h3>
+      <h3 id="trade-publish-title">🤝 Publier une offre</h3>
       <p class="shop-sub">Choisis la carte que tu donnes et celle que tu veux en retour.</p>
       <div class="trade-field">
         <label for="trade-give-select">Je donne</label>
@@ -5879,23 +5897,23 @@
   </div>
 
   <!-- ============ MODAL AVERTISSEMENT TIMER ============ -->
-  <div class="shop-overlay" id="timer-warning-overlay" style="align-items:center;justify-content:center;">
+  <div class="shop-overlay" id="timer-warning-overlay" style="align-items:center;justify-content:center;" role="dialog" aria-modal="true" aria-labelledby="timer-warning-title">
     <div class="shop-panel" style="border-radius:20px;max-width:340px;text-align:center;padding:28px 24px;">
       <div style="font-size:42px;margin-bottom:12px;">⏱️</div>
-      <h3 style="font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;margin-bottom:8px;color:var(--or);">Chrono activé !</h3>
+      <h3 id="timer-warning-title" style="font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;margin-bottom:8px;color:var(--or);">Chrono activé !</h3>
       <p style="font-size:14.5px;line-height:1.65;color:var(--texte-dim);margin-bottom:20px;">À partir de maintenant, chaque étape est <strong style="color:var(--texte);">chronométrée à 30 secondes</strong>. Si le temps s'écoule, la réponse est révélée et tu passes à la suite sans gagner de sats. Reste concentré.</p>
       <button class="btn btn-primary" id="timer-warning-btn" onclick="dismissTimerWarning()">⚡ Compris, j'suis prêt !</button>
     </div>
   </div>
 
   <!-- ============ MODAL — SIGNAL INTERCEPTÉ APRÈS LE BOSS FINAL (manifeste chiffré d'Adam Back) ============ -->
-  <div class="shop-overlay" id="adv-dossiers-popup-overlay" style="align-items:center;justify-content:center;">
+  <div class="shop-overlay" id="adv-dossiers-popup-overlay" style="align-items:center;justify-content:center;" role="dialog" aria-modal="true" aria-labelledby="adv-dossiers-popup-title">
     <div class="shop-panel" style="max-width:440px;border-radius:20px;">
 
       <!-- État 1 : message intercepté à décoder -->
       <div id="adam-manifesto-block" class="adam-manifesto">
         <div class="adam-manifesto-header">
-          <span class="adam-manifesto-flag">📡 SIGNAL INTERCEPTÉ</span>
+          <span class="adam-manifesto-flag" id="adv-dossiers-popup-title">📡 SIGNAL INTERCEPTÉ</span>
           <span class="adam-manifesto-sig">— signé A.B., 1997</span>
         </div>
         <div class="adam-manifesto-text">
@@ -5921,7 +5939,7 @@
       <div id="adv-dossiers-entry-wrap" style="display:none;text-align:center;">
         <div style="font-size:42px;margin-bottom:8px;">🗂️</div>
         <div style="font-size:11px;color:var(--or);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin:0 0 10px;">🔓 Partie 2 débloquée</div>
-        <div class="adv-dossiers-entry" onclick="openAdvancedDossiers()">
+        <div class="adv-dossiers-entry" onclick="openAdvancedDossiers()" role="button" tabindex="0" aria-label="Ouvrir les dossiers on-chain avancés" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openAdvancedDossiers();}">
           <div class="adv-dossiers-entry-icon">🗂️</div>
           <div class="adv-dossiers-entry-text">
             <div class="adv-dossiers-entry-title">Dossiers On-Chain Avancés</div>
@@ -5936,10 +5954,10 @@
   </div>
 
   <!-- ============ MODAL PARTAGE DU SCORE (IMAGE BRANDÉE) ============ -->
-  <div class="shop-overlay" id="share-overlay" style="align-items:center;justify-content:center;">
+  <div class="shop-overlay" id="share-overlay" style="align-items:center;justify-content:center;" role="dialog" aria-modal="true" aria-labelledby="share-overlay-title">
     <div class="shop-panel" style="max-width:420px;border-radius:20px;text-align:center;">
       <div class="shop-header">
-        <span class="shop-title">📤 Partager ton score</span>
+        <span class="shop-title" id="share-overlay-title">📤 Partager ton score</span>
         <span class="shop-close" onclick="closeShareModal()">✕</span>
       </div>
       <p class="shop-sub">Télécharge cette image ou partage-la directement sur tes réseaux.</p>
@@ -5957,10 +5975,10 @@
 
 
   <!-- ============ MODAL BOUTIQUE DE CARTES ============ -->
-  <div class="shop-overlay" id="shop-overlay">
+  <div class="shop-overlay" id="shop-overlay" role="dialog" aria-modal="true" aria-labelledby="shop-overlay-title">
     <div class="shop-panel">
       <div class="shop-header">
-        <span class="shop-title">🃏 Boutique de cartes</span>
+        <span class="shop-title" id="shop-overlay-title">🃏 Boutique de cartes</span>
         <span class="shop-close" onclick="closeShop()">✕</span>
       </div>
       <p class="shop-sub">Dépense tes sats pour obtenir des cartes de figures historiques Bitcoin. Chaque carte active un <strong>pouvoir spécial</strong> pour tes prochaines parties, et les collections complètes débloquent des bonus uniques !</p>
@@ -5971,7 +5989,7 @@
   </div>
 
   <!-- ============ OVERLAY RÉVÉLATION DE PACK ============ -->
-  <div class="pack-reveal-overlay" id="pack-reveal-overlay">
+  <div class="pack-reveal-overlay" id="pack-reveal-overlay" role="dialog" aria-modal="true" aria-labelledby="pack-reveal-title">
     <div class="pack-reveal-title" id="pack-reveal-title">Pack ouvert !</div>
     <div class="pack-reveal-sub" id="pack-reveal-sub">Appuie sur chaque carte pour la révéler</div>
     <div class="pack-reveal-cards" id="pack-reveal-cards"></div>
@@ -5980,7 +5998,7 @@
   </div>
 
   <!-- ============ MODAL STREAK ============ -->
-  <div class="streak-overlay" id="streak-overlay">
+  <div class="streak-overlay" id="streak-overlay" role="dialog" aria-modal="true" aria-labelledby="streak-modal-title">
     <div class="streak-modal" id="streak-modal">
       <span class="streak-modal-icon" id="streak-modal-icon">🔥</span>
       <div class="streak-modal-title" id="streak-modal-title">Streak !</div>
@@ -5998,10 +6016,10 @@
   </div>
 
   <!-- ============ MODAL MODE SPRINT (pop-up après connexion / streak) ============ -->
-  <div class="streak-overlay" id="sprint-overlay">
+  <div class="streak-overlay" id="sprint-overlay" role="dialog" aria-modal="true" aria-labelledby="sprint-modal-title">
     <div class="streak-modal" id="sprint-modal" style="border-color:rgba(239,68,68,0.35);">
       <span class="streak-modal-icon">⚡</span>
-      <div class="sprint-title">Mode Sprint</div>
+      <div class="sprint-title" id="sprint-modal-title">Mode Sprint</div>
       <div class="sprint-desc">5 questions chrono en 15 secondes chacune. Pas d'indice, pas de passe. Uniquement ta mémoire et tes réflexes.<br><br><span id="sprint-best-display"></span></div>
       <button class="btn btn-primary" style="width:100%;margin-bottom:10px;background:linear-gradient(135deg,#dc2626,#f59e0b);box-shadow:0 4px 20px rgba(239,68,68,0.4);" onclick="closeSprintModal();startSprint();">⚡ Lancer le Sprint</button>
       <button class="btn btn-ghost" style="width:100%;" onclick="closeSprintModal()">Plus tard</button>
@@ -6009,12 +6027,12 @@
   </div>
 
   <!-- ============ MODAL GUIDE DU JOUEUR ============ -->
-  <div class="guide-overlay" id="guide-overlay">
+  <div class="guide-overlay" id="guide-overlay" role="dialog" aria-modal="true" aria-labelledby="guide-modal-title">
     <div class="guide-modal">
       <button class="guide-modal-close" onclick="closeGuideModal()" aria-label="Fermer">✕</button>
       <div class="guide-modal-head">
         <span class="guide-modal-icon">🕵️</span>
-        <div class="guide-modal-title">Bienvenue, enquêteur</div>
+        <div class="guide-modal-title" id="guide-modal-title">Bienvenue, enquêteur</div>
         <p class="guide-modal-sub">0x_GHOST t'a recruté pour retrouver la trace de Satoshi Nakamoto. Voici comment se déroule l'enquête.</p>
       </div>
 
@@ -6067,11 +6085,11 @@
   </div>
 
   <!-- ============ MODAL RELIQUES ============ -->
-  <div class="relics-overlay" id="relics-overlay">
+  <div class="relics-overlay" id="relics-overlay" role="dialog" aria-modal="true" aria-labelledby="relics-modal-title">
     <div class="relics-modal">
       <button class="relics-modal-close" onclick="closeRelicsModal()" aria-label="Fermer">✕</button>
       <span class="relics-modal-icon">🏺</span>
-      <div class="relics-modal-title">Reliques de l'enquête</div>
+      <div class="relics-modal-title" id="relics-modal-title">Reliques de l'enquête</div>
       <p class="relics-modal-sub">Chaque étape résolue pour la première fois t'offre une relique, pour toujours — même dans tes prochaines parties.</p>
       <div class="relics-modal-progress" id="relics-modal-progress">0 / 21 reliques découvertes</div>
       <div class="relics-modal-grid" id="relics-modal-grid"><!-- rempli par JS --></div>
@@ -6079,11 +6097,11 @@
   </div>
 
   <!-- ============ MODAL CHOIX DE CLASSE ============ -->
-  <div class="class-modal-overlay" id="class-modal-overlay">
+  <div class="class-modal-overlay" id="class-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="class-modal-title">
     <div class="class-modal">
       <div class="class-modal-head">
         <div class="cm-icon">🎭</div>
-        <h2>Choisis ta spécialité</h2>
+        <h2 id="class-modal-title">Choisis ta spécialité</h2>
         <p>0x_GHOST veut savoir à qui il a affaire. Ton choix façonne ton profil d'enquêteur — tu pourras en changer plus tard depuis ton profil.</p>
       </div>
       <button class="class-option opt-historien" onclick="selectPlayerClass('historien')">
@@ -6585,11 +6603,11 @@
     soundOn = !soundOn;
     const btn = document.getElementById('sound-toggle');
     if(soundOn){
-      btn.textContent = '🔊';
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:19px;height:19px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14" /></svg>';
       btn.classList.remove('muted');
       startAmbient();
     } else {
-      btn.textContent = '🔇';
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:19px;height:19px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" /></svg>';
       btn.classList.add('muted');
       stopAmbient();
     }
@@ -6975,9 +6993,12 @@
       setTimeout(() => {
         const overlay = document.createElement("div");
         overlay.style.cssText = "position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);";
+        overlay.setAttribute("role", "dialog");
+        overlay.setAttribute("aria-modal", "true");
+        overlay.setAttribute("aria-labelledby", "secret-card-title-satoshi");
         overlay.innerHTML = `<div style="text-align:center;animation:popIn .4s ease-out;padding:30px;max-width:320px;">
           <div style="font-size:60px;margin-bottom:14px;filter:drop-shadow(0 0 30px gold);">📜</div>
-          <div style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;background:linear-gradient(135deg,var(--or),#fff);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px;">🃏 Carte secrète débloquée !</div>
+          <div id="secret-card-title-satoshi" style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;background:linear-gradient(135deg,var(--or),#fff);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px;">🃏 Carte secrète débloquée !</div>
           <div style="font-size:14px;color:var(--texte-dim);line-height:1.6;margin-bottom:20px;">Tu surveilles les portefeuilles silencieux de Satoshi. La vigilance a une récompense.</div>
           <button class="btn btn-gold" onclick="this.parentElement.parentElement.remove()">Fermer</button>
         </div>`;
@@ -7186,9 +7207,12 @@
       setTimeout(() => {
         const overlay = document.createElement("div");
         overlay.style.cssText = "position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);";
+        overlay.setAttribute("role", "dialog");
+        overlay.setAttribute("aria-modal", "true");
+        overlay.setAttribute("aria-labelledby", "secret-card-title-hal");
         overlay.innerHTML = `<div style="text-align:center;animation:popIn .4s ease-out;padding:30px;max-width:320px;">
           <div style="font-size:60px;margin-bottom:14px;filter:drop-shadow(0 0 30px #60a5fa);">💬</div>
-          <div style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;background:linear-gradient(135deg,#60a5fa,#4ade80);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px;">🃏 Carte secrète débloquée !</div>
+          <div id="secret-card-title-hal" style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;background:linear-gradient(135deg,#60a5fa,#4ade80);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px;">🃏 Carte secrète débloquée !</div>
           <div style="font-size:14px;color:var(--texte-dim);line-height:1.6;margin-bottom:20px;">"Farewell, friends" — Hal Finney, Juin 2013. Tu as suivi ses derniers pas.</div>
           <button class="btn btn-gold" onclick="this.parentElement.parentElement.remove()">Fermer</button>
         </div>`;
@@ -7400,9 +7424,12 @@
       setTimeout(() => {
         const overlay = document.createElement("div");
         overlay.style.cssText = "position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);";
+        overlay.setAttribute("role", "dialog");
+        overlay.setAttribute("aria-modal", "true");
+        overlay.setAttribute("aria-labelledby", "secret-card-title-szabo");
         overlay.innerHTML = `<div style="text-align:center;animation:popIn .4s ease-out;padding:30px;max-width:320px;">
           <div style="font-size:60px;margin-bottom:14px;filter:drop-shadow(0 0 30px #22d3ee);">⛏️</div>
-          <div style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;background:linear-gradient(135deg,#22d3ee,#fff);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px;">🃏 Carte secrète débloquée !</div>
+          <div id="secret-card-title-szabo" style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;background:linear-gradient(135deg,#22d3ee,#fff);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px;">🃏 Carte secrète débloquée !</div>
           <div style="font-size:14px;color:var(--texte-dim);line-height:1.6;margin-bottom:20px;">Bit Gold, décembre 2005 — le brouillon qui a précédé Bitcoin de dix ans. Tu as remonté le fil jusqu'à sa source.</div>
           <button class="btn btn-gold" onclick="this.parentElement.parentElement.remove()">Fermer</button>
         </div>`;
@@ -8133,7 +8160,7 @@
             <div class="prc-emoji">${card.icon}</div>
             <div class="prc-name">${card.name}</div>
             <div class="prc-rlabel" style="color:${RARITY_COLOR[card.rarity]};">${RARITY_LABEL[card.rarity]}</div>
-            <div class="prc-new-badge" id="prc-newbadge-${idx}" style="font-size:10px;font-weight:700;margin-top:4px;${wasAlreadyOwned ? 'color:var(--texte-dim);' : 'color:var(--vert);'}">${wasAlreadyOwned ? '✓ Déjà possédée' : '🆕 Nouvelle carte !'}</div>
+            <div class="prc-new-badge" id="prc-newbadge-${idx}" style="font-size:11px;font-weight:700;margin-top:4px;${wasAlreadyOwned ? 'color:var(--texte-dim);' : 'color:var(--vert);'}">${wasAlreadyOwned ? '✓ Déjà possédée' : '🆕 Nouvelle carte !'}</div>
           </div>
         </div>`;
       wrap.onclick = () => revealPackCard(idx);
@@ -9502,7 +9529,7 @@
           <span style="font-size:18px;opacity:${done?1:0.3};">${a.icon}</span>
           <div>
             <div style="font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:${done?'var(--or)':'var(--texte-dim)'};">${a.name}</div>
-            <div style="font-size:10px;color:var(--texte-dim);">${a.desc}</div>
+            <div style="font-size:11px;color:var(--texte-dim);">${a.desc}</div>
           </div>
           ${done ? '<span style="margin-left:auto;color:var(--vert);font-size:14px;">✓</span>' : ''}
         </div>`;
@@ -10196,24 +10223,24 @@
       } else if(canAfford){
         backBtn = `<button class="c3d-back-action" onclick="buyCardFinale(${c.id})">🪙 Acheter ${price.toLocaleString('fr-FR')}</button>`;
         if(isSatoshi){
-          backBtn += `<div style="font-size:9px;color:rgba(240,185,11,0.7);text-align:center;margin-top:6px;line-height:1.4;">✨ Histoire · Archives · Quêtes · Bonus</div>`;
+          backBtn += `<div style="font-size:11px;color:rgba(240,185,11,0.7);text-align:center;margin-top:6px;line-height:1.4;">✨ Histoire · Archives · Quêtes · Bonus</div>`;
         }
         if(isHal){
-          backBtn += `<div style="font-size:9px;color:rgba(96,165,250,0.7);text-align:center;margin-top:6px;line-height:1.4;">✨ Histoire · Archives · Quêtes · Bonus</div>`;
+          backBtn += `<div style="font-size:11px;color:rgba(96,165,250,0.7);text-align:center;margin-top:6px;line-height:1.4;">✨ Histoire · Archives · Quêtes · Bonus</div>`;
         }
         if(isSzabo){
-          backBtn += `<div style="font-size:9px;color:rgba(34,211,238,0.7);text-align:center;margin-top:6px;line-height:1.4;">✨ Histoire · Archives · Quêtes · Bonus</div>`;
+          backBtn += `<div style="font-size:11px;color:rgba(34,211,238,0.7);text-align:center;margin-top:6px;line-height:1.4;">✨ Histoire · Archives · Quêtes · Bonus</div>`;
         }
       } else {
         backBtn = `<button class="c3d-back-action" style="opacity:0.4;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:var(--rouge);cursor:default;" disabled>🪙 ${price.toLocaleString('fr-FR')} sats</button>`;
         if(isSatoshi){
-          backBtn += `<div style="font-size:9px;color:rgba(240,185,11,0.5);text-align:center;margin-top:6px;line-height:1.4;">🔒 Débloque Histoire · Archives · Quêtes</div>`;
+          backBtn += `<div style="font-size:11px;color:rgba(240,185,11,0.5);text-align:center;margin-top:6px;line-height:1.4;">🔒 Débloque Histoire · Archives · Quêtes</div>`;
         }
         if(isHal){
-          backBtn += `<div style="font-size:9px;color:rgba(96,165,250,0.4);text-align:center;margin-top:6px;line-height:1.4;">🔒 Débloque Histoire · Archives · Quêtes</div>`;
+          backBtn += `<div style="font-size:11px;color:rgba(96,165,250,0.4);text-align:center;margin-top:6px;line-height:1.4;">🔒 Débloque Histoire · Archives · Quêtes</div>`;
         }
         if(isSzabo){
-          backBtn += `<div style="font-size:9px;color:rgba(34,211,238,0.4);text-align:center;margin-top:6px;line-height:1.4;">🔒 Débloque Histoire · Archives · Quêtes</div>`;
+          backBtn += `<div style="font-size:11px;color:rgba(34,211,238,0.4);text-align:center;margin-top:6px;line-height:1.4;">🔒 Débloque Histoire · Archives · Quêtes</div>`;
         }
       }
 
@@ -10253,7 +10280,7 @@
             <div class="c3d-back-name">${c.name}</div>
             <div class="c3d-back-desc">${isSatoshi ? 'Créateur de Bitcoin. Identité inconnue. Actif 2008–2011.' : c.desc}</div>
             <div class="c3d-back-power">${c.powerIcon} ${c.powerDesc}</div>
-            ${owned && qty > 0 ? `<div style="font-size:10px;color:var(--texte-dim);text-align:center;margin-top:4px;">${rankPoolQty >= 3 ? '⚗️ Fusion disponible !' : `${rankPoolQty}/3 cartes de rang ${FUSION_LABEL[fusionLvl]}`}</div>` : ''}
+            ${owned && qty > 0 ? `<div style="font-size:11px;color:var(--texte-dim);text-align:center;margin-top:4px;">${rankPoolQty >= 3 ? '⚗️ Fusion disponible !' : `${rankPoolQty}/3 cartes de rang ${FUSION_LABEL[fusionLvl]}`}</div>` : ''}
             ${fusionBtn}
             ${backBtn}
             <div class="c3d-back-cta">Tap pour retourner</div>
@@ -10335,9 +10362,12 @@
     const label = isLeg ? "⭐ CARTE LÉGENDAIRE !" : (isEpic ? "💎 CARTE ÉPIQUE !" : "🔮 CARTE RARE !");
     const overlay = document.createElement('div');
     overlay.style.cssText = `position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.9);backdrop-filter:blur(8px);`;
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-labelledby", "rare-animation-title");
     overlay.innerHTML = `<div style="text-align:center;animation:popIn .4s ease-out;">
       <div style="font-size:80px;margin-bottom:14px;filter:drop-shadow(0 0 30px ${glowColor});">${c.icon}</div>
-      <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;background:linear-gradient(135deg,${glowColor},#fff);-webkit-background-clip:text;background-clip:text;color:transparent;">${label}</div>
+      <div id="rare-animation-title" style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;background:linear-gradient(135deg,${glowColor},#fff);-webkit-background-clip:text;background-clip:text;color:transparent;">${label}</div>
       <div style="font-size:16px;color:${glowColor};margin-top:8px;">${c.name}</div>
       <div style="font-size:13px;color:var(--texte-dim);margin-top:6px;">${c.powerIcon} ${c.powerDesc}</div>
       <div style="margin-top:20px;font-size:12px;color:var(--texte-dim);">Appuie pour continuer</div>
@@ -14278,9 +14308,9 @@ const ADVANCED_MISSIONS = [
 </script>
 
 <!-- ====== FUSION OVERLAY ====== -->
-<div id="fusion-overlay">
+<div id="fusion-overlay" role="dialog" aria-modal="true" aria-labelledby="fusion-overlay-title">
   <div class="fusion-stage">
-    <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--or);text-align:center;text-shadow:0 0 20px rgba(240,185,11,0.5);">
+    <div id="fusion-overlay-title" style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--or);text-align:center;text-shadow:0 0 20px rgba(240,185,11,0.5);">
       ⚗️ Fusion en cours…
     </div>
     <div class="fusion-cards-row" id="fusion-cards-row">
@@ -14303,7 +14333,7 @@ const ADVANCED_MISSIONS = [
 
 
 <!-- ====== MODAL OUVERTURE DE PACK — RARETÉ ====== -->
-<div class="rc-modal-overlay" id="rc-pack-modal">
+<div class="rc-modal-overlay" id="rc-pack-modal" role="dialog" aria-modal="true" aria-labelledby="rc-modal-pack-name">
   <div class="rc-modal-box">
     <button class="rc-modal-close" onclick="rcClosePackModal()">✕</button>
     <div id="rc-pack-pre-open" style="text-align:center;padding:8px 0;">
@@ -14434,7 +14464,9 @@ const ADVANCED_MISSIONS = [
   function rcBuildCard(card, owned) {
     const pct = Math.round((card.remaining / card.maxStock) * 100);
     const lock = owned ? "" : '<div class="rc-card-lock"><div class="rc-lock-icon">🔒</div><div class="rc-lock-text">Ouvrir un pack</div></div>';
-    return '<div class="rc-card-item rc-' + card.rarity + (owned ? "" : " rc-locked") + '" onclick="' + (owned ? "rcCardDetail('" + card.id + "')" : "rcOpenPackModal('standard')") + '">'
+    const rcAction = owned ? "rcCardDetail('" + card.id + "')" : "rcOpenPackModal('standard')";
+    const rcLabel = owned ? "Voir le détail de la carte " + card.name : "Carte verrouillée : ouvrir un pack pour la débloquer";
+    return '<div class="rc-card-item rc-' + card.rarity + (owned ? "" : " rc-locked") + '" onclick="' + rcAction + '" role="button" tabindex="0" aria-label="' + rcLabel + '" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();' + rcAction + ';}">'
       + '<div class="rc-card-face">'
       + '<div class="rc-card-rarity-label">' + RC_RARITY_LABELS[card.rarity] + "</div>"
       + (owned ? '<div class="rc-card-edition">#' + rcEditionNum(card) + " / " + card.maxStock + "</div>" : "")
