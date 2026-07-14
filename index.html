@@ -6267,7 +6267,7 @@
     rcLoadCloudProgress(rcCurrentUser.uid).then(function(){
       rcEnterGame();
       if(rcSyncTimer) clearInterval(rcSyncTimer);
-      rcSyncTimer = setInterval(rcSaveCloudProgress, 20000);
+      rcSyncTimer = rcSyncTimer = setInterval(function(){ rcSaveCloudProgress().catch(function(){}); }, 10000);
       window.addEventListener("beforeunload", rcSaveCloudProgress);
       if(typeof refreshWorldLeaderboard === "function") refreshWorldLeaderboard();
     });
@@ -6307,23 +6307,31 @@
   };
 
   window.rcAuthLogout = function(){
-    if(rcSyncTimer) clearInterval(rcSyncTimer);
-    const finish = function(){
-      try { localStorage.removeItem(RC_PLAYER_ID_KEY); } catch(e){}
-      location.reload();
-    };
-    if(rcFirebaseReady && rcCurrentUser){
-      rcSaveCloudProgress().finally(finish);
-    } else {
-      finish();
-    }
+  if(rcSyncTimer) clearInterval(rcSyncTimer);
+  try { if(typeof saveWalletSats === "function") saveWalletSats(); } catch(e) {}
+
+  const finish = function(){
+    try { localStorage.removeItem(RC_PLAYER_ID_KEY); } catch(e){}
+    location.reload();
   };
 
-  window.rcAuthContinueGuest = function(){
-    rcSetCurrentUser(null);
-    document.getElementById("logout-toggle").style.display = "none";
-    rcEnterGame();
-  };
+  if(rcFirebaseReady && rcCurrentUser){
+    // Deux tentatives d'écriture cloud avant de partir, pour limiter les pertes
+    // silencieuses en cas d'échec réseau ponctuel.
+    rcSaveCloudProgress()
+      .catch(function(){ return rcSaveCloudProgress(); })
+      .catch(function(){ /* on abandonne après 2 essais, mais on ne bloque pas la déconnexion */ })
+      .finally(finish);
+  } else {
+    finish();
+  }
+};
+  document.addEventListener('visibilitychange', function(){
+  if(document.visibilityState === 'hidden' && typeof rcSaveCloudProgress === 'function'){
+    rcSaveCloudProgress().catch(function(){});
+  }
+});
+
 
   function rcCurrentSatsAndStreak(){
     // Lit les valeurs actuelles depuis les variables du jeu si dispo, sinon depuis localStorage en repli
@@ -6374,34 +6382,53 @@
   window.rcFetchTopLeaderboard = rcFetchTopLeaderboard;
 
   function rcSaveCloudProgress(){
-    if(!rcFirebaseReady || !rcCurrentUser) return Promise.resolve();
-    const payload = {};
-    RC_SYNC_KEYS.forEach(function(k){
-      const v = localStorage.getItem(k);
-      if(v !== null) payload[k] = v;
-    });
-    return rcDb.collection("users").doc(rcCurrentUser.uid).set({
-      save: payload,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true })
-      .then(rcSyncPublicLeaderboard)
-      .catch(function(e){ console.warn("Sauvegarde cloud impossible :", e); });
-  }
-  window.rcSaveCloudProgress = rcSaveCloudProgress;
+  if(!rcFirebaseReady || !rcCurrentUser) return Promise.resolve();
+  // On force la sauvegarde du wallet en local juste avant l'envoi cloud,
+  // au cas où la dernière variation de `sats` n'aurait pas encore été persistée.
+  try { if(typeof saveWalletSats === "function") saveWalletSats(); } catch(e) {}
 
-  function rcLoadCloudProgress(uid){
-    if(!rcFirebaseReady) return Promise.resolve();
-    return rcDb.collection("users").doc(uid).get().then(function(doc){
-      if(doc.exists){
-        const data = doc.data();
-        if(data.save){
-          Object.keys(data.save).forEach(function(k){
-            localStorage.setItem(k, data.save[k]);
-          });
-        }
+  const payload = {};
+  RC_SYNC_KEYS.forEach(function(k){
+    const v = localStorage.getItem(k);
+    if(v !== null) payload[k] = v;
+  });
+  return rcDb.collection("users").doc(rcCurrentUser.uid).set({
+    save: payload,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true })
+    .then(rcSyncPublicLeaderboard)
+    .catch(function(e){
+      console.warn("Sauvegarde cloud impossible :", e);
+      throw e; // on laisse remonter l'erreur pour pouvoir réessayer ailleurs
+    });
+}
+window.rcSaveCloudProgress = rcSaveCloudProgress;
+function rcLoadCloudProgress(uid){
+  if(!rcFirebaseReady) return Promise.resolve();
+  return rcDb.collection("users").doc(uid).get().then(function(doc){
+    if(doc.exists){
+      const data = doc.data();
+      if(data.save){
+        // Sats déjà présents en local AVANT d'appliquer la sauvegarde cloud
+        let localSats = 0;
+        try { localSats = parseInt(localStorage.getItem("operation_satoshi_wallet_sats_v1") || "0", 10) || 0; } catch(e) {}
+
+        Object.keys(data.save).forEach(function(k){
+          localStorage.setItem(k, data.save[k]);
+        });
+
+        // Protection anti-perte : on ne descend jamais en dessous de ce qu'on avait déjà.
+        try {
+          const cloudSats = parseInt(localStorage.getItem("operation_satoshi_wallet_sats_v1") || "0", 10) || 0;
+          if(localSats > cloudSats){
+            localStorage.setItem("operation_satoshi_wallet_sats_v1", String(localSats));
+          }
+        } catch(e) {}
       }
-    }).catch(function(e){ console.warn("Chargement cloud impossible :", e); });
-  }
+    }
+  }).catch(function(e){ console.warn("Chargement cloud impossible :", e); });
+}
+
 
   function rcEnterGame(){
     document.getElementById("screen-auth").classList.remove("active");
