@@ -3746,9 +3746,8 @@
   }
   .auth-guest:hover{border-color:var(--or);color:var(--or);}
   .auth-loading{opacity:0.6;pointer-events:none;}
-  .logout-toggle{
-    position:fixed; left:50%; bottom:20px; z-index:50;
-    transform:translateX(-50%);
+ .logout-toggle{
+    position:fixed; right:70px; bottom:20px; z-index:50;
     display:none;align-items:center;justify-content:center;gap:8px;
     padding:11px 20px 11px 16px;min-height:44px;border-radius:999px;
     background:linear-gradient(135deg, rgba(239,68,68,0.16), rgba(127,29,29,0.28));
@@ -3760,17 +3759,16 @@
     transition:background .18s ease-out, border-color .18s ease-out, transform .18s ease-out, box-shadow .18s ease-out;
   }
   .logout-toggle svg{width:18px;height:18px;flex-shrink:0;}
-  .logout-toggle:hover{
+.logout-toggle:hover{
     background:linear-gradient(135deg, rgba(239,68,68,0.26), rgba(127,29,29,0.4));
     border-color:rgba(239,68,68,0.75);
-    transform:translateX(-50%) translateY(-2px);
+    transform:translateY(-2px);
     box-shadow:0 0 22px rgba(239,68,68,0.32), 0 8px 22px rgba(0,0,0,0.4);
-  }
-  .logout-toggle:active{transform:translateX(-50%) translateY(0);}
-  @media (max-width:480px){
-    .logout-toggle{bottom:14px;padding:10px 16px 10px 13px;font-size:13px;}
-  }
-
+}
+.logout-toggle:active{transform:translateY(0);}
+ @media (max-width:480px){
+    .logout-toggle{right:14px;bottom:14px;padding:10px 16px 10px 13px;font-size:13px;}
+}
   /* ====== MARKETPLACE / ÉCHANGE DE CARTES ====== */
   .trade-toggle{
     position:fixed; top:14px; left:70px; z-index:50;
