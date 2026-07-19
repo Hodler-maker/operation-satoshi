@@ -6183,6 +6183,7 @@
     "operation_satoshi_advanced_dossiers_v1",
     "operation_satoshi_player_profile_v1",
     "operation_satoshi_lb_v1",
+    "rc_free_packs_used_v1",
     "operation_satoshi_sprint_lb_v1",
     "satoshi_quests",
     "satoshi_bonus_sats",
@@ -14742,14 +14743,26 @@ const ADVANCED_MISSIONS = [
   window.rcOpenPack = function() {
     const cfg = RC_PACK_CONFIGS[rcCurrentPack];
     
-    // Limite les packs gratuits à une seule utilisation
+    // Limite les packs gratuits à une seule utilisation (liée au compte via Firebase)
     if (cfg.price === 0) {
-      const usedKey = "rc_free_pack_used_" + rcCurrentPack;
-      if (localStorage.getItem(usedKey)) {
-        rcShowToast("Pack gratuit déjà utilisé !", "error");
+      let usedData = {};
+      try {
+        usedData = JSON.parse(localStorage.getItem("rc_free_packs_used_v1") || "{}");
+      } catch(e) { usedData = {}; }
+
+      if (usedData[rcCurrentPack]) {
+        rcShowToast("Pack gratuit déjà utilisé sur ce compte !", "error");
         return;
       }
-      localStorage.setItem(usedKey, "true");
+      
+      // Marquer comme utilisé localement
+      usedData[rcCurrentPack] = true;
+      localStorage.setItem("rc_free_packs_used_v1", JSON.stringify(usedData));
+      
+      // Sauvegarder immédiatement sur le cloud si connecté
+      if (typeof rcSaveCloudProgress === "function") {
+        rcSaveCloudProgress().catch(function(){});
+      }
     }
 
     // Vérif sats (si disponibles)
