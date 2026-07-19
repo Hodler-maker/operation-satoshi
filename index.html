@@ -8253,6 +8253,7 @@
     const def = PACK_DEFS[type];
     if(sats < def.cost){ sfxWrong(); return; }
     sats -= def.cost;
+    updateWalletDisplay(); // Met à jour l'affichage global et sauvegarde
     updateBoutiqueWallet();
 
     packRevealCards = generatePackCards(type);
@@ -12605,7 +12606,7 @@ const ADVANCED_MISSIONS = [
     try {
       const raw = localStorage.getItem(WALLET_SATS_KEY);
       const v = raw !== null ? parseInt(raw, 10) : 0;
-      return Number.isFinite(v) && v > 0 ? v : 0;
+      return Number.isFinite(v) ? v : 0;
     } catch(e) { return 0; }
   }
 
@@ -14740,21 +14741,31 @@ const ADVANCED_MISSIONS = [
 
   window.rcOpenPack = function() {
     const cfg = RC_PACK_CONFIGS[rcCurrentPack];
+    
+    // Limite les packs gratuits à une seule utilisation
+    if (cfg.price === 0) {
+      const usedKey = "rc_free_pack_used_" + rcCurrentPack;
+      if (localStorage.getItem(usedKey)) {
+        rcShowToast("Pack gratuit déjà utilisé !", "error");
+        return;
+      }
+      localStorage.setItem(usedKey, "true");
+    }
+
     // Vérif sats (si disponibles)
-    let mainSats = Number.isFinite(window._rcMainSats) ? window._rcMainSats : 0;
-    if (typeof sats === "number") mainSats = Math.max(mainSats, sats);
+    let mainSats = typeof sats === "number" ? sats : (Number.isFinite(window._rcMainSats) ? window._rcMainSats : 0);
     if (cfg.price > 0 && mainSats < cfg.price) {
       rcShowToast("Pas assez de sats !", "error");
       return;
     }
+    
     if (cfg.price > 0) {
-      window._rcMainSats = mainSats - cfg.price;
-      if (typeof sats === "number") {
-        sats = window._rcMainSats;
-        if (typeof updateWalletDisplay === "function") updateWalletDisplay();
-      }
+      sats = mainSats - cfg.price;
+      window._rcMainSats = sats;
+      if (typeof updateWalletDisplay === "function") updateWalletDisplay();
+      
       const walletEl = document.getElementById("boutique-finale-sats");
-      if (walletEl) walletEl.textContent = window._rcMainSats.toLocaleString("fr-FR");
+      if (walletEl) walletEl.textContent = sats.toLocaleString("fr-FR");
     }
 
     const roll = Math.random();
